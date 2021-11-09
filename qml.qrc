@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+	<file>DashboardUI.ui.qml</file>
+	<file>Dashboard.qml</file>
     </qresource>
 </RCC>
