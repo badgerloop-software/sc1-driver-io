@@ -1,6 +1,7 @@
 import QtQuick 2.4
 
 Item {
+    id: cruise
     width: 800
     height: 600
 
@@ -158,41 +159,30 @@ Item {
         }
     }
 
-    MouseArea {
-        id: mouseArea
-        x: 137
-        y: 101
-        width: 64
-        height: 58
-    }
-
-    Rectangle {
-        id: cruise
-        x: 143
-        y: 108
-        width: 61
-        height: 49
-        color: "#e44b4b"
-        Text {
-            id: text100
-            text: qsTr("cruise button")
-        }
-    }
-
     Text {
         id: text8
         x: 40
-        y: 522
+        y: 431
         text: qsTr("100%")
         font.pixelSize: 30
     }
 
     AnimatedImage {
         id: animatedImage
-        x: 44
-        y: 153
-        width: 87
-        height: 334
-        source: "qrc:/qtquickplugin/images/template_image.png"
+        x: 149
+        y: 95
+        width: 43
+        height: 43
+        source: "Images/cruiseControl.png"
+    }
+
+    Image {
+        id: image
+        x: 30
+        y: 100
+        width: 95
+        height: 401
+        source: "qrc:/Images/Battery.png"
+        fillMode: Image.PreserveAspectFit
     }
 }

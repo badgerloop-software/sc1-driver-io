@@ -1,7 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-	<file>DashboardUI.ui.qml</file>
-	<file>Dashboard.qml</file>
+        <file>DashboardUI.ui.qml</file>
+        <file>Dashboard.qml</file>
+        <file>Images/Battery.png</file>
+        <file>Images/cruiseControl.png</file>
     </qresource>
 </RCC>
