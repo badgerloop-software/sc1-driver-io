@@ -2,79 +2,82 @@ import QtQuick 2.4
 
 Item {
     id: cruise
-    width: 800
-    height: 600
+    x: -380
+    y: -200
+    width: 1280
+    height: 720
+    scale: 0.4
 
     Text {
         id: time
-        x: 625
-        y: 41
+        x: 1104
+        y: 37
         width: 85
-        height: 28
+        height: 41
         text: qsTr("00:00:00")
         font.pixelSize: 30
     }
 
     Text {
         id: alerts
-        x: 343
-        y: 37
+        x: 591
+        y: 42
         text: qsTr("No Altert")
         font.pixelSize: 30
     }
 
     Text {
         id: text1
-        x: 646
-        y: 231
+        x: 1105
+        y: 278
         text: qsTr("Solar")
         font.pixelSize: 16
     }
 
     Text {
         id: solarwattage
-        x: 702
-        y: 221
+        x: 1161
+        y: 268
         text: qsTr("0W")
         font.pixelSize: 30
     }
 
     Text {
         id: text2
-        x: 646
-        y: 271
+        x: 1105
+        y: 318
         text: qsTr("Motor")
         font.pixelSize: 16
     }
 
     Text {
         id: motorwattage
-        x: 700
-        y: 263
+        x: 1159
+        y: 310
         text: qsTr("0W")
         font.pixelSize: 30
     }
 
     Text {
         id: text3
-        x: 645
-        y: 310
+        x: 1104
+        y: 357
         text: qsTr("Net")
         font.pixelSize: 16
     }
 
     Text {
         id: motorwattage1
-        x: 700
-        y: 305
+        x: 1159
+        y: 352
         text: qsTr("0W")
         font.pixelSize: 30
     }
 
     Text {
         id: text4
-        x: 248
-        y: 500
+        x: 526
+        y: 615
         width: 41
         height: 16
         text: qsTr("Temp 1")
@@ -83,8 +86,8 @@ Item {
 
     Text {
         id: text5
-        x: 347
-        y: 500
+        x: 625
+        y: 615
         width: 47
         height: 16
         text: qsTr("Temp 2")
@@ -93,8 +96,8 @@ Item {
 
     Text {
         id: text6
-        x: 451
-        y: 500
+        x: 729
+        y: 615
         width: 47
         height: 16
         text: qsTr("Temp 3")
@@ -103,32 +106,32 @@ Item {
 
     Text {
         id: temp1
-        x: 249
-        y: 522
+        x: 527
+        y: 637
         text: qsTr("0℃")
         font.pixelSize: 30
     }
 
     Text {
         id: temp2
-        x: 347
-        y: 522
+        x: 625
+        y: 637
         text: qsTr("0℃")
         font.pixelSize: 30
     }
 
     Text {
         id: temp3
-        x: 451
-        y: 522
+        x: 729
+        y: 637
         text: qsTr("0℃")
         font.pixelSize: 30
     }
 
     Text {
         id: text7
-        x: 296
-        y: 243
+        x: 522
+        y: 302
         width: 150
         height: 86
         font.pixelSize: 12
@@ -161,16 +164,16 @@ Item {
 
     Text {
         id: text8
-        x: 40
-        y: 431
+        x: 117
+        y: 460
         text: qsTr("100%")
         font.pixelSize: 30
     }
 
     AnimatedImage {
         id: animatedImage
-        x: 149
-        y: 95
+        x: 274
+        y: 100
         width: 43
         height: 43
         source: "Images/cruiseControl.png"
@@ -178,8 +181,8 @@ Item {
 
     Image {
         id: image
-        x: 30
-        y: 100
+        x: 97
+        y: 128
         width: 95
         height: 401
         source: "qrc:/Images/Battery.png"
