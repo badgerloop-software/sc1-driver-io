@@ -129,6 +129,30 @@ DataGenerator/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/DataGenerator.dir/build.make CMakeFiles/DataGenerator.dir/build
 .PHONY : DataGenerator/fast
 
+DataUnpacker.o: DataUnpacker.cpp.o
+.PHONY : DataUnpacker.o
+
+# target to build an object file
+DataUnpacker.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DataGenerator.dir/build.make CMakeFiles/DataGenerator.dir/DataUnpacker.cpp.o
+.PHONY : DataUnpacker.cpp.o
+
+DataUnpacker.i: DataUnpacker.cpp.i
+.PHONY : DataUnpacker.i
+
+# target to preprocess a source file
+DataUnpacker.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DataGenerator.dir/build.make CMakeFiles/DataGenerator.dir/DataUnpacker.cpp.i
+.PHONY : DataUnpacker.cpp.i
+
+DataUnpacker.s: DataUnpacker.cpp.s
+.PHONY : DataUnpacker.s
+
+# target to generate assembly for a file
+DataUnpacker.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/DataGenerator.dir/build.make CMakeFiles/DataGenerator.dir/DataUnpacker.cpp.s
+.PHONY : DataUnpacker.cpp.s
+
 dataGen.o: dataGen.cpp.o
 .PHONY : dataGen.o
 
@@ -186,6 +210,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... DataGenerator"
+	@echo "... DataUnpacker.o"
+	@echo "... DataUnpacker.i"
+	@echo "... DataUnpacker.s"
 	@echo "... dataGen.o"
 	@echo "... dataGen.i"
 	@echo "... dataGen.s"

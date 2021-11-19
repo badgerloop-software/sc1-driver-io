@@ -78,6 +78,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/mcli/CLionProjects/DataGenerator/DataUnpacker.cpp">
+			<Option target="DataGenerator"/>
+		</Unit>
+		<Unit filename="/Users/mcli/CLionProjects/DataGenerator/DataUnpacker.h">
+			<Option target="DataGenerator"/>
+		</Unit>
 		<Unit filename="/Users/mcli/CLionProjects/DataGenerator/dataGen.cpp">
 			<Option target="DataGenerator"/>
 		</Unit>

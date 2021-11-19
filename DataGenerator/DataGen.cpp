@@ -18,7 +18,7 @@ void DataGen::getData(vector<byte> &data, double time) {
     //power
     addDoubleToArray(data,0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed));
     //Charge
-    addDoubleToArray(data,batteryFunc(time));
+    dataToByteArray(data,(int)batteryFunc(time));
     //Solar power
     addDoubleToArray(data,solarFunc(time));
     //net power

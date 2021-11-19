@@ -3,4 +3,4 @@ project(DataGenerator)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(DataGenerator main.cpp dataGen.cpp dataGen.h)
+add_executable(DataGenerator main.cpp dataGen.cpp dataGen.h DataUnpacker.cpp DataUnpacker.h)
