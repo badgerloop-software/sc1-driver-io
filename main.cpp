@@ -4,10 +4,14 @@
 
 int main(int argc, char *argv[])
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
+//#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    //QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+//#endif
 
+    /*argc = 3;
+    argv[0] = (char*)"Appname";
+    argv[1] = (char*)"--platform";
+    argv[2] = (char*)"android:dpiawareness=0";*/
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;

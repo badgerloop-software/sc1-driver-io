@@ -3,7 +3,22 @@
         <file>main.qml</file>
         <file>DashboardUI.ui.qml</file>
         <file>Dashboard.qml</file>
-        <file>Images/Battery.png</file>
-        <file>Images/cruiseControl.png</file>
+        <file>UI/Battery.qml</file>
+        <file>UI/BatteryForm.ui.qml</file>
+        <file>UI/Blinkers.qml</file>
+        <file>UI/BlinkersForm.ui.qml</file>
+        <file>UI/Power.qml</file>
+        <file>UI/PowerForm.ui.qml</file>
+        <file>UI/Speed.qml</file>
+        <file>UI/SpeedForm.ui.qml</file>
+        <file>UI/Images/Battery.png</file>
+        <file>UI/Images/Blinker.png</file>
+        <file>UI/Images/cruiseControl.png</file>
+        <file>UI/Temperature.qml</file>
+        <file>UI/TemperatureForm.ui.qml</file>
+        <file>UI/Alerts.qml</file>
+        <file>UI/AlertsForm.ui.qml</file>
+        <file>UI/Timer.qml</file>
+        <file>UI/TimerForm.ui.qml</file>
     </qresource>
 </RCC>
