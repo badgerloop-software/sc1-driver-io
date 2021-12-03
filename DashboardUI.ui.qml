@@ -14,8 +14,6 @@ Item {
         x: (dashboard.width - width) / 2
         y: (dashboard.height - width) / 2
         scale: 0.85
-
-
     }
 
     Rectangle {

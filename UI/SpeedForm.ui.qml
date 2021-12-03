@@ -1,10 +1,9 @@
 import QtQuick 2.4
 
 Item {
-    id: speedBox
+    id:speedBox
     width: 400
     height: 400
-
     Rectangle {
         id: rectangle
         x: 0
@@ -19,7 +18,7 @@ Item {
             x: (speedBox.width-width)/2
             y: (speedBox.height-height)/2
             color: "#ffffff"
-            text: qsTr("0")
+            text: backEnd.speed
             font.pixelSize: 150
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignTop

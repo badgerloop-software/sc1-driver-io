@@ -1,4 +1,5 @@
-import QtQuick 2.4
+
+/**import QtQuick 2.4
 
 Item {
     width: 400
@@ -43,4 +44,4 @@ Item {
             z: 1
         }
     }
-}
+}**/
