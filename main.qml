@@ -5,6 +5,7 @@ Window {
     width: 1024
     height: 600
     visible: true
+    visibility: "FullScreen"
     title: qsTr("Solar Car Dashboard")
     Dashboard{
 

@@ -5,6 +5,16 @@ Item {
     height: 800
     id: bat
 
+    function getColor(num){
+        if (num > 60) {
+           return "#00ff00"
+        }
+        if (num > 20) {
+            return "#00ffff"
+        }
+        return "#ff0000"
+    }
+
     Rectangle {
         id: rectangle
         x: 0
@@ -13,6 +23,27 @@ Item {
         height: 800
         color: "#000000"
         border.color: "#000000"
+
+        Text {
+            id: batVal
+            x: (bat.width - width) / 2
+            y: 640
+            color: "#ffffff"
+            text: backEnd.charge.toFixed(1)
+            font.pixelSize: 60
+        }
+
+
+        Rectangle {
+            id: batLevel
+            x: 100
+            y: 605 - height
+            width: 200
+            height: 530 * ( batVal.text / 100)
+            color: getColor(backEnd.charge)
+            border.color: "#000000"
+        }
+
 
         Image {
             id: image
@@ -23,16 +54,6 @@ Item {
             source: "Images/Battery.png"
             fillMode: Image.PreserveAspectFit
         }
-
-        Text {
-            id: batVal
-            x: (bat.width - width) / 2
-            y: 640
-            color: "#ffffff"
-            text: backEnd.batteryT.toFixed(1)
-            font.pixelSize: 60
-        }
-
         Text {
             id: text1
             x: 188

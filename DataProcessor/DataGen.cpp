@@ -28,29 +28,29 @@ void DataGen::getData(std::vector<byte> &data, double time) {
     //state
     dataToByteArray(data,'D');
     //Battery Temp
-    addDoubleToArray(data,(double)rand()/((RAND_MAX+1u)/200));
+    addDoubleToArray(data,arc4random_uniform(200));
     //Motor Temp
-    addDoubleToArray(data,(double)rand()/((RAND_MAX+1u)/200));
+    addDoubleToArray(data,arc4random_uniform(200));
     //Motor Controller Temp
-    addDoubleToArray(data,(double)rand()/((RAND_MAX+1u)/200));
+    addDoubleToArray(data,arc4random_uniform(200));
     //bps Fault
-    dataToByteArray(data,rand()>rand());
+    dataToByteArray(data,arc4random()>arc4random());
     //estop
-    dataToByteArray(data,rand()>rand());
+    dataToByteArray(data,arc4random()>arc4random());
     //cruise control
-    dataToByteArray(data,rand()>rand());
+    dataToByteArray(data,arc4random()>arc4random());
     //left turn
-    dataToByteArray(data,rand()>rand());
+    dataToByteArray(data,arc4random()>arc4random());
     //right turn
-    dataToByteArray(data,rand()>rand());
+    dataToByteArray(data,arc4random()>arc4random());
     //FL TP
-    dataToByteArray(data,rand()/((RAND_MAX+1u)/200));
+    dataToByteArray(data,(int)fmod(arc4random(),200));
     //FR TP
-    dataToByteArray(data,rand()/((RAND_MAX+1u)/200));
+    dataToByteArray(data,(int)fmod(arc4random(),200));
     //RL TP
-    dataToByteArray(data,rand()/((RAND_MAX+1u)/200));
+    dataToByteArray(data,(int)fmod(arc4random(),200));
     //RR TP
-    dataToByteArray(data,rand()/((RAND_MAX+1u)/200));
+    dataToByteArray(data,(int)fmod(arc4random(),200));
 }
 
 DataGen::DataGen(func speedFunc, func solarFunc, func batteryFunc, float efficiency) {
@@ -59,7 +59,6 @@ DataGen::DataGen(func speedFunc, func solarFunc, func batteryFunc, float efficie
     this->efficiency=efficiency;
     this->batteryFunc=batteryFunc;
     srand(static_cast<int>(time(0)));
-    rand();
 }
 
 /**

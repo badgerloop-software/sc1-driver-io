@@ -8,6 +8,8 @@
 #include <vector>
 #include <QObject>
 #include "DataGen.h"
+#include "thread"
+#include <unistd.h>
 
 //using namespace std;
 typedef unsigned char byte;
@@ -34,7 +36,7 @@ class DataUnpacker : public QObject{
 public:
     explicit DataUnpacker(QObject *parent = nullptr);
     void unpack(std::vector<byte> rawData);
-
+    void startThread();
 signals:
     void speedChanged();
     void chargeChanged();
@@ -53,10 +55,12 @@ signals:
 
     void stateChanged();
 private:
+    void threadProcedure();
     int speed, charge, flTp, frTp, rlTp, rrTp;
     double power, solarP, netP, motorP, batteryT, motorT, motorControllerT;
     bool bpsFault, eStop, cruise, lt, rt;
     char state;
+    std::thread t;
 };
 
 

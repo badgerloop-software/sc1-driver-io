@@ -8,6 +8,7 @@ CONFIG += c++11
 
 SOURCES += \
         #back2frontlink.cpp \
+        backendprocesses.cpp \
         main.cpp \
         DataProcessor/DataGen.cpp \
         DataProcessor/DataUnpacker.cpp
@@ -63,4 +64,6 @@ contains(ANDROID_TARGET_ARCH,arm64-v8a) {
 HEADERS += \
     DataProcessor/DataUnpacker.h \
     DataProcessor/DataGen.h \
-    #back2frontlink.h
+ \    #back2frontlink.h
+    DataProcessor/UnpackedData.h \
+    backendprocesses.h

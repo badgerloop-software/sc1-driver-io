@@ -9,6 +9,8 @@
 #include <random>
 #include <QObject>
 #include <ctime>
+#include <cstdio>
+
 typedef double(*func)(double);
 typedef unsigned char byte;
 
@@ -25,6 +27,7 @@ public:
 
     template <typename E>
     static void dataToByteArray(std::vector<byte> &dataVec, E data);
+
 private:
     func speedFunc;
     func solarFunc;

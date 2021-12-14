@@ -27,7 +27,7 @@ Item {
             x: (solar.width - width) / 2
             y: 43
             color: "#ffffff"
-            text: qsTr("0")
+            text: backEnd.solarP
             font.pixelSize: 40
         }
 
@@ -62,7 +62,7 @@ Item {
             x: (net.width - width) / 2
             y: 43
             color: "#ffffff"
-            text: qsTr("0")
+            text: backEnd.netP
             font.pixelSize: 40
         }
 
@@ -97,7 +97,7 @@ Item {
             x: (motor.width - width) / 2
             y: 43
             color: "#ffffff"
-            text: qsTr("0")
+            text: backEnd.motorP
             font.pixelSize: 40
         }
 

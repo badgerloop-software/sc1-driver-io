@@ -38,10 +38,11 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 {
     std::vector<unsigned char> bytes;
     DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
-    data.getData(bytes,2);
+    data.getData(bytes,3);
     //bytes.clear();
     //data.getData(bytes,2);
     unpack(bytes);
+    startThread();
 }
 
 void DataUnpacker::unpack(std::vector<byte> rawData) {
@@ -66,3 +67,19 @@ void DataUnpacker::unpack(std::vector<byte> rawData) {
     bytesToSomethingNotDouble(rawData,82,85,rrTp);
 }
 
+
+void DataUnpacker::startThread() {
+    t = std::thread(&DataUnpacker::threadProcedure,this);
+    t.detach();
+}
+
+void DataUnpacker::threadProcedure() {
+    DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
+    for( ; ; ) {
+        std::vector<unsigned char> bytes;
+        data.getData(bytes,3);
+        unpack(bytes);
+        emit motorTChanged();
+        usleep(1000000 );
+    }
+}
