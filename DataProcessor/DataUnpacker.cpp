@@ -75,11 +75,30 @@ void DataUnpacker::startThread() {
 
 void DataUnpacker::threadProcedure() {
     DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
+    int time = 0;
     for( ; ; ) {
         std::vector<unsigned char> bytes;
-        data.getData(bytes,3);
+        data.getData(bytes,time);
         unpack(bytes);
+
+        emit speedChanged();
+        emit chargeChanged();
+        emit flTpChanged();
+        emit frTpChanged();
+        emit rlTpChanged();
+        emit rrTpChanged();
+
+        emit powerChanged();
+        emit solarPChanged();
+        emit netPChanged();
+        emit motorPChanged();
+        emit batteryTChanged();
         emit motorTChanged();
+        emit motorControllerTChanged();
+
+        emit stateChanged();
+
+        time = (time + 1) % 9;
         usleep(1000000 );
     }
 }

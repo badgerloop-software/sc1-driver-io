@@ -2,8 +2,8 @@
 // Created by Mingcan Li on 11/16/21.
 //
 
-#ifndef DATAGENERATOR_DATAUNPACKER_H
-#define DATAGENERATOR_DATAUNPACKER_H
+#ifndef DATAPROCESSOR_DATAUNPACKER_H
+#define DATAPROCESSOR_DATAUNPACKER_H
 
 #include <vector>
 #include <QObject>

@@ -7,7 +7,6 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        #back2frontlink.cpp \
         backendprocesses.cpp \
         main.cpp \
         DataProcessor/DataGen.cpp \
@@ -64,6 +63,5 @@ contains(ANDROID_TARGET_ARCH,arm64-v8a) {
 HEADERS += \
     DataProcessor/DataUnpacker.h \
     DataProcessor/DataGen.h \
- \    #back2frontlink.h
     DataProcessor/UnpackedData.h \
     backendprocesses.h

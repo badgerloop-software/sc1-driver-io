@@ -2,6 +2,8 @@
 #define BACKENDPROCESSES_H
 
 #include <QObject>
+#include "DataProcessor/UnpackedData.h"
+#include "DataProcessor/DataUnpacker.h"
 
 
 class BackendProcesses : public QObject

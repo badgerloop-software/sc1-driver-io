@@ -2,8 +2,8 @@
 // Created by Mingcan Li on 11/11/21.
 //
 
-#ifndef DATAGENERATOR_DATAGEN_H
-#define DATAGENERATOR_DATAGEN_H
+#ifndef DATAPROCESSOR_DATAGEN_H
+#define DATAPROCESSOR_DATAGEN_H
 
 #include <vector>
 #include <random>
