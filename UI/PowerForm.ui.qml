@@ -12,14 +12,15 @@ Item {
         width: 400
         height: power.height / 3
         color: "#000000"
+        border.color: "#ffffff"
 
         Text {
             id: text1
-            x: 50
-            y: 52
+            x: 30
+            y: 45
             color: "#ffffff"
             text: qsTr("Solar")
-            font.pixelSize: 25
+            font.pixelSize: 32
         }
 
         Text {
@@ -48,30 +49,68 @@ Item {
         width: 400
         height: power.height / 3
         color: "#000000"
+        border.color: "#ffffff"
         Text {
             id: text3
-            x: 50
-            y: 52
+            x: 30
+            y: 45
             color: "#ffffff"
             text: qsTr("Net")
-            font.pixelSize: 25
+            font.pixelSize: 32
+            verticalAlignment: Text.AlignTop
         }
 
         Text {
             id: netP
             x: (net.width - width) / 2
-            y: 43
+            y: 0
             color: "#ffffff"
             text: backEnd.netP
-            font.pixelSize: 40
+            font.pixelSize: 36
         }
 
         Text {
             id: text4
             x: 308
-            y: 52
+            y: 7
             color: "#ffffff"
             text: qsTr("W")
+            font.pixelSize: 25
+        }
+
+        Text {
+            id: batteryV
+            x: (net.width - width) / 2
+            y: 44
+            color: "#ffffff"
+            text: backEnd.batteryV
+            font.pixelSize: 36
+        }
+
+        Text {
+            id: text5
+            x: 312
+            y: 51
+            color: "#ffffff"
+            text: qsTr("V")
+            font.pixelSize: 25
+        }
+
+        Text {
+            id: batteryI
+            x: (net.width - width) / 2
+            y: 88
+            color: "#ffffff"
+            text: backEnd.batteryI
+            font.pixelSize: 36
+        }
+
+        Text {
+            id: text6
+            x: 312
+            y: 95
+            color: "#ffffff"
+            text: qsTr("A")
             font.pixelSize: 25
         }
     }
@@ -83,13 +122,14 @@ Item {
         width: 400
         height: power.height / 3 + 1
         color: "#000000"
+        border.color: "#ffffff"
         Text {
-            id: text5
-            x: 50
-            y: 52
+            id: text7
+            x: 30
+            y: 46
             color: "#ffffff"
             text: qsTr("Motor")
-            font.pixelSize: 25
+            font.pixelSize: 32
         }
 
         Text {
@@ -102,7 +142,7 @@ Item {
         }
 
         Text {
-            id: text6
+            id: text8
             x: 308
             y: 52
             color: "#ffffff"

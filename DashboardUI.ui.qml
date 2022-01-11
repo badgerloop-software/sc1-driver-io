@@ -16,6 +16,12 @@ Item {
         scale: 0.85
     }
 
+    State {
+        id: stateChar
+        x: 614
+        y: 140
+    }
+
     Rectangle {
         id: rectangle
         x: -10

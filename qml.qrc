@@ -20,5 +20,7 @@
         <file>UI/AlertsForm.ui.qml</file>
         <file>UI/Timer.qml</file>
         <file>UI/TimerForm.ui.qml</file>
+        <file>UI/State.qml</file>
+        <file>UI/StateForm.ui.qml</file>
     </qresource>
 </RCC>
