@@ -42,7 +42,42 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     //bytes.clear();
     //data.getData(bytes,2);
     unpack(bytes);
+
+    _server.listen(QHostAddress::AnyIPv4, 4003);
+    connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
+    //ui->setupUi(this);
     startThread();
+}
+
+void DataUnpacker::onNewConnection()
+{
+   QTcpSocket *clientSocket = _server.nextPendingConnection();
+   connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+   connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));
+
+    _sockets.push_back(clientSocket);
+    for (QTcpSocket* socket : _sockets) {
+        socket->write(QByteArray::fromStdString("From solar car: " + clientSocket->peerAddress().toString().toStdString() + " connected to server !\n"));
+    }
+}
+
+void DataUnpacker::onSocketStateChanged(QAbstractSocket::SocketState socketState)
+{
+    if (socketState == QAbstractSocket::UnconnectedState)
+    {
+        QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
+        _sockets.removeOne(sender);
+    }
+}
+
+void DataUnpacker::onReadyRead()
+{
+    QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
+    QByteArray datas = sender->readAll();
+    for (QTcpSocket* socket : _sockets) {
+        if (socket != sender)
+            socket->write(QByteArray::fromStdString(sender->peerAddress().toString().toStdString() + ": " + datas.toStdString()));
+    }
 }
 
 void DataUnpacker::unpack(std::vector<byte> rawData) {
@@ -76,9 +111,11 @@ void DataUnpacker::startThread() {
 void DataUnpacker::threadProcedure() {
     DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
     int time = 0;
+
     for( ; ; ) {
         std::vector<unsigned char> bytes;
         data.getData(bytes,time);
+
         unpack(bytes);
 
         emit speedChanged();

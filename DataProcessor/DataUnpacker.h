@@ -10,6 +10,9 @@
 #include "DataGen.h"
 #include "thread"
 #include <unistd.h>
+#include <QTcpServer>
+#include <QTcpSocket>
+#include <QJsonObject>
 
 //using namespace std;
 typedef unsigned char byte;
@@ -37,6 +40,10 @@ public:
     explicit DataUnpacker(QObject *parent = nullptr);
     void unpack(std::vector<byte> rawData);
     void startThread();
+public slots:
+    void onNewConnection();
+    void onSocketStateChanged(QAbstractSocket::SocketState socketState);
+    void onReadyRead();
 signals:
     void speedChanged();
     void chargeChanged();
@@ -61,6 +68,8 @@ private:
     bool bpsFault, eStop, cruise, lt, rt;
     char state;
     std::thread t;
+    QTcpServer _server;
+    QList<QTcpSocket*> _sockets;
 };
 
 
