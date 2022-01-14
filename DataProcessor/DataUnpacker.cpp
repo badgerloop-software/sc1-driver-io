@@ -34,8 +34,12 @@ void bytesToSomethingNotDouble(std::vector<byte> data, int startPos, int endPos,
 
 
 //int 4 bytes double 8 bytes char 1 bytes
-DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
+DataUnpacker::DataUnpacker(unpackedData &processedData, QObject *parent) : QObject(parent), processedData(processedData)
 {
+    // TODO
+    this->processedData = processedData;
+    time = 0;
+    //processedData2 = (*unpackedData)calloc(1, sizeof(unpackedData));
     std::vector<unsigned char> bytes;
     DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
     data.getData(bytes,3);
@@ -43,11 +47,18 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     //data.getData(bytes,2);
     unpack(bytes);
 
-    _server.listen(QHostAddress::AnyIPv4, 4003);
-    connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
+    // TODO _server.listen(QHostAddress::AnyIPv4, 4003);
+    // TODO connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
+
     //ui->setupUi(this);
-    startThread();
+    //startThread(); // TODO
+    //state = 'D'; // TODO
 }
+
+/*DataUnpacker::~DataUnpacker()
+{
+    //t.quit();
+}*/
 
 void DataUnpacker::onNewConnection()
 {
@@ -66,7 +77,7 @@ void DataUnpacker::onSocketStateChanged(QAbstractSocket::SocketState socketState
     if (socketState == QAbstractSocket::UnconnectedState)
     {
         QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
-        _sockets.removeOne(sender);
+        //_sockets.removeOne(sender);
     }
 }
 
@@ -104,38 +115,58 @@ void DataUnpacker::unpack(std::vector<byte> rawData) {
 
 
 void DataUnpacker::startThread() {
-    t = std::thread(&DataUnpacker::threadProcedure,this);
-    t.detach();
+    // TODO t = std::thread(&DataUnpacker::threadProcedure,this);
+    // TODO t.detach();
+
+    _server.listen(QHostAddress::AnyIPv4, 4003);
+    connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
+
+    threadProcedure();
+    //t = QThread::create(&DataUnpacker::threadProcedure,this);
+    //_server.moveToThread(&t);
+    // TODO connect(&t, &QThread::started, this, &DataUnpacker::threadProcedure);
+    // TODO t.start();
 }
 
 void DataUnpacker::threadProcedure() {
     DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
-    int time = 0;
 
-    for( ; ; ) {
+    // TODO for( ; ; ) {
         std::vector<unsigned char> bytes;
         data.getData(bytes,time);
 
+        for (QTcpSocket* socket : _sockets) {
+            //socket->write(QByteArray::fromStdString("From solar car: connected to server! " + std::to_string(time) + "\n"));
+            socket->write(QByteArray::fromStdString("From solar car: connected to server! " + std::to_string(time) + "\n"));
+        }
+
         unpack(bytes);
 
-        emit speedChanged();
-        emit chargeChanged();
-        emit flTpChanged();
-        emit frTpChanged();
-        emit rlTpChanged();
-        emit rrTpChanged();
-
-        emit powerChanged();
-        emit solarPChanged();
-        emit netPChanged();
-        emit motorPChanged();
-        emit batteryTChanged();
-        emit motorTChanged();
-        emit motorControllerTChanged();
-
-        emit stateChanged();
+        // Update unpackedData struct for BackendProcesses
+        // TODO Remove individual data members from DataUnpacker and use these in unpack (need to change bytesToDouble() to bytesToFloat())
+        processedData.speed = speed;
+        processedData.charge = charge;
+        processedData.flTp = flTp;
+        processedData.frTp = frTp;
+        processedData.rlTp = rlTp;
+        processedData.rrTp = rrTp;
+        processedData.solarPower = (float) solarP;
+        processedData.motorPower = (float) motorP;
+        processedData.netPower = (float) netP;
+        processedData.batteryTemp = (float) batteryT;
+        processedData.motorTemp = (float) motorT;
+        processedData.motorControllerTemp = (float) motorControllerT;
+        processedData.bpsFault = bpsFault;
+        processedData.eStop = eStop;
+        processedData.cruiseControl = cruise;
+        processedData.leftTurn = lt;
+        processedData.rightTurn = rt;
+        processedData.state = state;
 
         time = (time + 1) % 9;
         usleep(1000000 );
-    }
+        emit dataReady();
+    // TODO }
 }
+
+

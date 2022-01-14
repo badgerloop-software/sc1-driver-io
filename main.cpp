@@ -16,11 +16,12 @@ int main(int argc, char *argv[])
     argv[1] = (char*)"--platform";
     argv[2] = (char*)"android:dpiawareness=0";*/
     QGuiApplication app(argc, argv);
-    DataUnpacker unpack;
+    // TODO DataUnpacker unpack;
+    BackendProcesses backendProcess;
 
     QQmlApplicationEngine engine;
     QQmlContext * rootContext = engine.rootContext();
-    rootContext->setContextProperty("backEnd", &unpack);
+    rootContext->setContextProperty("backEnd", &backendProcess);
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,

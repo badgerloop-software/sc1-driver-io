@@ -8,19 +8,23 @@
 #include <vector>
 #include <QObject>
 #include "DataGen.h"
-#include "thread"
+#include "UnpackedData.h"
+// TODO #include "thread"
 #include <unistd.h>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QJsonObject>
+#include <QThread>
 
 //using namespace std;
 typedef unsigned char byte;
 
-class DataUnpacker : public QObject{
+class DataUnpacker : public QObject
+{
     Q_OBJECT
 
-    Q_PROPERTY(int speed MEMBER speed NOTIFY speedChanged);
+    // TODO
+    /*Q_PROPERTY(int speed MEMBER speed NOTIFY speedChanged);
     Q_PROPERTY(int charge MEMBER charge NOTIFY chargeChanged);
     Q_PROPERTY(int flTp MEMBER flTp NOTIFY flTpChanged);
     Q_PROPERTY(int frTp MEMBER frTp NOTIFY frTpChanged);
@@ -35,17 +39,22 @@ class DataUnpacker : public QObject{
     Q_PROPERTY(double motorT MEMBER motorT NOTIFY motorTChanged);
     Q_PROPERTY(double motorControllerT MEMBER motorControllerT NOTIFY motorControllerTChanged);
 
-    Q_PROPERTY(char state MEMBER state NOTIFY stateChanged);
+    Q_PROPERTY(char state MEMBER state NOTIFY stateChanged);*/
 public:
-    explicit DataUnpacker(QObject *parent = nullptr);
+    explicit DataUnpacker(unpackedData &processedData, QObject *parent = nullptr);
+    //~DataUnpacker(); TODO
     void unpack(std::vector<byte> rawData);
-    void startThread();
+    // TODO void startThread();
 public slots:
     void onNewConnection();
     void onSocketStateChanged(QAbstractSocket::SocketState socketState);
     void onReadyRead();
+
+    void threadProcedure(); // TODO
+    void startThread(); // TODO
 signals:
-    void speedChanged();
+    //TODO
+    /*void speedChanged();
     void chargeChanged();
     void flTpChanged();
     void frTpChanged();
@@ -60,15 +69,21 @@ signals:
     void motorTChanged();
     void motorControllerTChanged();
 
-    void stateChanged();
+    void stateChanged();*/
+
+    //void finished(); // TODO
+    void dataReady(); // TODO
 private:
-    void threadProcedure();
+    //void threadProcedure(); // TODO
+    unpackedData& processedData;
+    int time;
     int speed, charge, flTp, frTp, rlTp, rrTp;
     double power, solarP, netP, motorP, batteryT, motorT, motorControllerT;
     bool bpsFault, eStop, cruise, lt, rt;
     char state;
-    std::thread t;
-    QTcpServer _server;
+    // TODO QThread t;
+    //std::thread t; //TODO
+    QTcpServer _server; //TODO
     QList<QTcpSocket*> _sockets;
 };
 
