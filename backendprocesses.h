@@ -11,19 +11,19 @@ class BackendProcesses : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(int speed MEMBER speed NOTIFY speedChanged);
-    Q_PROPERTY(int charge MEMBER charge NOTIFY chargeChanged);
-    Q_PROPERTY(int flTp MEMBER flTp NOTIFY flTpChanged);
-    Q_PROPERTY(int frTp MEMBER frTp NOTIFY frTpChanged);
-    Q_PROPERTY(int rlTp MEMBER rlTp NOTIFY rlTpChanged);
-    Q_PROPERTY(int rrTp MEMBER rrTp NOTIFY rrTpChanged);
+    Q_PROPERTY(uint8_t speed MEMBER speed NOTIFY speedChanged);
+    Q_PROPERTY(uint8_t charge MEMBER charge NOTIFY chargeChanged);
+    Q_PROPERTY(uint8_t flTp MEMBER flTp NOTIFY flTpChanged);
+    Q_PROPERTY(uint8_t frTp MEMBER frTp NOTIFY frTpChanged);
+    Q_PROPERTY(uint8_t rlTp MEMBER rlTp NOTIFY rlTpChanged);
+    Q_PROPERTY(uint8_t rrTp MEMBER rrTp NOTIFY rrTpChanged);
 
-    Q_PROPERTY(double solarP MEMBER solarP NOTIFY solarPChanged);
-    Q_PROPERTY(double netP MEMBER netP NOTIFY netPChanged);
-    Q_PROPERTY(double motorP MEMBER motorP NOTIFY motorPChanged);
-    Q_PROPERTY(double batteryT MEMBER batteryT NOTIFY batteryTChanged);
-    Q_PROPERTY(double motorT MEMBER motorT NOTIFY motorTChanged);
-    Q_PROPERTY(double motorControllerT MEMBER motorControllerT NOTIFY motorControllerTChanged);
+    Q_PROPERTY(float solarP MEMBER solarP NOTIFY solarPChanged);
+    Q_PROPERTY(float netP MEMBER netP NOTIFY netPChanged);
+    Q_PROPERTY(float motorP MEMBER motorP NOTIFY motorPChanged);
+    Q_PROPERTY(float batteryT MEMBER batteryT NOTIFY batteryTChanged);
+    Q_PROPERTY(float motorT MEMBER motorT NOTIFY motorTChanged);
+    Q_PROPERTY(float motorControllerT MEMBER motorControllerT NOTIFY motorControllerTChanged);
 
     Q_PROPERTY(char state MEMBER state NOTIFY stateChanged);
 
@@ -55,7 +55,7 @@ private:
     DataUnpacker* unpacker;
     unpackedData data;
 
-    int speed, charge, flTp, frTp, rlTp, rrTp;
+    uint8_t speed, charge, flTp, frTp, rlTp, rrTp;
     float solarP, netP, motorP, batteryT, motorT, motorControllerT;
     bool bpsFault, eStop, cruise, lt, rt;
     char state;
