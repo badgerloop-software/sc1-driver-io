@@ -16,7 +16,6 @@ int main(int argc, char *argv[])
     argv[1] = (char*)"--platform";
     argv[2] = (char*)"android:dpiawareness=0";*/
     QGuiApplication app(argc, argv);
-    // TODO DataUnpacker unpack;
     BackendProcesses backendProcess;
 
     QQmlApplicationEngine engine;

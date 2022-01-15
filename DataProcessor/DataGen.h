@@ -5,7 +5,6 @@
 #ifndef DATAPROCESSOR_DATAGEN_H
 #define DATAPROCESSOR_DATAGEN_H
 
-// TODO #include <vector>
 #include <random>
 #include <QObject>
 #include <ctime>
@@ -15,8 +14,6 @@
 
 typedef double(*func)(double);
 typedef unsigned char byte;
-
-//using namespace std;
 
 class DataGen{
 public:

@@ -24,10 +24,7 @@ double batteryFunc(double t){
 }
 
 int main() {
-    vector<unsigned char> data;
-    DataGen dataSource(&speedFunc,&solarFunc,&batteryFunc,100);
-    dataSource.getData(data, 5);
-    //DataUnpacker dataUnpacker(data);
+
 }
 
 

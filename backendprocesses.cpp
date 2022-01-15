@@ -2,24 +2,14 @@
 
 BackendProcesses::BackendProcesses(QObject *parent) : QObject(parent)
 {
-
-    //DataUnpacker* unpacker = new DataUnpacker;
-    //unpacker->moveToThread(&dataHandlingThread);
-
-    //dataHandlingThread = new QThread;
-    // TODO DataUnpacker* unpacker = new DataUnpacker();
     unpacker = new DataUnpacker(data);
     unpacker->moveToThread(&dataHandlingThread);
-    //connect(&dataHandlingThread, &QThread::started, this, &BackendProcesses::getData);
     connect(&dataHandlingThread, &QThread::started, unpacker, &DataUnpacker::startThread);
     connect(this, &BackendProcesses::getData, unpacker, &DataUnpacker::threadProcedure);
     connect(unpacker, &DataUnpacker::dataReady, this, &BackendProcesses::handleData);
-    //connect(&dataHandlingThread, &QThread::started, unpacker, &DataUnpacker::threadProcedure);
     connect(&dataHandlingThread, &QThread::finished, unpacker, &QObject::deleteLater);
 
-
     dataHandlingThread.start();
-
 }
 
 /*BackendProcesses::~BackendProcesses()
