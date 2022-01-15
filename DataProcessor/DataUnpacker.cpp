@@ -16,15 +16,26 @@ double batteryFunc(double t){
     return pow(2.71828,-t)*100;
 }
 
-double bytesToDouble(std::vector<byte> data, int start_pos) {
+double bytesToDouble(QByteArray data, int start_pos) {
     double number;
-    memcpy(&number, &data.at(start_pos), sizeof(double));
+    char* dataPtr = data.data();
+    // TODO memcpy(&number, &data.at(start_pos), sizeof(double));
+    memcpy(&number, &dataPtr[start_pos], sizeof(double));
+    return number;
+}
+
+float bytesToFloat(QByteArray data, int start_pos) {
+    float number;
+    char* dataPtr = data.data();
+    // TODO memcpy(&number, &data.at(start_pos), sizeof(float));
+    memcpy(&number, &dataPtr[start_pos], sizeof(float));
     return number;
 }
 
 template <typename E>
-void bytesToSomethingNotDouble(std::vector<byte> data, int startPos, int endPos, E &var){
+void bytesToSomethingNotDouble(QByteArray data, int startPos, int endPos, E &var){
     int byteNum=endPos-startPos;
+    var = 0;
     for(int i = startPos ; i<=endPos ; i++) {
         var=var+data[i]<<byteNum*8;
         byteNum--;
@@ -40,7 +51,8 @@ DataUnpacker::DataUnpacker(unpackedData &processedData, QObject *parent) : QObje
     this->processedData = processedData;
     time = 0;
     //processedData2 = (*unpackedData)calloc(1, sizeof(unpackedData));
-    std::vector<unsigned char> bytes;
+    // TODO std::vector<unsigned char> bytes;
+    QByteArray bytes;
     DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
     data.getData(bytes,3);
     //bytes.clear();
@@ -77,7 +89,7 @@ void DataUnpacker::onSocketStateChanged(QAbstractSocket::SocketState socketState
     if (socketState == QAbstractSocket::UnconnectedState)
     {
         QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
-        //_sockets.removeOne(sender);
+        _sockets.removeOne(sender);
     }
 }
 
@@ -91,26 +103,53 @@ void DataUnpacker::onReadyRead()
     }
 }
 
-void DataUnpacker::unpack(std::vector<byte> rawData) {
-    bytesToSomethingNotDouble(rawData, 0, 3, speed);
-    power=bytesToDouble(rawData,4);
-    bytesToSomethingNotDouble(rawData, 12, 15, charge);
-    solarP=bytesToDouble(rawData,16);
-    netP= bytesToDouble(rawData,24);
-    motorP= bytesToDouble(rawData,32);
-    bytesToSomethingNotDouble(rawData,40,40,state);
-    batteryT= bytesToDouble(rawData,41);
-    motorT= bytesToDouble(rawData,49);
-    motorControllerT= bytesToDouble(rawData,57);
-    bytesToSomethingNotDouble(rawData,65,65,bpsFault);
-    bytesToSomethingNotDouble(rawData,66,66,eStop);
-    bytesToSomethingNotDouble(rawData,67,67,cruise);
-    bytesToSomethingNotDouble(rawData,68,68,lt);
-    bytesToSomethingNotDouble(rawData,69,69,rt);
-    bytesToSomethingNotDouble(rawData,70,73,flTp);
-    bytesToSomethingNotDouble(rawData,74,77,frTp);
-    bytesToSomethingNotDouble(rawData,78,81,rlTp);
-    bytesToSomethingNotDouble(rawData,82,85,rrTp);
+void DataUnpacker::unpack(QByteArray rawData) {
+
+    // TODO THE ISSUE IS IN THIS BLOCK
+    //speed = rawData[0]<<0;
+    bytesToSomethingNotDouble(rawData, 0, 0, speed);
+    bytesToSomethingNotDouble(rawData, 1, 1, charge);
+    solarP = bytesToFloat(rawData,2);
+    batteryV = bytesToFloat(rawData,6);
+    batteryI = bytesToFloat(rawData,10);
+    netP = bytesToFloat(rawData,14);
+    motorP = bytesToFloat(rawData,18);
+    bytesToSomethingNotDouble(rawData,22,22,state);
+    batteryT = bytesToFloat(rawData,23);
+    motorT = bytesToFloat(rawData,27);
+    motorControllerT = bytesToFloat(rawData,31);
+    bytesToSomethingNotDouble(rawData,35,35,bpsFault);
+    bytesToSomethingNotDouble(rawData,36,36,eStop);
+    bytesToSomethingNotDouble(rawData,37,37,cruise);
+    bytesToSomethingNotDouble(rawData,38,38,lt);
+    bytesToSomethingNotDouble(rawData,39,39,rt);
+    bytesToSomethingNotDouble(rawData,40,40,flTp);
+    bytesToSomethingNotDouble(rawData,41,41,frTp);
+    bytesToSomethingNotDouble(rawData,42,42,rlTp);
+    bytesToSomethingNotDouble(rawData,43,43,rrTp);
+    batteryGroup1 = bytesToFloat(rawData,44);
+    batteryGroup2 = bytesToFloat(rawData,48);
+    batteryGroup3 = bytesToFloat(rawData,52);
+    batteryGroup4 = bytesToFloat(rawData,56);
+
+    /*speed = sizeof(rawData); // 24
+    charge = 4;
+    flTp = 4;
+    frTp = 4;
+    rlTp = 4;
+    rrTp = 4;
+    solarP = 4.0f;
+    motorP = 4.0f;
+    netP = 4.0f;*/
+    /*batteryT = (float) sizeof(rawData);
+    motorT = 4.0f;
+    motorControllerT = 4.0f;
+    bpsFault = true;
+    eStop = true;
+    cruise = true;
+    lt = true;*/
+    //rt = sizeof(rawData);
+    //state = 'D';
 }
 
 
@@ -132,13 +171,9 @@ void DataUnpacker::threadProcedure() {
     DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
 
     // TODO for( ; ; ) {
-        std::vector<unsigned char> bytes;
+        // TODO std::vector<unsigned char> bytes;
+        QByteArray bytes;
         data.getData(bytes,time);
-
-        for (QTcpSocket* socket : _sockets) {
-            //socket->write(QByteArray::fromStdString("From solar car: connected to server! " + std::to_string(time) + "\n"));
-            socket->write(QByteArray::fromStdString("From solar car: connected to server! " + std::to_string(time) + "\n"));
-        }
 
         unpack(bytes);
 
@@ -146,22 +181,34 @@ void DataUnpacker::threadProcedure() {
         // TODO Remove individual data members from DataUnpacker and use these in unpack (need to change bytesToDouble() to bytesToFloat())
         processedData.speed = speed;
         processedData.charge = charge;
-        processedData.flTp = flTp;
-        processedData.frTp = frTp;
-        processedData.rlTp = rlTp;
-        processedData.rrTp = rrTp;
-        processedData.solarPower = (float) solarP;
-        processedData.motorPower = (float) motorP;
-        processedData.netPower = (float) netP;
-        processedData.batteryTemp = (float) batteryT;
-        processedData.motorTemp = (float) motorT;
-        processedData.motorControllerTemp = (float) motorControllerT;
+        processedData.solarPower = solarP;
+        processedData.batteryVoltage = batteryV;
+        processedData.batteryCurrent = batteryI;
+        processedData.netPower = netP;
+        processedData.motorPower = motorP;
+        processedData.state = state;
+        processedData.batteryTemp = batteryT;
+        processedData.motorTemp = motorT;
+        processedData.motorControllerTemp = motorControllerT;
         processedData.bpsFault = bpsFault;
         processedData.eStop = eStop;
         processedData.cruiseControl = cruise;
         processedData.leftTurn = lt;
         processedData.rightTurn = rt;
-        processedData.state = state;
+        processedData.flTp = flTp;
+        processedData.frTp = frTp;
+        processedData.rlTp = rlTp;
+        processedData.rrTp = rrTp;
+        processedData.bat1 = batteryGroup1;
+        processedData.bat2 = batteryGroup2;
+        processedData.bat3 = batteryGroup3;
+        processedData.bat4 = batteryGroup4;
+
+        for (QTcpSocket* socket : _sockets) {
+            //socket->write(QByteArray::fromStdString("From solar car: connected to server! " + std::to_string(time) + "\n"));
+            //socket->write(QByteArray::fromStdString("Speed: " + std::to_string(speed) + "; Size: " + std::to_string(sizeof(bytes)) + "\n"));
+            socket->write(bytes);
+        }
 
         time = (time + 1) % 9;
         usleep(1000000 );

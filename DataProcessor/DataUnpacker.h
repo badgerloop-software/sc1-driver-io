@@ -43,7 +43,7 @@ class DataUnpacker : public QObject
 public:
     explicit DataUnpacker(unpackedData &processedData, QObject *parent = nullptr);
     //~DataUnpacker(); TODO
-    void unpack(std::vector<byte> rawData);
+    void unpack(QByteArray rawData);
     // TODO void startThread();
 public slots:
     void onNewConnection();
@@ -77,8 +77,8 @@ private:
     //void threadProcedure(); // TODO
     unpackedData& processedData;
     int time;
-    int speed, charge, flTp, frTp, rlTp, rrTp;
-    double power, solarP, netP, motorP, batteryT, motorT, motorControllerT;
+    uint8_t speed, charge, flTp, frTp, rlTp, rrTp;
+    float batteryV, batteryI, solarP, netP, motorP, batteryT, motorT, motorControllerT, batteryGroup1, batteryGroup2, batteryGroup3, batteryGroup4;
     bool bpsFault, eStop, cruise, lt, rt;
     char state;
     // TODO QThread t;
