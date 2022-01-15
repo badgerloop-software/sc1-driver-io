@@ -5,11 +5,13 @@
 #ifndef DATAPROCESSOR_DATAGEN_H
 #define DATAPROCESSOR_DATAGEN_H
 
-#include <vector>
+// TODO #include <vector>
 #include <random>
 #include <QObject>
 #include <ctime>
 #include <cstdio>
+#include <cstdint>
+#include <math.h>
 
 typedef double(*func)(double);
 typedef unsigned char byte;
@@ -21,12 +23,14 @@ public:
 
     DataGen(func speedFunc, func solarFunc, func batteryFunc, float efficiency);
 
-    void getData(std::vector<byte> &data, double time);
+    void getData(QByteArray &data, double time);
 
-    static void addDoubleToArray(std::vector<byte> &dataVec, double data);
+    static void addDoubleToArray(QByteArray &dataArr, double data);
+
+    static void addFloatToArray(QByteArray &dataArr, float data);
 
     template <typename E>
-    static void dataToByteArray(std::vector<byte> &dataVec, E data);
+    static void dataToByteArray(QByteArray &dataArr, E data);
 
 private:
     func speedFunc;
