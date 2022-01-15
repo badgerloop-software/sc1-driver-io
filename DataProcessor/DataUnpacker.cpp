@@ -52,12 +52,12 @@ DataUnpacker::DataUnpacker(unpackedData &processedData, QObject *parent) : QObje
     time = 0;
     //processedData2 = (*unpackedData)calloc(1, sizeof(unpackedData));
     // TODO std::vector<unsigned char> bytes;
-    QByteArray bytes;
+    /*QByteArray bytes;
     DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
     data.getData(bytes,3);
     //bytes.clear();
     //data.getData(bytes,2);
-    unpack(bytes);
+    unpack(bytes);*/
 
     // TODO _server.listen(QHostAddress::AnyIPv4, 4003);
     // TODO connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
@@ -79,9 +79,9 @@ void DataUnpacker::onNewConnection()
    connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));
 
     _sockets.push_back(clientSocket);
-    for (QTcpSocket* socket : _sockets) {
+    /*for (QTcpSocket* socket : _sockets) {
         socket->write(QByteArray::fromStdString("From solar car: " + clientSocket->peerAddress().toString().toStdString() + " connected to server !\n"));
-    }
+    }*/
 }
 
 void DataUnpacker::onSocketStateChanged(QAbstractSocket::SocketState socketState)
