@@ -2,12 +2,14 @@
 
 BackendProcesses::BackendProcesses(QObject *parent) : QObject(parent)
 {
-    unpacker = new DataUnpacker(data);
+    unpacker = new DataUnpacker(data, floatData, charData, boolData, uint8_tData);
+    // TODO unpacker = new DataUnpacker(data);
     unpacker->moveToThread(&dataHandlingThread);
     connect(&dataHandlingThread, &QThread::started, unpacker, &DataUnpacker::startThread);
     connect(this, &BackendProcesses::getData, unpacker, &DataUnpacker::threadProcedure);
     connect(unpacker, &DataUnpacker::dataReady, this, &BackendProcesses::handleData);
     connect(&dataHandlingThread, &QThread::finished, unpacker, &QObject::deleteLater);
+    connect(&dataHandlingThread, &QThread::finished, &dataHandlingThread, &QThread::deleteLater); // TODO
 
     dataHandlingThread.start();
 }
@@ -21,8 +23,11 @@ void BackendProcesses::handleData()
 {
     // Update data fields
     // int
-    speed = data.speed;
-    charge = data.charge;
+    this->setProperty("speed", data.speed);
+    // TODO writeToProperty(speed, data.speed);
+    //speed = data.speed;
+    this->setProperty("charge", data.charge);
+    //charge = data.charge;
     flTp = data.flTp;
     frTp = data.frTp;
     rlTp = data.rlTp;
@@ -44,6 +49,8 @@ void BackendProcesses::handleData()
     state = data.state;
 
     // Signal data update for front end
+    emit dataChanged();
+    /* TODO
     emit speedChanged();
     emit chargeChanged();
     emit flTpChanged();
@@ -57,6 +64,7 @@ void BackendProcesses::handleData()
     emit motorTChanged();
     emit motorControllerTChanged();
     emit stateChanged();
+    */
 
     // Signal to get new data
     emit getData();

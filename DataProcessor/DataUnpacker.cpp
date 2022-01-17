@@ -48,10 +48,51 @@ void bytesToSomethingNotDouble(QByteArray data, int startPos, int endPos, E &var
 
 
 
-DataUnpacker::DataUnpacker(unpackedData &processedData, QObject *parent) : QObject(parent), processedData(processedData)
+//DataUnpacker::DataUnpacker(unpackedData &processedData, QObject *parent) : QObject(parent), processedData(processedData)
+DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floatData, std::vector<char> &charData, std::vector<bool> &boolData, std::vector<uint8_t> &uint8_tData, QObject *parent) : QObject(parent), floatData(floatData), charData(charData), boolData(boolData), uint8_tData(uint8_tData), processedData(processedData)// TODO , processedData(processedData)
 {
-    this->processedData = processedData;
+    this->processedData = processedData; // TODO
+
+    QString fileContents;
+    QFile file;
+    file.setFileName("../sc1-data-format/format.json");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    fileContents = file.readAll();
+    file.close();
+    QJsonDocument d = QJsonDocument::fromJson(fileContents.toUtf8());
+    format = d.object();
+    // Initialize
+    // TODO names = format.keys(); // TODO It's sorted lexographically
+    QJsonObject::const_iterator currElement = format.begin(); // TODO It's still sorted, and there's no way around it. Look into another JSON parsing library
+    QJsonObject::const_iterator end = format.end();
+    /* TODO for(const QString& i : names) {
+        QJsonArray currValue = format[i].toArray();
+        byteNums.push_back(currValue[0].toInt());
+        types.push_back(currValue[1].toString());
+    }*/
+    int eCount = 0;
+    while((currElement != end)) {// || (eCount >= 3)) {
+        QJsonArray currValue = currElement.value().toArray();
+        names.push_back(currElement.key());
+        byteNums.push_back(currValue[0].toInt());
+        types.push_back(currValue[1].toString());
+        currElement++;
+        eCount ++;
+    }
+    //QJsonArray value = format["solarPower"].toArray();
+    //QJsonArray value = format.value(QString("speed")).toArray();
+    //QJsonObject item = value.toObject();
+    //QJsonArray test = value["imp"].toArray();
+    //speedTest = value[0].toInt();
+    speedTest = types[20].at(0).unicode(); // TODO It's still sorted, and there's no way around it. Look into another JSON parsing library
+    //speedTest = byteNums[2]; // TODO
+
     time = 0;
+
+    /* TODO
+    std::vector<std::string> names;
+    std::vector<uint8_t> sizes;
+    std::vector<std::string> types;*/
 }
 
 /*DataUnpacker::~DataUnpacker()
@@ -92,6 +133,8 @@ void DataUnpacker::onReadyRead()
 
 void DataUnpacker::unpack(QByteArray rawData)
 {
+    // TODO Definitely handle this using a for loop and the arrays created in constructor using format.jsom
+
     bytesToSomethingNotDouble(rawData, 0, 0, speed);
     bytesToSomethingNotDouble(rawData, 1, 1, charge);
     solarP = bytesToFloat(rawData,2);
@@ -136,9 +179,11 @@ void DataUnpacker::threadProcedure()
 
     unpack(bytes);
 
+    // TODO Could try setting up Q_PROPERTYs for each data field and loop through and set them using setProperty() w/ the names & data in the arrays created in the constructor
     // Update unpackedData struct for BackendProcesses
     // TODO Remove individual data members from DataUnpacker and use these in unpack (need to change bytesToDouble() to bytesToFloat())
-    processedData.speed = speed;
+    //processedData.speed = speed;
+    processedData.speed = speedTest;
     processedData.charge = charge;
     processedData.solarPower = solarP;
     processedData.batteryVoltage = batteryV;
