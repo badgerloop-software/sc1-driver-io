@@ -110,7 +110,7 @@ DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floa
         speedTest = 55;
     }*/
 
-    FILE* fp = fopen("../sc1-data-format/format.json", "rb"); // NOTE: Windows: "rb"; non-Windows: "r"
+    FILE* fp = fopen("../sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
 
     char readBuffer[65536];
     FileReadStream is(fp, readBuffer, sizeof(readBuffer));
@@ -129,7 +129,7 @@ DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floa
     fclose(fp);
 
     //speedTest = byteNums[10];
-    speedTest = (int) names[3].at(0);
+    speedTest = (int) names[3].at(0); // TODO
     /* TODO
     for(const QString& i : names) {
         QJsonArray currValue = format[i].toArray();
@@ -295,7 +295,7 @@ void DataUnpacker::threadProcedure()
     uint8_tData.clear();
     */
 
-    data.getData(bytes,time);
+    data.getData(bytes, names, types, time);
 
     unpack(bytes);
 
@@ -337,7 +337,8 @@ void DataUnpacker::threadProcedure()
         socket->write(bytes);
     }
 
-    time = (time + 1) % 9;
+    time = (time < 7) ? (time + 0.25) : 0;
+
     usleep(1000000 );
     emit dataReady();
 }

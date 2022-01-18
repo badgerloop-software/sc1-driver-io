@@ -20,7 +20,7 @@ public:
 
     DataGen(func speedFunc, func solarFunc, func batteryFunc, float efficiency);
 
-    void getData(QByteArray &data, double time);
+    void getData(QByteArray &data, std::vector<std::string> &names, std::vector<std::string> &types, double time);
 
     static void addDoubleToArray(QByteArray &dataArr, double data);
 

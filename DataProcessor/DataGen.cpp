@@ -12,55 +12,108 @@ int lastT=0;
  * @param data The vector array to store the data, put an empty vector.
  * @param time time
  */
-void DataGen::getData(QByteArray &data, double time) {
+void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::vector<std::string> &types, double time) {
+    // Add random data to bytes according to the type of each piece of data
+    // Data displayed on the driver dash are given appropriate values
+    for(uint i = 0; i < types.size(); i++) {
+        if(types[i] == "float") {
+            if(names[i] == "solarPower") {
+                addFloatToArray(data,(float)solarFunc(time));
+            } else if((names[i] == "batteryVoltage") || (names[i] == "batteryCurrent")) {
+                addFloatToArray(data,(float)sqrt(abs(solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency)));
+            } else if(names[i] == "batteryPower") {
+                addFloatToArray(data,(float)solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency);
+            } else if(names[i] == "motorPower") {
+                addFloatToArray(data,(float)(0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency));
+            } else if((names[i] == "batteryTemp") || (names[i] == "motorTemp") || (names[i] == "motorControllerTemp")) {
+                addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
+            } else {
+                addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/100));
+            }
+        } else if(types[i] == "uint8") {
+            if(names[i] == "speed") {
+                dataToByteArray(data,(uint8_t)speedFunc(time));
+            } else if(names[i] == "charge") {
+                dataToByteArray(data,(uint8_t)batteryFunc(time));
+            } else {
+                dataToByteArray(data,(uint8_t)fmod(rand(),200));
+            }
+        } else if(types[i] == "bool") {
+            dataToByteArray(data,rand()>rand());
+        } else if(types[i] == "char") {
+            if(names[i] == "state") {
+                switch((int)fmod(rand(),4)) {
+                    case 0:
+                        dataToByteArray(data,'P');
+                        break;
+                    case 1:
+                        dataToByteArray(data,'N');
+                        break;
+                    case 2:
+                        dataToByteArray(data,'D');
+                        break;
+                    case 3:
+                        dataToByteArray(data,'R');
+                        break;
+                    default:
+                        dataToByteArray(data,'Q');
+                        break;
+                }
+            } else {
+                dataToByteArray(data,(char)(65+fmod(rand(),26)));
+            }
+        } else if(types[i] == "double") {
+            addDoubleToArray(data,(double)rand()/((RAND_MAX+1u)/200));
+        }
+    }
     //speed
-    dataToByteArray(data,(uint8_t)speedFunc(time));
+    //dataToByteArray(data,(uint8_t)speedFunc(time));
     //charge
-    dataToByteArray(data,(uint8_t)batteryFunc(time));
+    //dataToByteArray(data,(uint8_t)batteryFunc(time));
     //solar power
-    addFloatToArray(data,(float)solarFunc(time));
+    //addFloatToArray(data,(float)solarFunc(time));
     //battery voltage
-    addFloatToArray(data,(float)sqrt(abs(solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency)));
+    //addFloatToArray(data,(float)sqrt(abs(solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency)));
     //battery current
-    addFloatToArray(data,(float)sqrt(abs(solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency)));
+    //addFloatToArray(data,(float)sqrt(abs(solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency)));
     //net power
-    addFloatToArray(data,(float)solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency);
+    //addFloatToArray(data,(float)solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency);
     //motor power
-    addFloatToArray(data,(float)(0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency));
+    //addFloatToArray(data,(float)(0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency));
     //state
-    dataToByteArray(data,'D');
+    //dataToByteArray(data,'D');
     //battery temp
-    addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
+    //addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
     //motor temp
-    addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
+    //addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
     //motor controller temp
-    addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
+    //addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
     //bps fault
-    dataToByteArray(data,rand()>rand());
+    //dataToByteArray(data,rand()>rand());
     //estop
-    dataToByteArray(data,rand()>rand());
+    //dataToByteArray(data,rand()>rand());
     //cruise control
-    dataToByteArray(data,rand()>rand());
+    //dataToByteArray(data,rand()>rand());
     //left turn
-    dataToByteArray(data,rand()>rand());
+    //dataToByteArray(data,rand()>rand());
     //right turn
-    dataToByteArray(data,rand()>rand());
+    //dataToByteArray(data,rand()>rand());
     //FL TP
-    dataToByteArray(data,(uint8_t)fmod(rand(),200));
+    //dataToByteArray(data,(uint8_t)fmod(rand(),200));
     //FR TP
-    dataToByteArray(data,(uint8_t)fmod(rand(),200));
+    //dataToByteArray(data,(uint8_t)fmod(rand(),200));
     //RL TP
-    dataToByteArray(data,(uint8_t)fmod(rand(),200));
+    //dataToByteArray(data,(uint8_t)fmod(rand(),200));
     //RR TP
-    dataToByteArray(data,(uint8_t)fmod(rand(),200));
+    //dataToByteArray(data,(uint8_t)fmod(rand(),200));
     //battery group 1
-    addFloatToArray(data,(float)batteryFunc(time));
+    //addFloatToArray(data,(float)batteryFunc(time));
     //battery group 2
-    addFloatToArray(data,(float)batteryFunc(time));
+    //addFloatToArray(data,(float)batteryFunc(time));
     //battery group 3
-    addFloatToArray(data,(float)batteryFunc(time));
+    //addFloatToArray(data,(float)batteryFunc(time));
     //battery group 4
-    addFloatToArray(data,(float)batteryFunc(time));
+    //addFloatToArray(data,(float)batteryFunc(time));
 }
 
 DataGen::DataGen(func speedFunc, func solarFunc, func batteryFunc, float efficiency) {

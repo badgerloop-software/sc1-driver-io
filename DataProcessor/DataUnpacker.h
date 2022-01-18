@@ -48,7 +48,7 @@ signals:
     void dataReady();
 private:
     unpackedData& processedData; // TODO
-    int time;
+    double time;
     uint8_t speed, charge, flTp, frTp, rlTp, rrTp;
     float batteryV, batteryI, solarP, netP, motorP, batteryT, motorT, motorControllerT, batteryGroup1, batteryGroup2, batteryGroup3, batteryGroup4;
     bool bpsFault, eStop, cruise, lt, rt;
