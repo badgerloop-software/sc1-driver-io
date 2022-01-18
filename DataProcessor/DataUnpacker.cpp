@@ -49,11 +49,19 @@ void bytesToSomethingNotDouble(QByteArray data, int startPos, int endPos, E &var
 
 
 //DataUnpacker::DataUnpacker(unpackedData &processedData, QObject *parent) : QObject(parent), processedData(processedData)
-DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floatData, std::vector<char> &charData, std::vector<bool> &boolData, std::vector<uint8_t> &uint8_tData, QObject *parent) : QObject(parent), floatData(floatData), charData(charData), boolData(boolData), uint8_tData(uint8_tData), processedData(processedData)// TODO , processedData(processedData)
+// TODO Watch vector type for boolData
+DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floatData, std::vector<char> &charData, std::vector<uint8_t> &boolData, std::vector<uint8_t> &uint8_tData, std::vector<std::string> &names, std::vector<std::string> &types, QObject *parent) : QObject(parent), processedData(processedData), floatData(floatData), charData(charData), boolData(boolData), uint8_tData(uint8_tData), names(names), types(types)// TODO Remove processedData
 {
     this->processedData = processedData; // TODO
+    this->floatData = floatData;
+    this->uint8_tData = uint8_tData;
+    this->charData = charData;
+    this->boolData = boolData;
+    this->names = names;
+    this->types = types;
 
-    QString fileContents;
+
+    /*QString fileContents;
     QFile file;
     file.setFileName("../sc1-data-format/format.json");
     file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -64,12 +72,71 @@ DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floa
     // Initialize
     // TODO names = format.keys(); // TODO It's sorted lexographically
     QJsonObject::const_iterator currElement = format.begin(); // TODO It's still sorted, and there's no way around it. Look into another JSON parsing library
-    QJsonObject::const_iterator end = format.end();
-    /* TODO for(const QString& i : names) {
+    QJsonObject::const_iterator end = format.end();*/
+
+    // TODO std::string fileContents;
+
+    /* TODO
+    QFile file; // TODO Do this with standard libraries
+    const char* fileContents;
+    QString fileContents2;
+    // TODO std::string fileContents;
+    Document d;
+    file.setFileName("../sc1-data-format/format.json");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    fileContents = file.readAll().toStdString().c_str();
+    fileContents2 = file.readAll();
+    //const char fileContents[] = file.readAll().toStdString().;
+    // TODO fileContents = file.readAll().toStdString();
+    file.close();
+    QJsonDocument doc = QJsonDocument::fromJson(fileContents2.toUtf8());
+    format = doc.object();
+
+    if(d.Parse(fileContents).HasParseError()) {
+        speedTest = 0;
+    } else {
+        assert(d.IsObject());
+
+        for(Value::ConstMemberIterator itr = d.MemberBegin(); itr != d.MemberEnd(); ++itr) {
+            //QJsonArray currValue = currElement.value().toArray();
+            std::string name = itr->name.GetString();
+            const Value& arr = itr->value.GetArray();
+            names.push_back(name);
+            byteNums.push_back(arr[0].GetInt());
+            types.push_back(arr[1].GetString());
+        }
+
+        // TODO speedTest = (int) types[20].at(0);
+        speedTest = 55;
+    }*/
+
+    FILE* fp = fopen("../sc1-data-format/format.json", "rb"); // NOTE: Windows: "rb"; non-Windows: "r"
+
+    char readBuffer[65536];
+    FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+
+    Document d;
+    d.ParseStream(is);
+
+    for(Value::ConstMemberIterator itr = d.MemberBegin(); itr != d.MemberEnd(); ++itr) {
+        std::string name = itr->name.GetString();
+        const Value& arr = itr->value.GetArray();
+        names.push_back(name);
+        byteNums.push_back(arr[0].GetInt());
+        types.push_back(arr[1].GetString());
+    }
+
+    fclose(fp);
+
+    //speedTest = byteNums[10];
+    speedTest = (int) names[3].at(0);
+    /* TODO
+    for(const QString& i : names) {
         QJsonArray currValue = format[i].toArray();
         byteNums.push_back(currValue[0].toInt());
         types.push_back(currValue[1].toString());
     }*/
+    /* TODO
     int eCount = 0;
     while((currElement != end)) {// || (eCount >= 3)) {
         QJsonArray currValue = currElement.value().toArray();
@@ -78,17 +145,21 @@ DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floa
         types.push_back(currValue[1].toString());
         currElement++;
         eCount ++;
-    }
+    }*/
     //QJsonArray value = format["solarPower"].toArray();
     //QJsonArray value = format.value(QString("speed")).toArray();
     //QJsonObject item = value.toObject();
     //QJsonArray test = value["imp"].toArray();
     //speedTest = value[0].toInt();
-    speedTest = types[20].at(0).unicode(); // TODO It's still sorted, and there's no way around it. Look into another JSON parsing library
+
+    // TODO speedTest = types[20].at(0).unicode(); // TODO It's still sorted, and there's no way around it. Look into another JSON parsing library
     //speedTest = byteNums[2]; // TODO
 
-    time = 0;
+    time = 0; // TODO it would probably be best to include timestamps in the TCP payloads (wouldn't need to add them to the format)
 
+    // TODO Create the following arrays using format.json: keys/names, numBytes, types (as strings)
+    // TODO Probably also create arrays for bools, chars, uint8_ts, and floats
+    // TODO Actually, pass the arrays (concerning the data, not necessarily names/numBytes/types, or at least probably not types, maybe numBytes and names) to DataUnpacker by references
     /* TODO
     std::vector<std::string> names;
     std::vector<uint8_t> sizes;
@@ -97,7 +168,7 @@ DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floa
 
 /*DataUnpacker::~DataUnpacker()
 {
-    //t.quit();
+    emit finished();
 }*/
 
 void DataUnpacker::onNewConnection()
@@ -133,8 +204,49 @@ void DataUnpacker::onReadyRead()
 
 void DataUnpacker::unpack(QByteArray rawData)
 {
-    // TODO Definitely handle this using a for loop and the arrays created in constructor using format.jsom
+    // TODO Definitely handle this using a for loop and the arrays created in constructor using format.json
+    int currByte = 0;
+    uint numFloats = 0;
+    uint numUint8_ts = 0;
+    uint numChars = 0;
+    uint numBools = 0;
+    // TODO Probably clear() in threadProcedure and then just use size()s
 
+    for(uint i=0; i < names.size(); i++) {
+        if(types[i] == "float") {
+            if(floatData.size() == numFloats) {
+                floatData.push_back(0.0f);
+            }
+            floatData[numFloats] = bytesToFloat(rawData, currByte);
+            //Incorrect floatData[floatData.size()] = bytesToFloat(rawData, currByte);
+            numFloats++;
+        } else if(types[i] == "uint8") {
+            if(uint8_tData.size() == numUint8_ts) {
+                uint8_tData.push_back(0);
+            }
+            bytesToSomethingNotDouble(rawData, currByte, currByte + byteNums[i] - 1, uint8_tData[numUint8_ts]);
+            //Incorrect bytesToSomethingNotDouble(rawData, currByte, currByte + byteNums[i] - 1, uint8_tData[uint8_tData.size()]);
+            numUint8_ts++;
+        } else if(types[i] == "bool") {
+            if(boolData.size() == numBools) {
+                boolData.push_back(false);
+            }
+            bytesToSomethingNotDouble(rawData, currByte, currByte + byteNums[i] - 1, boolData[numBools]);
+            //Incorrect bytesToSomethingNotDouble(rawData, currByte, currByte + byteNums[i] - 1, boolData[boolData.size()]);
+            numBools++;
+        } else if(types[i] == "char") {
+            if(charData.size() == numChars) {
+                charData.push_back('0');
+            }
+            bytesToSomethingNotDouble(rawData, currByte, currByte + byteNums[i] - 1, charData[numChars]);
+            //Incorrect bytesToSomethingNotDouble(rawData, currByte, currByte + byteNums[i] - 1, charData[charData.size()]);
+            numChars++;
+        } else if(types[i] == "double") {
+            // TODO: No double data yet; Implement when there is double data
+        }
+        currByte += byteNums[i];
+    }
+    /* TODO
     bytesToSomethingNotDouble(rawData, 0, 0, speed);
     bytesToSomethingNotDouble(rawData, 1, 1, charge);
     solarP = bytesToFloat(rawData,2);
@@ -158,7 +270,7 @@ void DataUnpacker::unpack(QByteArray rawData)
     batteryGroup1 = bytesToFloat(rawData,44);
     batteryGroup2 = bytesToFloat(rawData,48);
     batteryGroup3 = bytesToFloat(rawData,52);
-    batteryGroup4 = bytesToFloat(rawData,56);
+    batteryGroup4 = bytesToFloat(rawData,56);*/
 }
 
 
@@ -175,14 +287,25 @@ void DataUnpacker::threadProcedure()
     DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
 
     QByteArray bytes;
+
+    /* TODO
+    floatData.clear();
+    charData.clear();
+    boolData.clear();
+    uint8_tData.clear();
+    */
+
     data.getData(bytes,time);
 
     unpack(bytes);
+
+    // TODO uint8_tData[0] = (uint8_t) uint8_tData.size();
 
     // TODO Could try setting up Q_PROPERTYs for each data field and loop through and set them using setProperty() w/ the names & data in the arrays created in the constructor
     // Update unpackedData struct for BackendProcesses
     // TODO Remove individual data members from DataUnpacker and use these in unpack (need to change bytesToDouble() to bytesToFloat())
     //processedData.speed = speed;
+    /* TODO
     processedData.speed = speedTest;
     processedData.charge = charge;
     processedData.solarPower = solarP;
@@ -206,7 +329,7 @@ void DataUnpacker::threadProcedure()
     processedData.bat1 = batteryGroup1;
     processedData.bat2 = batteryGroup2;
     processedData.bat3 = batteryGroup3;
-    processedData.bat4 = batteryGroup4;
+    processedData.bat4 = batteryGroup4;*/
 
     for (QTcpSocket* socket : _sockets) {
         //socket->write(QByteArray::fromStdString("From solar car: connected to server! " + std::to_string(time) + "\n"));

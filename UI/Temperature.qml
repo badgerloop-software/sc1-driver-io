@@ -23,10 +23,11 @@ Item {
 
         Text {
             id: text1
-            x: 68
+            //x: 68
+            x: (rectangle.width - width) / 2
             y: 33
             color: "#ffffff"
-            text: qsTr("Temp 1")
+            text: qsTr("Battery Pack")
             font.pixelSize: 20
         }
 
@@ -46,7 +47,7 @@ Item {
             x: (rectangle.width - width) / 2
             y: (rectangle.height - height) / 2
             color: "#ffffff"
-            text: backEnd.batteryT.toFixed(1)
+            text: backEnd.batteryTemp.toFixed(1)
             font.pixelSize: 50
         }
     }
@@ -60,10 +61,11 @@ Item {
         color: colour(temp2.text)
         Text {
             id: text3
-            x: 68
+            //x: 68
+            x: (rectangle1.width - width) / 2
             y: 33
             color: "#ffffff"
-            text: qsTr("Temp 2")
+            text: qsTr("Motor")
             font.pixelSize: 20
         }
 
@@ -83,7 +85,7 @@ Item {
             x: (rectangle1.width - width) / 2
             y: (rectangle1.height - height) / 2
             color: "#ffffff"
-            text: backEnd.motorT.toFixed(1)
+            text: backEnd.motorTemp.toFixed(1)
             font.pixelSize: 50
         }
     }
@@ -97,10 +99,11 @@ Item {
         color: colour(temp3.text)
         Text {
             id: text5
-            x: 68
+            //x: 68
+            x: (rectangle2.width - width) / 2
             y: 33
             color: "#ffffff"
-            text: qsTr("Temp 3")
+            text: qsTr("Motor Controller")
             font.pixelSize: 20
         }
 
@@ -120,7 +123,7 @@ Item {
             x: (rectangle2.width - width) / 2
             y: (rectangle2.height - height) / 2
             color: "#ffffff"
-            text: backEnd.motorControllerT.toFixed(1)
+            text: backEnd.motorControllerTemp.toFixed(1)
             font.pixelSize: 50
         }
     }

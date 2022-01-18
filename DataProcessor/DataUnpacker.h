@@ -8,15 +8,22 @@
 #include <vector>
 #include <unistd.h>
 #include <QObject>
-#include <QFile>
+// TODO #include <QFile>
+/* TODO
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
-#include <QJsonArray>
+#include <QJsonArray>*/
 #include <QTcpServer>
 #include <QTcpSocket>
 #include "DataGen.h"
 #include "UnpackedData.h"
+#include "3rdparty/rapidjson/document.h"
+#include "3rdparty/rapidjson/filereadstream.h"
+//#include <cstdio> //TODO
+
+
+using namespace rapidjson;
 
 typedef unsigned char byte;
 
@@ -26,8 +33,9 @@ class DataUnpacker : public QObject
 
 public:
     // TODO explicit DataUnpacker(unpackedData &processedData, QObject *parent = nullptr);
-    explicit DataUnpacker(unpackedData &processedData, std::vector<float> &floatData, std::vector<char> &charData, std::vector<bool> &boolData, std::vector<uint8_t> &uint8_tData, QObject *parent = nullptr);
-    //~DataUnpacker(); TODO
+    // TODO Watch vector type for boolData
+    explicit DataUnpacker(unpackedData &processedData, std::vector<float> &floatData, std::vector<char> &charData, std::vector<uint8_t> &boolData, std::vector<uint8_t> &uint8_tData, std::vector<std::string> &names, std::vector<std::string> &types, QObject *parent = nullptr); // TODO Remove processedData
+    //~DataUnpacker(); // TODO
     void unpack(QByteArray rawData);
 public slots:
     void onNewConnection();
@@ -48,16 +56,18 @@ private:
     // TODO
     std::vector<float> &floatData;
     std::vector<char> &charData;
-    std::vector<bool> &boolData;
+    std::vector<uint8_t> &boolData; // TODO It didn't like passing a bool to bytesToSomethingNotDouble for some reason
     std::vector<uint8_t> &uint8_tData;
-    QStringList names;
+    // TODO QStringList names;
+    std::vector<std::string> &names;
     std::vector<int> byteNums;
-    // TODO std::vector<std::string> types;
-    QStringList types;
+    std::vector<std::string> &types;
+    // TODO QStringList types;
     QTcpServer _server;
     QList<QTcpSocket*> _sockets;
-    QJsonObject format;
-    int speedTest;
+    //QJsonObject format; // TODO
+
+    int speedTest; // TODO
 };
 
 

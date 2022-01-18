@@ -31,22 +31,27 @@ class BackendProcesses : public QObject
     // TODO Include only the properties that need to be displayed on the driver dashboard
     Q_PROPERTY(uint8_t speed MEMBER speed NOTIFY dataChanged);
     Q_PROPERTY(uint8_t charge MEMBER charge NOTIFY dataChanged);
-    Q_PROPERTY(uint8_t flTp MEMBER flTp NOTIFY dataChanged);
-    Q_PROPERTY(uint8_t frTp MEMBER frTp NOTIFY dataChanged);
-    Q_PROPERTY(uint8_t rlTp MEMBER rlTp NOTIFY dataChanged);
-    Q_PROPERTY(uint8_t rrTp MEMBER rrTp NOTIFY dataChanged);
+    Q_PROPERTY(uint8_t frontLeftTP MEMBER frontLeftTP NOTIFY dataChanged);
+    Q_PROPERTY(uint8_t frontRightTP MEMBER frontRightTP NOTIFY dataChanged);
+    Q_PROPERTY(uint8_t backLeftTP MEMBER backLeftTP NOTIFY dataChanged);
+    Q_PROPERTY(uint8_t backRightTP MEMBER backRightTP NOTIFY dataChanged);
 
-    Q_PROPERTY(float solarP MEMBER solarP NOTIFY dataChanged);
-    Q_PROPERTY(float netP MEMBER netP NOTIFY dataChanged);
-    Q_PROPERTY(float motorP MEMBER motorP NOTIFY dataChanged);
-    Q_PROPERTY(float batteryT MEMBER batteryT NOTIFY dataChanged);
-    Q_PROPERTY(float motorT MEMBER motorT NOTIFY dataChanged);
-    Q_PROPERTY(float motorControllerT MEMBER motorControllerT NOTIFY dataChanged);
+    Q_PROPERTY(bool leftTurn MEMBER leftTurn NOTIFY dataChanged);
+    Q_PROPERTY(bool rightTurn MEMBER rightTurn NOTIFY dataChanged);
 
-    Q_PROPERTY(char state MEMBER state NOTIFY dataChanged);
+    Q_PROPERTY(float solarPower MEMBER solarPower NOTIFY dataChanged);
+    Q_PROPERTY(float batteryVoltage MEMBER batteryVoltage NOTIFY dataChanged);
+    Q_PROPERTY(float batteryCurrent MEMBER batteryCurrent NOTIFY dataChanged);
+    Q_PROPERTY(float batteryPower MEMBER batteryPower NOTIFY dataChanged);
+    Q_PROPERTY(float motorPower MEMBER motorPower NOTIFY dataChanged);
+    Q_PROPERTY(float batteryTemp MEMBER batteryTemp NOTIFY dataChanged);
+    Q_PROPERTY(float motorTemp MEMBER motorTemp NOTIFY dataChanged);
+    Q_PROPERTY(float motorControllerTemp MEMBER motorControllerTemp NOTIFY dataChanged);
+    // NOTE: char data is displayed as its ASCII decimal value, not the character, so QString is used instead
+    Q_PROPERTY(QString state MEMBER state NOTIFY dataChanged);
 public:
     explicit BackendProcesses(QObject *parent = nullptr);
-    //~BackendProcesses();
+    ~BackendProcesses(); // TODO
 public slots:
     void handleData();
 signals:
@@ -71,18 +76,18 @@ signals:
     void dataChanged();
 private:
     QThread dataHandlingThread;
-    DataUnpacker* unpacker;
+    // TODO DataUnpacker* unpacker;
     unpackedData data;
     // TOOD Include only the properties that need to be displayed on the driver dashboard
     // TODO Remove these
-    uint8_t speed, charge, flTp, frTp, rlTp, rrTp;
-    float solarP, netP, motorP, batteryT, motorT, motorControllerT;
-    bool bpsFault, eStop, cruise, lt, rt;
-    char state;
+    uint8_t speed, charge, frontLeftTP, frontRightTP, backLeftTP, backRightTP;
+    float solarPower, batteryVoltage, batteryCurrent, batteryPower, motorPower, batteryTemp, motorTemp, motorControllerTemp;
+    bool bpsFault, eStop, cruiseControl, leftTurn, rightTurn;
+    QString state;
 
     std::vector<float> floatData;
     std::vector<char> charData;
-    std::vector<bool> boolData;
+    std::vector<uint8_t> boolData; // TODO It didn't like passing a bool to bytesToSomethingNotDouble for some reason
     std::vector<uint8_t> uint8_tData;
     std::vector<std::string> names;
     std::vector<uint8_t> sizes;
