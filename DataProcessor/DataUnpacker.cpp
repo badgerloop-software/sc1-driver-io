@@ -110,13 +110,87 @@ DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floa
         speedTest = 55;
     }*/
 
-    FILE* fp = fopen("../sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+    /*typedef GenericDocument<UTF16<> > WDocument;
+    typedef GenericValue<UTF16<> > WValue;
+
+    FILE* fp = fopen("../sc1-data-format/format.json", "r"); // non-Windows use "r"
+
+    char readBuffer[65536];
+    FileReadStream bis(fp, readBuffer, sizeof(readBuffer));
+
+    AutoUTFInputStream<unsigned, FileReadStream> eis(bis);  // wraps bis into eis
+
+    WDocument d;
+    d.ParseStream<0, AutoUTF<unsigned> >(eis);*/
+
+
+    //--------------------------------------------------------------------------------------
+    // TODO rapidjson part 1
+
+    // testing
+    //FILE* fp = fopen("../sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+    // pi needs an absolute filepath :((((((
+    // TODO add code to check if the file can be successfully read (using the relative filepath); if it fails to read the file, use the absolute path
+    // ^^ Maybe try absolute first and then try relative
+    FILE* fp = fopen("/absolute/file/path/here/solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
 
     char readBuffer[65536];
     FileReadStream is(fp, readBuffer, sizeof(readBuffer));
 
     Document d;
     d.ParseStream(is);
+
+    //---------------------------------------------------------------------------------------
+    // TODO nlohmann
+
+    /*
+    json j;
+    //std::ifstream i("../sc1-data-format/format.json");
+    std::ifstream i("/home/james/solar-car-dashboard/sc1-data-format/format.json");
+    i >> j;
+
+    for (const auto& item : j.items()) {
+        //std::cout << item.key() << "\n";
+        std::string name = item.key();
+
+        //const Value& arr = itr->value.GetArray();
+
+        names.push_back(name);
+        //byteNums.push_back(item[0]);
+        //types.push_back(arr[1].GetString());
+        int arrCount = 0;
+        for(const auto& arrVal : j[name]) {
+            if(arrCount == 0) {
+                byteNums.push_back(arrVal);
+            } else {
+                types.push_back(arrVal);
+            }
+
+            arrCount++;
+        }
+    }*/
+
+    //---------------------------------------------------------------------------------------
+
+    /*std::ifstream ifs("../sc1-data-format/format.json");
+    IStreamWrapper isw(ifs);
+
+    Document d;
+    d.ParseStream<0, UTF16LE<> >(isw);
+    //d.ParseStream(isw);*/
+
+    /*std::string FilePath = "../sc1-data-format/format.json";
+    FILE* fp = fopen(FilePath.c_str(), "r");
+    char ReadBuffer[65536];
+    FileReadStream MyJsonReadStream(fp, ReadBuffer, sizeof(ReadBuffer));
+    Document d;
+    if(fp != NULL)
+        fclose(fp);
+    if (!d.ParseStream(MyJsonReadStream).HasParseError())
+    {*/
+
+    //--------------------------------------------------------------------------------------
+    // TODO rapidjson part 2
 
     for(Value::ConstMemberIterator itr = d.MemberBegin(); itr != d.MemberEnd(); ++itr) {
         std::string name = itr->name.GetString();
@@ -127,9 +201,12 @@ DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floa
     }
 
     fclose(fp);
+    //delete fp;
+
+    //--------------------------------------------------------------------------------------
 
     //speedTest = byteNums[10];
-    speedTest = (int) names[3].at(0); // TODO
+    //speedTest = (int) names[3].at(0); // TODO
     /* TODO
     for(const QString& i : names) {
         QJsonArray currValue = format[i].toArray();
@@ -153,7 +230,7 @@ DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floa
     //speedTest = value[0].toInt();
 
     // TODO speedTest = types[20].at(0).unicode(); // TODO It's still sorted, and there's no way around it. Look into another JSON parsing library
-    //speedTest = byteNums[2]; // TODO
+    speedTest = byteNums[2]; // TODO
 
     time = 0; // TODO it would probably be best to include timestamps in the TCP payloads (wouldn't need to add them to the format)
 

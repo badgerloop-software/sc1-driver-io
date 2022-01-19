@@ -29,12 +29,13 @@ class BackendProcesses : public QObject
     Q_PROPERTY(char state MEMBER state NOTIFY stateChanged);
     */
     // TODO Include only the properties that need to be displayed on the driver dashboard
-    Q_PROPERTY(uint8_t speed MEMBER speed NOTIFY dataChanged);
-    Q_PROPERTY(uint8_t charge MEMBER charge NOTIFY dataChanged);
-    Q_PROPERTY(uint8_t frontLeftTP MEMBER frontLeftTP NOTIFY dataChanged);
-    Q_PROPERTY(uint8_t frontRightTP MEMBER frontRightTP NOTIFY dataChanged);
-    Q_PROPERTY(uint8_t backLeftTP MEMBER backLeftTP NOTIFY dataChanged);
-    Q_PROPERTY(uint8_t backRightTP MEMBER backRightTP NOTIFY dataChanged);
+    // Qml didn't want to play nice with uint8_t on the pi, so I switched it to int
+    Q_PROPERTY(int speed MEMBER speed NOTIFY dataChanged);
+    Q_PROPERTY(int charge MEMBER charge NOTIFY dataChanged);
+    Q_PROPERTY(int frontLeftTP MEMBER frontLeftTP NOTIFY dataChanged);
+    Q_PROPERTY(int frontRightTP MEMBER frontRightTP NOTIFY dataChanged);
+    Q_PROPERTY(int backLeftTP MEMBER backLeftTP NOTIFY dataChanged);
+    Q_PROPERTY(int backRightTP MEMBER backRightTP NOTIFY dataChanged);
 
     Q_PROPERTY(bool leftTurn MEMBER leftTurn NOTIFY dataChanged);
     Q_PROPERTY(bool rightTurn MEMBER rightTurn NOTIFY dataChanged);
@@ -91,7 +92,7 @@ private:
     std::vector<uint8_t> uint8_tData;
     std::vector<std::string> names;
     std::vector<uint8_t> sizes;
-    std::vector<std::string> types; // TODO Remove; this should only be in DataUnpacker
+    std::vector<std::string> types;
 
 };
 

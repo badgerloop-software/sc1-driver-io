@@ -18,11 +18,19 @@
 #include <QTcpSocket>
 #include "DataGen.h"
 #include "UnpackedData.h"
+
 #include "3rdparty/rapidjson/document.h"
 #include "3rdparty/rapidjson/filereadstream.h"
+/*
+#include "3rdparty/rapidjson/istreamwrapper.h" // TODO
+#include "3rdparty/rapidjson/encodedstream.h" // TODO
+*/
+//#include "3rdparty/nlohmann/json.hpp" // TODO
+//#include <fstream>
+
 //#include <cstdio> //TODO
 
-
+// TODO using namespace nlohmann;
 using namespace rapidjson;
 
 typedef unsigned char byte;
