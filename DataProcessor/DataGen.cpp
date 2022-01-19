@@ -66,54 +66,6 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
             addDoubleToArray(data,(double)rand()/((RAND_MAX+1u)/200));
         }
     }
-    //speed
-    //dataToByteArray(data,(uint8_t)speedFunc(time));
-    //charge
-    //dataToByteArray(data,(uint8_t)batteryFunc(time));
-    //solar power
-    //addFloatToArray(data,(float)solarFunc(time));
-    //battery voltage
-    //addFloatToArray(data,(float)sqrt(abs(solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency)));
-    //battery current
-    //addFloatToArray(data,(float)sqrt(abs(solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency)));
-    //net power
-    //addFloatToArray(data,(float)solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency);
-    //motor power
-    //addFloatToArray(data,(float)(0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency));
-    //state
-    //dataToByteArray(data,'D');
-    //battery temp
-    //addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
-    //motor temp
-    //addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
-    //motor controller temp
-    //addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
-    //bps fault
-    //dataToByteArray(data,rand()>rand());
-    //estop
-    //dataToByteArray(data,rand()>rand());
-    //cruise control
-    //dataToByteArray(data,rand()>rand());
-    //left turn
-    //dataToByteArray(data,rand()>rand());
-    //right turn
-    //dataToByteArray(data,rand()>rand());
-    //FL TP
-    //dataToByteArray(data,(uint8_t)fmod(rand(),200));
-    //FR TP
-    //dataToByteArray(data,(uint8_t)fmod(rand(),200));
-    //RL TP
-    //dataToByteArray(data,(uint8_t)fmod(rand(),200));
-    //RR TP
-    //dataToByteArray(data,(uint8_t)fmod(rand(),200));
-    //battery group 1
-    //addFloatToArray(data,(float)batteryFunc(time));
-    //battery group 2
-    //addFloatToArray(data,(float)batteryFunc(time));
-    //battery group 3
-    //addFloatToArray(data,(float)batteryFunc(time));
-    //battery group 4
-    //addFloatToArray(data,(float)batteryFunc(time));
 }
 
 DataGen::DataGen(func speedFunc, func solarFunc, func batteryFunc, float efficiency) {

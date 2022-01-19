@@ -5,12 +5,11 @@
 #ifndef DATAPROCESSOR_DATAGEN_H
 #define DATAPROCESSOR_DATAGEN_H
 
-#include <random>
 #include <QObject>
 #include <ctime>
-#include <cstdio>
 #include <cstdint>
 #include <math.h>
+#include <random>
 
 typedef double(*func)(double);
 typedef unsigned char byte;

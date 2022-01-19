@@ -3,10 +3,7 @@
 //
 //This file provides an example use of the data generator program.
 
-#include <iostream>
 #include "DataGen.h"
-#include <vector>
-#include <math.h>
 #include "DataUnpacker.h"
 
 using namespace std;
