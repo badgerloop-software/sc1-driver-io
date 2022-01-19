@@ -110,9 +110,3 @@ void DataGen::dataToByteArray(QByteArray &dataArr, E data) {
         dataArr.push_back(data >> (8 * i) & 0xFF);
     }
 }
-
-
-
-
-
-

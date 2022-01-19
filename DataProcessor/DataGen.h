@@ -16,11 +16,10 @@ typedef unsigned char byte;
 
 class DataGen{
 public:
-
     DataGen(func speedFunc, func solarFunc, func batteryFunc, float efficiency);
 
     void getData(QByteArray &data, std::vector<std::string> &names, std::vector<std::string> &types, double time);
-
+private:
     static void addDoubleToArray(QByteArray &dataArr, double data);
 
     static void addFloatToArray(QByteArray &dataArr, float data);
@@ -28,7 +27,6 @@ public:
     template <typename E>
     static void dataToByteArray(QByteArray &dataArr, E data);
 
-private:
     func speedFunc;
     func solarFunc;
     func batteryFunc;

@@ -11,8 +11,6 @@
 #include <vector>
 #include <unistd.h>
 #include "DataGen.h"
-#include "UnpackedData.h"
-
 #include "3rdparty/rapidjson/document.h"
 #include "3rdparty/rapidjson/filereadstream.h"
 
@@ -25,10 +23,8 @@ class DataUnpacker : public QObject
     Q_OBJECT
 
 public:
-    // TODO Watch vector type for boolData
-    explicit DataUnpacker(unpackedData &processedData, std::vector<float> &floatData, std::vector<char> &charData, std::vector<uint8_t> &boolData, std::vector<uint8_t> &uint8_tData, std::vector<std::string> &names, std::vector<std::string> &types, QObject *parent = nullptr); // TODO Remove processedData
-    //~DataUnpacker(); // TODO
-    void unpack(QByteArray rawData);
+    explicit DataUnpacker(std::vector<float> &floatData, std::vector<char> &charData, std::vector<uint8_t> &boolData, std::vector<uint8_t> &uint8_tData, std::vector<std::string> &names, std::vector<std::string> &types, QObject *parent = nullptr);
+    //~DataUnpacker();
 public slots:
     void onNewConnection();
     void onSocketStateChanged(QAbstractSocket::SocketState socketState);
@@ -39,24 +35,20 @@ public slots:
 signals:
     void dataReady();
 private:
-    unpackedData& processedData; // TODO
-    double time;
+    void unpack(QByteArray rawData);
 
-    uint8_t speed, charge, flTp, frTp, rlTp, rrTp;
-    float batteryV, batteryI, solarP, netP, motorP, batteryT, motorT, motorControllerT, batteryGroup1, batteryGroup2, batteryGroup3, batteryGroup4;
-    bool bpsFault, eStop, cruise, lt, rt;
-    char state;
+    QTcpServer _server;
+    QList<QTcpSocket*> _sockets;
+
+    double time;
 
     std::vector<float> &floatData;
     std::vector<char> &charData;
-    std::vector<uint8_t> &boolData; // TODO It didn't like passing a bool to bytesToSomethingNotDouble for some reason
+    std::vector<uint8_t> &boolData; // It didn't like passing a bool to bytesToSomethingNotDouble for some reason
     std::vector<uint8_t> &uint8_tData;
     std::vector<std::string> &names;
     std::vector<int> byteNums;
     std::vector<std::string> &types;
-
-    QTcpServer _server;
-    QList<QTcpSocket*> _sockets;
 };
 
 

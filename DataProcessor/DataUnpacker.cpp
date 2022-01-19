@@ -48,10 +48,8 @@ void bytesToSomethingNotDouble(QByteArray data, int startPos, int endPos, E &var
 
 
 
-// TODO Watch vector type for boolData
-DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floatData, std::vector<char> &charData, std::vector<uint8_t> &boolData, std::vector<uint8_t> &uint8_tData, std::vector<std::string> &names, std::vector<std::string> &types, QObject *parent) : QObject(parent), processedData(processedData), floatData(floatData), charData(charData), boolData(boolData), uint8_tData(uint8_tData), names(names), types(types)// TODO Remove processedData
+DataUnpacker::DataUnpacker(std::vector<float> &floatData, std::vector<char> &charData, std::vector<uint8_t> &boolData, std::vector<uint8_t> &uint8_tData, std::vector<std::string> &names, std::vector<std::string> &types, QObject *parent) : QObject(parent), floatData(floatData), charData(charData), boolData(boolData), uint8_tData(uint8_tData), names(names), types(types)
 {
-    this->processedData = processedData; // TODO
     this->floatData = floatData;
     this->uint8_tData = uint8_tData;
     this->charData = charData;
@@ -60,8 +58,7 @@ DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floa
     this->types = types;
 
     // pi needs an absolute filepath
-    // TODO FILE* fp = fopen("/absolute/file/path/here/solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
-    FILE* fp = fopen("/home/james/solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"s
+    FILE* fp = fopen("/absolute/file/path/here/solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     if(fp == 0) {
         // testing
         fp = fopen("../sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
@@ -86,10 +83,7 @@ DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floa
     time = 0; // TODO it would probably be best to include timestamps in the TCP payloads in case of delay in packets arriving (wouldn't need to add them to the format)
 }
 
-/*DataUnpacker::~DataUnpacker()
-{
-    emit finished();
-}*/
+/*DataUnpacker::~DataUnpacker(){}*/
 
 void DataUnpacker::onNewConnection()
 {

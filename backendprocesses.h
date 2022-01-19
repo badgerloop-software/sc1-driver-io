@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QThread>
-#include "DataProcessor/UnpackedData.h"
 #include "DataProcessor/DataUnpacker.h"
 
 
@@ -43,7 +42,6 @@ signals:
     void dataChanged();
 private:
     QThread dataHandlingThread;
-    unpackedData data;
 
     // TOOD Include only the properties that need to be displayed on the driver dashboard
     uint8_t speed, charge, frontLeftTP, frontRightTP, backLeftTP, backRightTP;
@@ -53,7 +51,7 @@ private:
 
     std::vector<float> floatData;
     std::vector<char> charData;
-    std::vector<uint8_t> boolData; // TODO It didn't like passing a bool to bytesToSomethingNotDouble for some reason
+    std::vector<uint8_t> boolData; // It didn't like passing a bool to bytesToSomethingNotDouble for some reason
     std::vector<uint8_t> uint8_tData;
     std::vector<std::string> names;
     std::vector<uint8_t> sizes;

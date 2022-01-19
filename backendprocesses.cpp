@@ -2,14 +2,14 @@
 
 BackendProcesses::BackendProcesses(QObject *parent) : QObject(parent)
 {
-    DataUnpacker* unpacker = new DataUnpacker(data, floatData, charData, boolData, uint8_tData, names, types); // TODO Remove data
+    DataUnpacker* unpacker = new DataUnpacker(floatData, charData, boolData, uint8_tData, names, types);
 
     unpacker->moveToThread(&dataHandlingThread);
     connect(&dataHandlingThread, &QThread::started, unpacker, &DataUnpacker::startThread);
     connect(this, &BackendProcesses::getData, unpacker, &DataUnpacker::threadProcedure);
     connect(unpacker, &DataUnpacker::dataReady, this, &BackendProcesses::handleData);
     connect(&dataHandlingThread, &QThread::finished, unpacker, &QObject::deleteLater);
-    connect(&dataHandlingThread, &QThread::finished, &dataHandlingThread, &QThread::deleteLater); // TODO
+    connect(&dataHandlingThread, &QThread::finished, &dataHandlingThread, &QThread::deleteLater);
 
     dataHandlingThread.start();
 }
