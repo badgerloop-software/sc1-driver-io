@@ -128,11 +128,12 @@ DataUnpacker::DataUnpacker(unpackedData &processedData, std::vector<float> &floa
     // TODO rapidjson part 1
 
     // testing
-    //FILE* fp = fopen("../sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+    FILE* fp = fopen("../sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     // pi needs an absolute filepath :((((((
     // TODO add code to check if the file can be successfully read (using the relative filepath); if it fails to read the file, use the absolute path
     // ^^ Maybe try absolute first and then try relative
-    FILE* fp = fopen("/absolute/file/path/here/solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+    // TODO FILE* fp = fopen("/absolute/file/path/here/solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+    //FILE* fp = fopen("/home/james/solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
 
     char readBuffer[65536];
     FileReadStream is(fp, readBuffer, sizeof(readBuffer));

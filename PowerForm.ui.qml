@@ -1,4 +1,4 @@
-import QtQuick 2.4
+/*import QtQuick 2.4
 
 Item {
     id: power
@@ -110,4 +110,4 @@ Item {
             font.pixelSize: 25
         }
     }
-}
+}*/
