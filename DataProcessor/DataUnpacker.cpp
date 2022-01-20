@@ -4,7 +4,7 @@
 
 #include "DataUnpacker.h"
 
-double speedFunc(double t)
+/*double speedFunc(double t)
 {
     return t*t;
 }
@@ -17,7 +17,7 @@ double solarFunc(double t)
 double batteryFunc(double t)
 {
     return pow(2.71828,-t)*100;
-}
+}*/
 
 double bytesToDouble(QByteArray data, int start_pos)
 {
@@ -48,14 +48,15 @@ void bytesToSomethingNotDouble(QByteArray data, int startPos, int endPos, E &var
 
 
 
-DataUnpacker::DataUnpacker(std::vector<float> &floatData, std::vector<char> &charData, std::vector<uint8_t> &boolData, std::vector<uint8_t> &uint8_tData, std::vector<std::string> &names, std::vector<std::string> &types, QObject *parent) : QObject(parent), floatData(floatData), charData(charData), boolData(boolData), uint8_tData(uint8_tData), names(names), types(types)
+//DataUnpacker::DataUnpacker(std::vector<float> &floatData, std::vector<char> &charData, std::vector<uint8_t> &boolData, std::vector<uint8_t> &uint8_tData, std::vector<std::string> &names, std::vector<std::string> &types, QObject *parent) : QObject(parent), floatData(floatData), charData(charData), boolData(boolData), uint8_tData(uint8_tData), names(names), types(types)
+DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 {
-    this->floatData = floatData;
+    /*this->floatData = floatData;
     this->uint8_tData = uint8_tData;
     this->charData = charData;
     this->boolData = boolData;
     this->names = names;
-    this->types = types;
+    this->types = types;*/
 
     // pi needs an absolute filepath
     FILE* fp = fopen("/absolute/file/path/here/solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
@@ -80,12 +81,34 @@ DataUnpacker::DataUnpacker(std::vector<float> &floatData, std::vector<char> &cha
 
     fclose(fp);
 
-    time = 0; // TODO it would probably be best to include timestamps in the TCP payloads in case of delay in packets arriving (wouldn't need to add them to the format)
+    //time = 0; // TODO it would probably be best to include timestamps in the TCP payloads in case of delay in packets arriving (wouldn't need to add them to the format)
+
+
+    BackendProcesses* retriever = new BackendProcesses(bytes, floatData, charData, boolData, uint8_tData, names, types);
+    /* TODO
+    unpacker->moveToThread(&dataHandlingThread);
+    connect(&dataHandlingThread, &QThread::started, unpacker, &DataUnpacker::startThread);
+    connect(this, &BackendProcesses::getData, unpacker, &DataUnpacker::threadProcedure);
+    connect(unpacker, &DataUnpacker::dataReady, this, &BackendProcesses::handleData);
+    connect(&dataHandlingThread, &QThread::finished, unpacker, &QObject::deleteLater);
+    connect(&dataHandlingThread, &QThread::finished, &dataHandlingThread, &QThread::deleteLater);*/
+
+    retriever->moveToThread(&dataHandlingThread);
+    connect(&dataHandlingThread, &QThread::started, retriever, &BackendProcesses::startThread);
+    connect(this, &DataUnpacker::getData, retriever, &BackendProcesses::threadProcedure);
+    connect(retriever, &BackendProcesses::dataReady, this, &DataUnpacker::unpack);
+    connect(&dataHandlingThread, &QThread::finished, retriever, &QObject::deleteLater);
+    connect(&dataHandlingThread, &QThread::finished, &dataHandlingThread, &QThread::deleteLater);
+
+    dataHandlingThread.start();
 }
 
-/*DataUnpacker::~DataUnpacker(){}*/
+DataUnpacker::~DataUnpacker()
+{
+    dataHandlingThread.quit();
+}
 
-void DataUnpacker::onNewConnection()
+/*void DataUnpacker::onNewConnection()
 {
    QTcpSocket *clientSocket = _server.nextPendingConnection();
    connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
@@ -95,7 +118,7 @@ void DataUnpacker::onNewConnection()
     /*for (QTcpSocket* socket : _sockets) {
         socket->write(QByteArray::fromStdString("From solar car: " + clientSocket->peerAddress().toString().toStdString() + " connected to server !\n"));
     }*/
-}
+/*} TODO
 
 void DataUnpacker::onSocketStateChanged(QAbstractSocket::SocketState socketState)
 {
@@ -114,50 +137,84 @@ void DataUnpacker::onReadyRead()
         if (socket != sender)
             socket->write(QByteArray::fromStdString(sender->peerAddress().toString().toStdString() + ": " + datas.toStdString()));
     }
-}
+}*/
 
-void DataUnpacker::unpack(QByteArray rawData)
+//void DataUnpacker::unpack(QByteArray rawData)
+void DataUnpacker::unpack()
 {
     int currByte = 0;
-    uint numFloats = 0;
+    /*uint numFloats = 0;
     uint numUint8_ts = 0;
     uint numChars = 0;
-    uint numBools = 0;
+    uint numBools = 0;*/
 
     for(uint i=0; i < names.size(); i++) {
         if(types[i] == "float") {
+
+            // Make sure the property exists
+            if(this->property(names[i].c_str()).isValid()) {
+                this->setProperty(names[i].c_str(), bytesToFloat(bytes, currByte));
+            }
+            /*
             if(floatData.size() == numFloats) {
                 floatData.push_back(0.0f);
             }
             floatData[numFloats] = bytesToFloat(rawData, currByte);
-            numFloats++;
+            numFloats++;*/
         } else if(types[i] == "uint8") {
-            if(uint8_tData.size() == numUint8_ts) {
+            uint8_t dataVal = 0; // TODO Change bytesToSomethingNotDouble to a function that returns data, and remove this variable
+            bytesToSomethingNotDouble(bytes, currByte, currByte + byteNums[i] - 1, dataVal);
+            // Make sure the property exists
+            if(this->property(names[i].c_str()).isValid()) {
+                this->setProperty(names[i].c_str(), dataVal);
+            }
+
+            /*if(uint8_tData.size() == numUint8_ts) {
                 uint8_tData.push_back(0);
             }
             bytesToSomethingNotDouble(rawData, currByte, currByte + byteNums[i] - 1, uint8_tData[numUint8_ts]);
-            numUint8_ts++;
+            numUint8_ts++;*/
         } else if(types[i] == "bool") {
-            if(boolData.size() == numBools) {
+            bool dataVal = 0; // TODO Change bytesToSomethingNotDouble to a function that returns data, and remove this variable
+            bytesToSomethingNotDouble(bytes, currByte, currByte + byteNums[i] - 1, dataVal);
+            // Make sure the property exists
+            if(this->property(names[i].c_str()).isValid()) {
+                this->setProperty(names[i].c_str(), dataVal);
+            }
+
+            /*if(boolData.size() == numBools) {
                 boolData.push_back(false);
             }
             bytesToSomethingNotDouble(rawData, currByte, currByte + byteNums[i] - 1, boolData[numBools]);
-            numBools++;
+            numBools++;*/
         } else if(types[i] == "char") {
-            if(charData.size() == numChars) {
+            char dataVal = 0; // TODO Change bytesToSomethingNotDouble to a function that returns data, and remove this variable
+            bytesToSomethingNotDouble(bytes, currByte, currByte + byteNums[i] - 1, dataVal);
+            // Make sure the property exists
+            if(this->property(names[i].c_str()).isValid()) {
+                // NOTE: char data is displayed as its ASCII decimal value, not the character, so QString is used instead
+                this->setProperty(names[i].c_str(), QString::fromStdString(std::string(1, dataVal)));
+            }
+
+            /*if(charData.size() == numChars) {
                 charData.push_back('0');
             }
             bytesToSomethingNotDouble(rawData, currByte, currByte + byteNums[i] - 1, charData[numChars]);
-            numChars++;
+            numChars++;*/
         } else if(types[i] == "double") {
             // TODO: No double data yet; Implement when there is double data
         }
         currByte += byteNums[i];
     }
+
+    // Signal data update for front end
+    emit dataChanged();
+    // Signal to get new data
+    emit getData();
 }
 
 
-void DataUnpacker::startThread()
+/*void DataUnpacker::startThread()
 {
     _server.listen(QHostAddress::AnyIPv4, 4003);
     connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
@@ -186,5 +243,5 @@ void DataUnpacker::threadProcedure()
     usleep(1000000 );
     emit dataReady();
 }
-
+*/
 

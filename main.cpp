@@ -1,7 +1,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include <backendprocesses.h>
+#include <DataProcessor/DataUnpacker.h>
+//#include <backendprocesses.h>
 #include <vector>
 
 
@@ -16,11 +17,12 @@ int main(int argc, char *argv[])
     argv[1] = (char*)"--platform";
     argv[2] = (char*)"android:dpiawareness=0";*/
     QGuiApplication app(argc, argv);
-    BackendProcesses backendProcess;
+    DataUnpacker unpacker;
+    //BackendProcesses backendProcess;
 
     QQmlApplicationEngine engine;
     QQmlContext * rootContext = engine.rootContext();
-    rootContext->setContextProperty("backEnd", &backendProcess);
+    rootContext->setContextProperty("backEnd", &unpacker);
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
