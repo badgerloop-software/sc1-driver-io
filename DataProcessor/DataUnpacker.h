@@ -7,11 +7,6 @@
 
 #include <QObject>
 #include <QThread>
-//#include <QTcpServer>
-//#include <QTcpSocket>
-//#include <vector>
-//#include <unistd.h>
-#include "DataGen.h"
 #include "backendprocesses.h"
 #include "3rdparty/rapidjson/document.h"
 #include "3rdparty/rapidjson/filereadstream.h"
@@ -24,6 +19,8 @@ class DataUnpacker : public QObject
 {
     Q_OBJECT
 
+    // TODO Include only the properties that need to be displayed on the driver dashboard
+    // Qml didn't want to play nice with uint8_t on the pi, so I switched it to int
     Q_PROPERTY(int speed MEMBER speed NOTIFY dataChanged);
     Q_PROPERTY(int charge MEMBER charge NOTIFY dataChanged);
     Q_PROPERTY(int frontLeftTP MEMBER frontLeftTP NOTIFY dataChanged);
@@ -45,22 +42,13 @@ class DataUnpacker : public QObject
     // NOTE: char data is displayed as its ASCII decimal value, not the character, so QString is used instead
     Q_PROPERTY(QString state MEMBER state NOTIFY dataChanged);
 public:
-    //explicit DataUnpacker(std::vector<float> &floatData, std::vector<char> &charData, std::vector<uint8_t> &boolData, std::vector<uint8_t> &uint8_tData, std::vector<std::string> &names, std::vector<std::string> &types, QObject *parent = nullptr);
     explicit DataUnpacker(QObject *parent = nullptr);
     ~DataUnpacker();
-
-    void unpack();
 public slots:
-    /*void onNewConnection();
-    void onSocketStateChanged(QAbstractSocket::SocketState socketState);
-    void onReadyRead();
-
-    void threadProcedure();
-    void startThread();*/
+    void unpack();
 signals:
     void getData();
     void dataChanged();
-    //void dataReady();
 private:
     QThread dataHandlingThread;
 
@@ -70,29 +58,11 @@ private:
     bool bpsFault, eStop, cruiseControl, leftTurn, rightTurn;
     QString state;
 
-    //QTcpServer _server;
-    //QList<QTcpSocket*> _sockets;
-
-    //double time;
-
     QByteArray bytes;
 
-    std::vector<float> floatData;
-    std::vector<char> charData;
-    std::vector<uint8_t> boolData; // It didn't like passing a bool to bytesToSomethingNotDouble for some reason
-    std::vector<uint8_t> uint8_tData;
     std::vector<std::string> names;
     std::vector<int> byteNums;
-    std::vector<uint8_t> sizes; // TODO
     std::vector<std::string> types;
-/*
-    std::vector<float> &floatData;
-    std::vector<char> &charData;
-    std::vector<uint8_t> &boolData; // It didn't like passing a bool to bytesToSomethingNotDouble for some reason
-    std::vector<uint8_t> &uint8_tData;
-    std::vector<std::string> &names;
-    std::vector<int> byteNums;
-    std::vector<std::string> &types;*/
 };
 
 

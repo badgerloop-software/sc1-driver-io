@@ -2,7 +2,6 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <DataProcessor/DataUnpacker.h>
-//#include <backendprocesses.h>
 #include <vector>
 
 
@@ -18,7 +17,6 @@ int main(int argc, char *argv[])
     argv[2] = (char*)"android:dpiawareness=0";*/
     QGuiApplication app(argc, argv);
     DataUnpacker unpacker;
-    //BackendProcesses backendProcess;
 
     QQmlApplicationEngine engine;
     QQmlContext * rootContext = engine.rootContext();
