@@ -45,7 +45,7 @@
     sudo apt-get install qt5-doc qtbase5-examples qtbase5-doc-html qtdeclarative5-dev qml-module-qtquick-controls
     ```
 1. Copy the project to the Raspberry Pi.
-2. Make the project on the Raspberry Pi by running the following commands:
+2. Make and run the project on the Raspberry Pi by running the following commands:
     ```
     qmake solar-car-dashboard.pro
     make
