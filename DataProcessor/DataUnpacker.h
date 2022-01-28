@@ -13,7 +13,7 @@
 
 using namespace rapidjson;
 
-typedef unsigned char byte; // TODO
+typedef unsigned char byte;
 
 class DataUnpacker : public QObject
 {
@@ -30,6 +30,7 @@ class DataUnpacker : public QObject
 
     Q_PROPERTY(bool leftTurn MEMBER leftTurn NOTIFY dataChanged);
     Q_PROPERTY(bool rightTurn MEMBER rightTurn NOTIFY dataChanged);
+    Q_PROPERTY(bool cruiseControl MEMBER cruiseControl NOTIFY dataChanged);
 
     Q_PROPERTY(float solarPower MEMBER solarPower NOTIFY dataChanged);
     Q_PROPERTY(float batteryVoltage MEMBER batteryVoltage NOTIFY dataChanged);
