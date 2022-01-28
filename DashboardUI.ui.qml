@@ -40,15 +40,8 @@ Item {
     }
 
     Blinkers {
-        id: l_blinker
-        x: 4
-        y: -140
-        scale: 0.3
-    }
-
-    Blinkers {
-        id: r_blinker
-        x: -126
+        id: blinkers
+        x: -272
         y: -140
         scale: -0.3
     }
@@ -78,5 +71,11 @@ Item {
         x: 696
         y: -40
         scale: 0.6
+    }
+
+    Cruise {
+        x: 178
+        y: -26
+        scale: 0.15
     }
 }
