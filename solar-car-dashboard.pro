@@ -30,6 +30,10 @@ DISTFILES += \
     BatteryForm.ui.qml \
     Blinkers.qml \
     BlinkersForm.ui.qml \
+    Cruise.qml \
+    Cruise.ui.qml \
+    Dashboard.qml \
+    DashboardUI.ui.qml \
     Power.qml \
     PowerForm.ui.qml \
     Speed.qml \

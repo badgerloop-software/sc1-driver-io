@@ -74,6 +74,7 @@ Item {
     }
 
     Cruise {
+        id: cruiseIcon
         x: 178
         y: -26
         scale: 0.15

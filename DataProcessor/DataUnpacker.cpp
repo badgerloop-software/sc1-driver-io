@@ -39,7 +39,7 @@ E bytesToGeneralData(QByteArray data, int startPos, int endPos, E typeZero)
 DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 {
     // pi needs an absolute filepath
-    FILE* fp = fopen("/Users/mcli/Downloads/solar-car-dashboard-SW-44-tcp-communication/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+    FILE* fp = fopen("/absolute/file/path/here/solar-car-dashboard-SW-44-tcp-communication/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     if(fp == 0) {
         // testing
         fp = fopen("../sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"

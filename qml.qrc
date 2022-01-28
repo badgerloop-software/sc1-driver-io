@@ -22,5 +22,7 @@
         <file>UI/TimerForm.ui.qml</file>
         <file>UI/State.qml</file>
         <file>UI/StateForm.ui.qml</file>
+        <file>UI/Cruise.qml</file>
+        <file>UI/Images/Cruise.png</file>
     </qresource>
 </RCC>
