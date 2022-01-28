@@ -26,6 +26,14 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
+    Battery.qml \
+    BatteryForm.ui.qml \
+    Blinkers.qml \
+    BlinkersForm.ui.qml \
+    Power.qml \
+    PowerForm.ui.qml \
+    Speed.qml \
+    SpeedForm.ui.qml \
     Window.qml \
     WindowForm.ui.qml \
     #android/AndroidManifest.xml \
