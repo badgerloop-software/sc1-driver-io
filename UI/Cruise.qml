@@ -1,7 +1,7 @@
 import QtQuick 2.4
 
 Item {
-    id: cruiseIcon
+
     function getColor(cruise) {
         if(cruise)
             return "#40C321"
