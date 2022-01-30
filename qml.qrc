@@ -13,16 +13,15 @@
         <file>UI/SpeedForm.ui.qml</file>
         <file>UI/Images/Battery.png</file>
         <file>UI/Images/Blinker.png</file>
-        <file>UI/Images/cruiseControl.png</file>
         <file>UI/Temperature.qml</file>
         <file>UI/TemperatureForm.ui.qml</file>
         <file>UI/Alerts.qml</file>
         <file>UI/AlertsForm.ui.qml</file>
-        <file>UI/Timer.qml</file>
-        <file>UI/TimerForm.ui.qml</file>
+        <file>UI/ClockUI.qml</file>
         <file>UI/State.qml</file>
         <file>UI/StateForm.ui.qml</file>
-        <file>UI/Cruise.qml</file>
         <file>UI/Images/Cruise.png</file>
+        <file>UI/Cruise.qml</file>
+        <file>UI/CruiseForm.ui.qml</file>
     </qresource>
 </RCC>

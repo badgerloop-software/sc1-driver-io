@@ -66,15 +66,15 @@ Item {
         scale: 0.6
     }
 
-    TimerForm {
-        id: timerForm
+    ClockUI {
+        id: clockUI
         x: 696
         y: -40
         scale: 0.6
     }
 
     Cruise {
-        id: cruiseIcon
+        id: cruise
         x: 178
         y: -26
         scale: 0.15
