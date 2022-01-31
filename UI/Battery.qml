@@ -10,7 +10,7 @@ Item {
            return "#00ff00"
         }
         if (num > 20) {
-            return "#f8ce46"
+            return "#ffff00"
         }
         return "#ff0000"
     }
