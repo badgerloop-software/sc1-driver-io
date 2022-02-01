@@ -25,7 +25,7 @@
 
 ### Contributing to the Dashboard
 
-0. Again, make sure you have [Qt](https://www.qt.io/download-open-source?hsCtaTracking=9f6a2170-a938-42df-a8e2-a9f0b1d6cdce%7C6cb0de4f-9bb5-4778-ab02-bfb62735f3e5) installed on your computer (as well as Prettier if you want clean code :neutral_face:).
+0. Again, make sure you have [Qt](https://www.qt.io/download-open-source?hsCtaTracking=9f6a2170-a938-42df-a8e2-a9f0b1d6cdce%7C6cb0de4f-9bb5-4778-ab02-bfb62735f3e5) installed on your computer.
 1. Clone the repository to your computer (see steps 0-1 of "Cloning the Data Format Repository and Initializing the Submodule" for instructions on cloning a repo using SSH).
 2. If you have not already, clone the `sc1-data-format` repository and initialize the submodule (see instructions above).
 3. Open the repository in Qt Creator and, if necessary, configure the project using the appropriate kit for your environment.
