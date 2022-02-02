@@ -31,7 +31,7 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
 void BackendProcesses::onNewConnection()
 {
    QTcpSocket *clientSocket = _server.nextPendingConnection();
-   connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+   //connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
    connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));
 
     _sockets.push_back(clientSocket);
@@ -49,7 +49,7 @@ void BackendProcesses::onSocketStateChanged(QAbstractSocket::SocketState socketS
     }
 }
 
-void BackendProcesses::onReadyRead()
+/*void BackendProcesses::onReadyRead()
 {
     QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
     QByteArray datas = sender->readAll();
@@ -57,7 +57,7 @@ void BackendProcesses::onReadyRead()
         if (socket != sender)
             socket->write(QByteArray::fromStdString(sender->peerAddress().toString().toStdString() + ": " + datas.toStdString()));
     }
-}
+}*/
 
 void BackendProcesses::startThread()
 {

@@ -19,7 +19,7 @@ public:
 public slots:
     void onNewConnection();
     void onSocketStateChanged(QAbstractSocket::SocketState socketState);
-    void onReadyRead();
+    //void onReadyRead();
 
     void threadProcedure();
     void startThread();
