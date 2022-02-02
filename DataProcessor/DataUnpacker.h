@@ -19,14 +19,10 @@ class DataUnpacker : public QObject
 {
     Q_OBJECT
 
-    // TODO Include only the properties that need to be displayed on the driver dashboard
-    // Qml didn't want to play nice with uint8_t on the pi, so I switched it to int
+    // Include only the properties that need to be displayed on the driver dashboard
+    // Qml didn't want to play nice with uint8_t on the pi, so now it's int
     Q_PROPERTY(int speed MEMBER speed NOTIFY dataChanged);
     Q_PROPERTY(int charge MEMBER charge NOTIFY dataChanged);
-    Q_PROPERTY(int frontLeftTP MEMBER frontLeftTP NOTIFY dataChanged);
-    Q_PROPERTY(int frontRightTP MEMBER frontRightTP NOTIFY dataChanged);
-    Q_PROPERTY(int backLeftTP MEMBER backLeftTP NOTIFY dataChanged);
-    Q_PROPERTY(int backRightTP MEMBER backRightTP NOTIFY dataChanged);
 
     Q_PROPERTY(bool leftTurn MEMBER leftTurn NOTIFY dataChanged);
     Q_PROPERTY(bool rightTurn MEMBER rightTurn NOTIFY dataChanged);
