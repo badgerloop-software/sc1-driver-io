@@ -12,7 +12,6 @@
 #include <random>
 
 typedef double(*func)(double);
-typedef unsigned char byte;
 
 class DataGen{
 public:
