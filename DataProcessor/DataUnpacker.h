@@ -13,8 +13,6 @@
 
 using namespace rapidjson;
 
-typedef unsigned char byte;
-
 class DataUnpacker : public QObject
 {
     Q_OBJECT
