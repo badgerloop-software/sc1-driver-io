@@ -11,7 +11,7 @@
 
 0. If you don't already have an SSH key, [generate a new SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent) (only the steps under "Generating a new SSH key" are required) and [add it to your GitHub account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
 1. Once you have an SSH key, clone the [sc1-data-format repository](https://github.com/badgerloop-software/sc1-data-format) to your computer. Make sure to clone it using SSH (when you go to copy the clone link, there will be an SSH option above the link).
-2. Next, `cd` into the `sc1-driver-io` repository and run `git submodule init`.
+2. Next, `cd` into the `sc1-driver-io` repository and run `git submodule update --init`.
 
 ### Running the Dashboard
 
@@ -25,7 +25,7 @@
 
 ### Contributing to the Dashboard
 
-0. Again, make sure you have [Qt](https://www.qt.io/download-open-source?hsCtaTracking=9f6a2170-a938-42df-a8e2-a9f0b1d6cdce%7C6cb0de4f-9bb5-4778-ab02-bfb62735f3e5) installed on your computer (as well as Prettier if you want clean code :neutral_face:).
+0. Again, make sure you have [Qt](https://www.qt.io/download-open-source?hsCtaTracking=9f6a2170-a938-42df-a8e2-a9f0b1d6cdce%7C6cb0de4f-9bb5-4778-ab02-bfb62735f3e5) installed on your computer.
 1. Clone the repository to your computer (see steps 0-1 of "Cloning the Data Format Repository and Initializing the Submodule" for instructions on cloning a repo using SSH).
 2. If you have not already, clone the `sc1-data-format` repository and initialize the submodule (see instructions above).
 3. Open the repository in Qt Creator and, if necessary, configure the project using the appropriate kit for your environment.
