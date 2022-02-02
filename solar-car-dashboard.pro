@@ -7,7 +7,10 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        main.cpp
+        backendprocesses.cpp \
+        main.cpp \
+        DataProcessor/DataGen.cpp \
+        DataProcessor/DataUnpacker.cpp
 
 RESOURCES += qml.qrc
 
@@ -21,3 +24,47 @@ QML_DESIGNER_IMPORT_PATH =
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    Battery.qml \
+    BatteryForm.ui.qml \
+    Blinkers.qml \
+    BlinkersForm.ui.qml \
+    Cruise.qml \
+    Cruise.ui.qml \
+    Dashboard.qml \
+    DashboardUI.ui.qml \
+    Power.qml \
+    PowerForm.ui.qml \
+    Speed.qml \
+    SpeedForm.ui.qml \
+    Window.qml \
+    WindowForm.ui.qml \
+    #android/AndroidManifest.xml \
+    #android/AndroidManifest.xml \
+    #android/build.gradle \
+    #android/build.gradle \
+    #android/gradle.properties \
+    #android/gradle.properties \
+    #android/gradle/.DS_Store \
+    #android/gradle/.DS_Store \
+    #android/gradle/wrapper/gradle-wrapper.jar \
+    #android/gradle/wrapper/gradle-wrapper.jar \
+    #android/gradle/wrapper/gradle-wrapper.properties \
+    #android/gradle/wrapper/gradle-wrapper.properties \
+    #android/gradlew \
+    #android/gradlew \
+    #android/gradlew.bat \
+    #android/gradlew.bat \
+    #android/res/values/libs.xml \
+    #android/res/values/libs.xml
+
+contains(ANDROID_TARGET_ARCH,arm64-v8a) {
+    ANDROID_PACKAGE_SOURCE_DIR = \
+        $$PWD/android
+}
+
+HEADERS += \
+    DataProcessor/DataUnpacker.h \
+    DataProcessor/DataGen.h \
+    backendprocesses.h
