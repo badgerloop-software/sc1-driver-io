@@ -50,7 +50,7 @@ private:
     QThread dataHandlingThread;
 
     // TOOD Include only the properties that need to be displayed on the driver dashboard
-    uint8_t speed, charge, frontLeftTP, frontRightTP, backLeftTP, backRightTP;
+    uint8_t speed, charge;
     float solarPower, batteryVoltage, batteryCurrent, batteryPower, motorPower, batteryTemp, motorTemp, motorControllerTemp;
     bool bpsFault, eStop, cruiseControl, leftTurn, rightTurn;
     QString state;
