@@ -20,20 +20,17 @@ class DataUnpacker : public QObject
     // Include only the properties that need to be displayed on the driver dashboard
     // Qml didn't want to play nice with uint8_t on the pi, so now it's int
     Q_PROPERTY(int speed MEMBER speed NOTIFY dataChanged);
-    Q_PROPERTY(int charge MEMBER charge NOTIFY dataChanged);
 
-    Q_PROPERTY(bool leftTurn MEMBER leftTurn NOTIFY dataChanged);
-    Q_PROPERTY(bool rightTurn MEMBER rightTurn NOTIFY dataChanged);
-    Q_PROPERTY(bool cruiseControl MEMBER cruiseControl NOTIFY dataChanged);
+    Q_PROPERTY(bool left_turn MEMBER left_turn NOTIFY dataChanged);
+    Q_PROPERTY(bool right_turn MEMBER right_turn NOTIFY dataChanged);
+    Q_PROPERTY(bool cruise MEMBER cruise NOTIFY dataChanged);
 
-    Q_PROPERTY(float solarPower MEMBER solarPower NOTIFY dataChanged);
-    Q_PROPERTY(float batteryVoltage MEMBER batteryVoltage NOTIFY dataChanged);
-    Q_PROPERTY(float batteryCurrent MEMBER batteryCurrent NOTIFY dataChanged);
-    Q_PROPERTY(float batteryPower MEMBER batteryPower NOTIFY dataChanged);
-    Q_PROPERTY(float motorPower MEMBER motorPower NOTIFY dataChanged);
-    Q_PROPERTY(float batteryTemp MEMBER batteryTemp NOTIFY dataChanged);
-    Q_PROPERTY(float motorTemp MEMBER motorTemp NOTIFY dataChanged);
-    Q_PROPERTY(float motorControllerTemp MEMBER motorControllerTemp NOTIFY dataChanged);
+    Q_PROPERTY(float soc MEMBER soc NOTIFY dataChanged);
+    Q_PROPERTY(float mppt_current_out MEMBER mppt_current_out NOTIFY dataChanged);
+    Q_PROPERTY(float pack_voltage MEMBER pack_voltage NOTIFY dataChanged);
+    Q_PROPERTY(float pack_current MEMBER pack_current NOTIFY dataChanged);
+    Q_PROPERTY(float pack_temp MEMBER pack_temp NOTIFY dataChanged);
+    Q_PROPERTY(float motor_temp MEMBER motor_temp NOTIFY dataChanged);
     // NOTE: char data is displayed as its ASCII decimal value, not the character, so QString is used instead
     Q_PROPERTY(QString state MEMBER state NOTIFY dataChanged);
 public:
@@ -48,9 +45,9 @@ private:
     QThread dataHandlingThread;
 
     // TOOD Include only the properties that need to be displayed on the driver dashboard
-    uint8_t speed, charge;
-    float solarPower, batteryVoltage, batteryCurrent, batteryPower, motorPower, batteryTemp, motorTemp, motorControllerTemp;
-    bool bpsFault, eStop, cruiseControl, leftTurn, rightTurn;
+    uint8_t speed;
+    float soc, mppt_current_out, pack_voltage, pack_current, pack_temp, motor_temp;
+    bool bps_fault, driver_eStop, cruise, left_turn, right_turn;
     QString state;
 
     QByteArray bytes;

@@ -29,7 +29,7 @@ Item {
             x: (bat.width - width) / 2
             y: 640
             color: "#ffffff"
-            text: backEnd.charge.toFixed(1)
+            text: backEnd.soc.toFixed(1)
             font.pixelSize: 60
         }
 
@@ -40,7 +40,7 @@ Item {
             y: 605 - height
             width: 200
             height: 530 * ( batVal.text / 100)
-            color: getColor(backEnd.charge)
+            color: getColor(backEnd.soc)
             border.color: "#000000"
         }
 

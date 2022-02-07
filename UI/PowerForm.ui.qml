@@ -28,7 +28,7 @@ Item {
             x: (solar.width - width) / 2
             y: 43
             color: "#ffffff"
-            text: backEnd.solarPower.toFixed(1)
+            text: (backEnd.mppt_current_out * backEnd.pack_voltage).toFixed(1)
             font.pixelSize: 40
         }
 
@@ -65,7 +65,7 @@ Item {
             x: (net.width - width) / 2
             y: 0
             color: "#ffffff"
-            text: backEnd.batteryPower.toFixed(1)
+            text: (backEnd.pack_current * backEnd.pack_voltage).toFixed(1)
             font.pixelSize: 36
         }
 
@@ -83,7 +83,7 @@ Item {
             x: (net.width - width) / 2
             y: 44
             color: "#ffffff"
-            text: backEnd.batteryVoltage.toFixed(1)
+            text: backEnd.pack_voltage.toFixed(1)
             font.pixelSize: 36
         }
 
@@ -101,7 +101,7 @@ Item {
             x: (net.width - width) / 2
             y: 88
             color: "#ffffff"
-            text: backEnd.batteryCurrent.toFixed(1)
+            text: backEnd.pack_current.toFixed(1)
             font.pixelSize: 36
         }
 
@@ -137,7 +137,7 @@ Item {
             x: (motor.width - width) / 2
             y: 43
             color: "#ffffff"
-            text: backEnd.motorPower.toFixed(1)
+            text: qsTr("0")
             font.pixelSize: 40
         }
 

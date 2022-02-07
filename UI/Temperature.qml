@@ -47,7 +47,7 @@ Item {
             x: (rectangle.width - width) / 2
             y: (rectangle.height - height) / 2
             color: "#ffffff"
-            text: backEnd.batteryTemp.toFixed(1)
+            text: backEnd.pack_temp.toFixed(1)
             font.pixelSize: 50
         }
     }
@@ -85,7 +85,7 @@ Item {
             x: (rectangle1.width - width) / 2
             y: (rectangle1.height - height) / 2
             color: "#ffffff"
-            text: backEnd.motorTemp.toFixed(1)
+            text: backEnd.motor_temp.toFixed(1)
             font.pixelSize: 50
         }
     }
@@ -123,7 +123,7 @@ Item {
             x: (rectangle2.width - width) / 2
             y: (rectangle2.height - height) / 2
             color: "#ffffff"
-            text: backEnd.motorControllerTemp.toFixed(1)
+            text: qsTr("0")
             font.pixelSize: 50
         }
     }
