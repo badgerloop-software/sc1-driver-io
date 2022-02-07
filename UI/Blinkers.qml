@@ -43,7 +43,7 @@ Item {
             y: 96
             width: 300
             height: 207
-            color: getColor(backEnd.rightTurn)
+            color: getColor(backEnd.right_turn)
         }
 
 
@@ -89,7 +89,7 @@ Item {
             y: 96
             width: 300
             height: 207
-            color: getColor(backEnd.leftTurn)
+            color: getColor(backEnd.left_turn)
         }
 
 

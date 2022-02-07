@@ -28,7 +28,7 @@ Item {
         y: 0
         width: 400
         height: 400
-        color: getColor(backEnd.cruiseControl)
+        color: getColor(backEnd.cruise)
         z: -1
     }
 }

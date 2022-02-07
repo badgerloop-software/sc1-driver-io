@@ -17,24 +17,24 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
     // Data displayed on the driver dash are given appropriate values
     for(uint i = 0; i < types.size(); i++) {
         if(types[i] == "float") {
-            if(names[i] == "solarPower") {
+            /*if(names[i] == "solarPower") {
                 addFloatToArray(data,(float)solarFunc(time));
-            } else if((names[i] == "batteryVoltage") || (names[i] == "batteryCurrent")) {
+            } else*/ if((names[i] == "pack_voltage") || (names[i] == "pack_current")) {
                 addFloatToArray(data,(float)sqrt(abs(solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency)));
-            } else if(names[i] == "batteryPower") {
+            }/* else if(names[i] == "batteryPower") {
                 addFloatToArray(data,(float)solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency);
             } else if(names[i] == "motorPower") {
                 addFloatToArray(data,(float)(0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency));
-            } else if((names[i] == "batteryTemp") || (names[i] == "motorTemp") || (names[i] == "motorControllerTemp")) {
+            }*/ else if((names[i] == "pack_temp") || (names[i] == "motor_temp")) {
                 addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
+            } else if(names[i] == "soc") {
+                addFloatToArray(data,(float)batteryFunc(time));
             } else {
                 addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/100));
             }
         } else if(types[i] == "uint8") {
             if(names[i] == "speed") {
                 dataToByteArray(data,(uint8_t)speedFunc(time));
-            } else if(names[i] == "charge") {
-                dataToByteArray(data,(uint8_t)batteryFunc(time));
             } else {
                 dataToByteArray(data,(uint8_t)fmod(rand(),200));
             }
