@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     rootContext->setContextProperty("backEnd", &unpacker);
 
     // Hide mouse cursor
-    //app.setOverrideCursor(QCursor(Qt::BlankCursor)); TODO Commented this out for testing
+    app.setOverrideCursor(QCursor(Qt::BlankCursor));
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
