@@ -45,7 +45,7 @@ Item {
     Rectangle {
         id: net
         x: 0
-        y: 1 / 3 * power.height - 1
+        y: 1 / 3 * power.height
         width: 400
         height: power.height / 3
         color: "#000000"
