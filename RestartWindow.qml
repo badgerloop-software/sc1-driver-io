@@ -20,7 +20,6 @@ Popup {
 
     MouseArea {
         anchors.fill: parent
-
         onClicked: {
             if(!restartEnable) {
                 restartPopup.close();
@@ -39,32 +38,48 @@ Popup {
         spacing: 5
 
         CheckBox {
-            text: qsTr("Battery Pack Switch")
+            /*topInset: -2
+            leftInset: -2
+            rightInset: -2
+            bottomInset: -2
+            background: Rectangle {
+                opacity: battery_eStop ? 0 : 0.5
+                color: "red"
+            }*/
+            // Change text color based on shutdown circuit input value
+            text: qsTr("<font color=\"%1\">Battery Pack Switch</font>".arg(battery_eStop ? "black" : "red"))
             checkable: false // Don't allow user input
             focusPolicy: Qt.NoFocus // CheckBox won't accept focus
             Binding on checked { value: battery_eStop }
         }
+
         CheckBox {
-            text: qsTr("Driver Shutdown Switch")
+            /*topInset: -2
+            leftInset: -2
+            rightInset: -2
+            bottomInset: -2
+            background: Rectangle {
+                opacity: driver_eStop ? 0 : 0.5
+                color: "red"
+            }*/
+            // Change text color based on shutdown circuit input value
+            text: qsTr("<font color=\"%1\">Driver Shutdown Switch</font>".arg(driver_eStop ? "black" : "red"))
             checkable: false // Don't allow user input
             focusPolicy: Qt.NoFocus // CheckBox won't accept focus
             Binding on checked { value: driver_eStop }
+
         }
     }
-
-
-
-
 
     /*Text {
         x: (restartPopup.width - width) / 2
         y: restartPopup.height / 2 + 40
-        text: qsTr("Battery Pack Switch: " + battery_eStop)
+        text: qsTr("<font color=\"%1\">Battery Pack Switch</font>".arg(battery_eStop ? "black" : "red"))
     }
     Text {
         x: (restartPopup.width - width) / 2
         y: restartPopup.height / 2 + 60
-        text: qsTr("Driver Shutdown Switch: " + driver_eStop)
+        text: qsTr("<font color=\"%1\">Driver Shutdown Switch</font>".arg(driver_eStop ? "black" : "red"))
     }*/
 
 
