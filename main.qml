@@ -12,27 +12,16 @@ Window {
     title: qsTr("Solar Car Dashboard")
 
     property var restartWin: RestartWindow {
-        flags: Qt.WindowStaysOnTopHint
+        property bool restartEnable: root.restartEnable
     }
 
-    //onFrameSwapped: {
-    //    root.restartWin.raise();
-    //}
+    property bool restartEnable: backEnd.speed > 0
+
+    onRestartEnableChanged: {
+        root.restartWin.show();
+    }
 
     Dashboard{
 
-
-
-        Text {
-            text: "Click here to open new window!"
-            anchors.centerIn: parent
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                root.restartWin.show();
-            }
-        }
     }
 }
