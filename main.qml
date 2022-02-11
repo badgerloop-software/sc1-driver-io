@@ -19,9 +19,9 @@ Window {
     }
 
     // TODO Replace restartEnable value with actual shutdown circuit values
-    // TODO Using the raw value causes issues (bc it's undefined initially?); find a better solution than comparing to true
+    // TODO Using the raw value causes issues (bc it's undefined initially?); find a better solution than comparing to bool
     //      Maybe set default values for backEnd properties
-    property bool restartEnable: (backEnd.battery_eStop === true)// || (backEnd.driver_eStop === true)
+    property bool restartEnable: (backEnd.battery_eStop === false)// || (backEnd.driver_eStop === false)
 
     onRestartEnableChanged: {
         root.restartWin.open();
