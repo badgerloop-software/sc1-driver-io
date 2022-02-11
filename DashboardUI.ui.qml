@@ -20,8 +20,8 @@ Item {
 
     State {
         id: stateChar
-        x: speedometer.x + speedometer.width * ((speedometer.scale + 1) / 2) - width / 2
-        y: speedometer.y - speedometer.height * ((speedometer.scale - 1) / 2) - height / 2
+        x: speedometer.x + speedometer.width * (speedometer.scale + 1) / 2 - width / 2
+        y: speedometer.y - speedometer.height * (speedometer.scale - 1) / 2 - height / 2
         scale: 2
         //x: dashboard.width/2(speedometer.width - width)
         //y: 140
@@ -44,55 +44,61 @@ Item {
         //x: 212
         //y: 436
         x: (dashboard.width - width) / 2
-        y: dashboard.height - height * ((scale + 1) / 2)
+        y: dashboard.height - height * (scale + 1) / 2
         scale: 1
     }
 
     Blinkers {
         id: blinkers
-        x: -272
-        y: -140
-        scale: -0.3
+        //x: -272
+        //y: -140
+        x: width * (scale - 1) / 2
+        y: height * (scale - 1) / 2
+        scale: 0.5
     }
 
     Battery {
         id: batt
         //x: -63
         //y: -40
-        x: width * ((scale - 1) / 2)
-        y: dashboard.height - height * ((scale + 1) / 2)
+        x: width * (scale - 1) / 2
+        y: dashboard.height - height * (scale + 1) / 2
         scale: 1
     }
 
     Power {
         //x: 654
         //y: 100
-        x: dashboard.width - width * ((scale + 1) / 2)
+        x: dashboard.width - width * (scale + 1) / 2
         y: (dashboard.height - height) / 2
         scale: 1.5
     }
 
     Alerts {
         id: alerts
-        x: 112
-        y: -40
-        scale: 0.6
+        //x: 112
+        //y: -40
+        x: (dashboard.width - width) / 2
+        y: height * (scale - 1) / 2
+        scale: 1
     }
 
     ClockUI {
         id: clockUI
-        x: 696
-        y: -40
-        scale: 0.6
+        //x: 696
+        //y: -40
+        x: dashboard.width - width * (scale + 1) / 2
+        y: height * (scale - 1) / 2
+        scale: 1
     }
 
     Cruise {
         id: cruise
         //x: 178
         //y: -26
-        x: speedometer.x - speedometer.width * ((speedometer.scale - 1) / 2) - width / 2
-        y: speedometer.y - speedometer.height * ((speedometer.scale - 1) / 2) - height / 2
-        scale: 0.25
+        x: speedometer.x - speedometer.width * (speedometer.scale - 1) / 2 - width / 2
+        y: speedometer.y - speedometer.height * (speedometer.scale - 1) / 2 - height / 2
+        scale: 0.3
     }
 }
 
