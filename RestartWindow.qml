@@ -1,10 +1,81 @@
 import QtQuick 2.0
 import QtQuick.Window 2.1
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.0
 
+Popup {
+    id: restartPopup
+    anchors.centerIn: parent
+    //x: (parent.width - width) / 2
+    //y: (parent.height - height) / 2
+    width: 500
+    height: 500
+    modal: true
+    focus: true
+    closePolicy: Popup.NoAutoClose
+
+    background: Rectangle {
+        color: "lightGrey"
+    }
+
+    MouseArea {
+        anchors.fill: parent
+
+        onClicked: {
+            if(!restartEnable) {
+                restartPopup.close();
+            }
+        }
+    }
+
+    Text {
+        x: (parent.width - width) / 2
+        y: 25
+        text: restartEnable ? "Uh oh... Something's wrong with your car." : "Oh hey, your car's fine now.\nTap this window to close it."
+    }
+
+    ColumnLayout {
+        anchors.centerIn: parent
+        spacing: 5
+
+        CheckBox {
+            text: qsTr("Battery Pack Switch")
+            checkable: false // Don't allow user input
+            focusPolicy: Qt.NoFocus // CheckBox won't accept focus
+            Binding on checked { value: battery_eStop }
+        }
+        CheckBox {
+            text: qsTr("Driver Shutdown Switch")
+            checkable: false // Don't allow user input
+            focusPolicy: Qt.NoFocus // CheckBox won't accept focus
+            Binding on checked { value: driver_eStop }
+        }
+    }
+
+
+
+
+
+    /*Text {
+        x: (restartPopup.width - width) / 2
+        y: restartPopup.height / 2 + 40
+        text: qsTr("Battery Pack Switch: " + battery_eStop)
+    }
+    Text {
+        x: (restartPopup.width - width) / 2
+        y: restartPopup.height / 2 + 60
+        text: qsTr("Driver Shutdown Switch: " + driver_eStop)
+    }*/
+
+
+}
+/*
 Window {
     id: restartWindow
     flags: Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowTitleHint
     title: "WARNING: Restart Enable Required"
+    x: (parent.width - width) / 2
+    y: (parent.height - height) / 2
     width: 500
     height: 500
 
@@ -14,17 +85,17 @@ Window {
 
         Text {
             anchors.centerIn: parent
-            text: restartEnable ? "Uh oh there... Something's wrong with your car" : "Oh hey, your car's fine now"
+            text: restartEnable ? "Uh oh... Something's wrong with your car." : "Oh hey, your car's fine now.\nTap this window to close it."
         }
 
         Text {
             x: (restartWindow.width - width) / 2
-            y: restartWindow.height / 2 + 20
+            y: restartWindow.height / 2 + 40
             text: qsTr("Battery Pack Switch: " + battery_eStop)
         }
         Text {
             x: (restartWindow.width - width) / 2
-            y: restartWindow.height / 2 + 40
+            y: restartWindow.height / 2 + 60
             text: qsTr("Driver Shutdown Switch: " + driver_eStop)
         }
 
@@ -38,4 +109,4 @@ Window {
         }
 
     }
-}
+}*/

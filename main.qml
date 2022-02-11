@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Window 2.1
+import QtQuick.Controls 2.12
 
 Window {
     id: root
@@ -19,13 +20,14 @@ Window {
 
     // TODO Replace restartEnable value with actual shutdown circuit values
     // TODO Using the raw value causes issues (bc it's undefined initially?); find a better solution than comparing to true
-    property bool restartEnable: (backEnd.battery_eStop === true) || (backEnd.driver_eStop === true)
+    //      Maybe set default values for backEnd properties
+    property bool restartEnable: (backEnd.battery_eStop === true)// || (backEnd.driver_eStop === true)
 
     onRestartEnableChanged: {
-        root.restartWin.show();
+        root.restartWin.open();
     }
 
-    Dashboard{
+    Dashboard {
 
     }
 }
