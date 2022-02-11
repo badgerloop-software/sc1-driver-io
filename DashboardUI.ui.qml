@@ -15,7 +15,7 @@ Item {
         id: speedometer
         x: (dashboard.width - width) / 2
         y: (dashboard.height - width) / 2
-        scale: 1.25
+        scale: 1.35
     }
 
     State {
@@ -63,7 +63,7 @@ Item {
         //y: -40
         x: width * (scale - 1) / 2
         y: dashboard.height - height * (scale + 1) / 2
-        scale: 1
+        scale: 1.1
     }
 
     Power {
