@@ -23,5 +23,6 @@
         <file>UI/Images/Cruise.png</file>
         <file>UI/Cruise.qml</file>
         <file>UI/CruiseForm.ui.qml</file>
+        <file>RestartWindow.qml</file>
     </qresource>
 </RCC>
