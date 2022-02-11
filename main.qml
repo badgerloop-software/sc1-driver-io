@@ -15,7 +15,8 @@ Window {
         property bool restartEnable: root.restartEnable
     }
 
-    property bool restartEnable: backEnd.speed > 0
+    // TODO Replace restartEnable value with actual shutdown circuit values
+    property bool restartEnable: (backEnd.speed > 2) && (backEnd.speed < 20)
 
     onRestartEnableChanged: {
         root.restartWin.show();

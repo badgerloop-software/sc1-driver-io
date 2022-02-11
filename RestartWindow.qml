@@ -17,7 +17,7 @@ Window {
 
             anchors.centerIn: parent
 
-            text: "Uh oh there... Something's wrong with your car"
+            text: restartEnable ? "Uh oh there... Something's wrong with your car" : "Oh hey, your car's fine now"
         }
 
         MouseArea {
