@@ -13,9 +13,3 @@ Window {
 
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:0.33}D{i:1}
-}
-##^##*/
