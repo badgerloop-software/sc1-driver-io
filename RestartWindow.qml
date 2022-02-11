@@ -3,8 +3,8 @@ import QtQuick.Window 2.1 // needed for the Window component
 
 Window {
     id: restartWindow
+    flags: Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowTitleHint
     title: "WARNING: Restart Enable Required"
-    flags: Qt.WindowStaysOnTopHint | Qt.Window
     width: 300
     height: 200
 
