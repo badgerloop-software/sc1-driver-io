@@ -13,10 +13,13 @@ Window {
 
     property var restartWin: RestartWindow {
         property bool restartEnable: root.restartEnable
+        property bool battery_eStop: backEnd.battery_eStop
+        property bool driver_eStop: backEnd.driver_eStop
     }
 
     // TODO Replace restartEnable value with actual shutdown circuit values
-    property bool restartEnable: (backEnd.speed > 2) && (backEnd.speed < 20)
+    // TODO Using the raw value causes issues (bc it's undefined initially?); find a better solution than comparing to true
+    property bool restartEnable: (backEnd.battery_eStop === true) || (backEnd.driver_eStop === true)
 
     onRestartEnableChanged: {
         root.restartWin.show();
