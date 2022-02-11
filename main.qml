@@ -12,12 +12,12 @@ Window {
     title: qsTr("Solar Car Dashboard")
 
     property var restartWin: RestartWindow {
-
+        flags: Qt.WindowStaysOnTopHint
     }
 
-    onFrameSwapped: {
-        root.restartWin.raise();
-    }
+    //onFrameSwapped: {
+    //    root.restartWin.raise();
+    //}
 
     Dashboard{
 
