@@ -10,7 +10,9 @@ SOURCES += \
         backendprocesses.cpp \
         main.cpp \
         DataProcessor/DataGen.cpp \
-        DataProcessor/DataUnpacker.cpp
+        DataProcessor/DataUnpacker.cpp \
+        embedded/drivers/src/i2c.cpp \
+        embedded/drivers/stc/serial.cpp 
 
 RESOURCES += qml.qrc \
     UI/Images/images.qrc \
@@ -55,4 +57,7 @@ contains(ANDROID_TARGET_ARCH,arm64-v8a) {
 HEADERS += \
     DataProcessor/DataUnpacker.h \
     DataProcessor/DataGen.h \
-    backendprocesses.h
+    backendprocesses.h \
+    embedded/drivers/include/i2c.h \
+    embedded/drivers/include/i2c-dev.h \
+    embedded/drivers/include/serial.h
