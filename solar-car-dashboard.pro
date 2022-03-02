@@ -12,7 +12,7 @@ SOURCES += \
         DataProcessor/DataGen.cpp \
         DataProcessor/DataUnpacker.cpp \
         embedded/drivers/src/i2c.cpp \
-        embedded/drivers/stc/serial.cpp 
+        embedded/drivers/src/serial.cpp
 
 RESOURCES += qml.qrc
 

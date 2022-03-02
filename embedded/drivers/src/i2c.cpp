@@ -1,4 +1,4 @@
-#include "i2c.h"
+#include "embedded/drivers/include/i2c.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-#include "i2c-dev.h"
+#include "embedded/drivers/include/i2c-dev.h"
 
 /* Also need deconsturctor to close file descriptor */
 I2c::I2c(int bus, int addr, int mode) {
