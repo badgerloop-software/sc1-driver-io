@@ -6,6 +6,8 @@
 
 int lastSpeed=0;
 int lastT=0;
+int errTimeLeft=0;
+std::string errors="";
 
 /**
  * Generates an array of test data
@@ -39,7 +41,35 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
                 dataToByteArray(data,(uint8_t)fmod(rand(),200));
             }
         } else if(types[i] == "bool") {
-            dataToByteArray(data,rand()>rand());
+            // For shutdown circuit inputs, any triggerred error will stay triggered for time seconds, where time is the value of time when the most recent error was triggered
+            // When a new error is triggerred, the countdown will restart from the current value of time for all currently triggered errors
+            if((names[i] == "battery_eStop") || (names[i] == "driver_eStop") || (names[i] == "external_eStop") ||
+               (names[i] == "imd_status") || (names[i] == "door") || (names[i] == "mcu_check")) {
+                // NO/preferred true shutdown circuit inputs
+                std::size_t errPos = errors.find(names[i]);
+                bool error = (rand()%100+1 >= 3) && !((errTimeLeft>0) && (errPos!=std::string::npos));
+                dataToByteArray(data,error);
+                if(!error && (errPos==std::string::npos)) {
+                    errTimeLeft = time;
+                    errors += names[i];
+                } else if(errPos!=std::string::npos && (errTimeLeft<0)) {
+                    errors.erase(errPos,names[i].length());
+                }
+            } else if(names[i] == "crash") {
+                // NC/preferred false shutdown circuit inputs
+                std::size_t errPos = errors.find(names[i]);
+                bool error = (rand()%100+1 <= 3) || ((errTimeLeft>0) && (errPos!=std::string::npos));
+                dataToByteArray(data,error);
+                if(error && (errPos==std::string::npos)) {
+                    errTimeLeft = time;
+                    errors += names[i];
+                } else if(errPos!=std::string::npos && (errTimeLeft<0)) {
+                    errors.erase(errPos,names[i].length());
+                }
+            } else {
+                // Not a shutdown circuit input
+                dataToByteArray(data,rand()>rand());
+            }
         } else if(types[i] == "char") {
             if(names[i] == "state") {
                 switch((int)fmod(rand(),4)) {
@@ -66,7 +96,12 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
             addDoubleToArray(data,(double)rand()/((RAND_MAX+1u)/200));
         }
     }
+    errTimeLeft--;
 }
+
+
+
+
 
 DataGen::DataGen(func speedFunc, func solarFunc, func batteryFunc, float efficiency) {
     this->speedFunc=speedFunc;
