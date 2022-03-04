@@ -24,8 +24,14 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool left_turn MEMBER left_turn NOTIFY dataChanged);
     Q_PROPERTY(bool right_turn MEMBER right_turn NOTIFY dataChanged);
     Q_PROPERTY(bool cruise MEMBER cruise NOTIFY dataChanged);
+    // Shutdown circuit
     Q_PROPERTY(bool battery_eStop MEMBER battery_eStop NOTIFY dataChanged);
     Q_PROPERTY(bool driver_eStop MEMBER driver_eStop NOTIFY dataChanged);
+    Q_PROPERTY(bool external_eStop MEMBER external_eStop NOTIFY dataChanged);
+    Q_PROPERTY(bool crash MEMBER crash NOTIFY dataChanged);
+    Q_PROPERTY(bool door MEMBER door NOTIFY dataChanged);
+    Q_PROPERTY(bool mcu_check MEMBER mcu_check NOTIFY dataChanged);
+    Q_PROPERTY(bool imd_status MEMBER imd_status NOTIFY dataChanged);
 
     Q_PROPERTY(float soc MEMBER soc NOTIFY dataChanged);
     Q_PROPERTY(float mppt_current_out MEMBER mppt_current_out NOTIFY dataChanged);
@@ -49,7 +55,7 @@ private:
     // TOOD Include only the properties that need to be displayed on the driver dashboard
     uint8_t speed;
     float soc, mppt_current_out, pack_voltage, pack_current, pack_temp, motor_temp;
-    bool bps_fault, driver_eStop, cruise, left_turn, right_turn, battery_eStop;
+    bool bps_fault, cruise, left_turn, right_turn, driver_eStop, battery_eStop, external_eStop, crash, door, mcu_check, imd_status;
     QString state;
 
     QByteArray bytes;

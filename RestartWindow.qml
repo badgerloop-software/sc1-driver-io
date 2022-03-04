@@ -5,126 +5,106 @@ import QtQuick.Layouts 1.0
 
 Popup {
     id: restartPopup
+    parent: Overlay.overlay
     anchors.centerIn: parent
-    //x: (parent.width - width) / 2
-    //y: (parent.height - height) / 2
-    width: 500
-    height: 500
+    width: 750
+    height: 750
+    padding: 25
     modal: true
-    focus: true
+    //focus: true
     closePolicy: Popup.NoAutoClose
 
-    background: Rectangle {
-        color: "lightGrey"
+    Overlay.onPressed: {
+        if(!restartEnable) {
+            restartPopup.close();
+        }
     }
 
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            if(!restartEnable) {
-                restartPopup.close();
+    Overlay.modal: Rectangle {
+        color: "#409f6060"
+    }
+
+    background: Rectangle {
+        color: "#ffffff"
+    }
+
+    contentItem: Rectangle {
+        color: "#000000"
+
+        Text {
+            x: (parent.width - width) / 2
+            y: (errors.y - parent.y) / 2 - 10
+            horizontalAlignment: Text.AlignHCenter
+            //font.pointSize: restartEnable ? 30 : 24
+            //text: restartEnable ? "Shutdown Fault" : "All faults cleared\nTap anywhere to clear warning"
+            font.pointSize: 30
+            text: qsTr("Shutdown Fault")
+            color: "#ffffff"
+        }
+
+        ColumnLayout {
+            id: errors
+            x: (parent.width - width) / 2
+            y: (parent.height - height) / 2
+            spacing: 7
+
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: qsTr("Battery Pack Switch")
+                color: battery_eStop_fault ? "red" : "white"
+                font.pointSize: 36
+            }
+
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: qsTr("Driver Shutdown Switch")
+                color: driver_eStop_fault ? "red" : "white"
+                font.pointSize: 36
+            }
+
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: qsTr("External Shutdown Switch")
+                color: external_eStop_fault ? "red" : "white"
+                font.pointSize: 36
+            }
+
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: qsTr("Isolation")
+                color: imd_status_fault ? "red" : "white"
+                font.pointSize: 36
+            }
+
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: qsTr("Driver Door")
+                color: door_fault ? "red" : "white"
+                font.pointSize: 36
+            }
+
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: qsTr("Crash")
+                color: crash_fault ? "red" : "white"
+                font.pointSize: 36
+            }
+
+            Text {
+                Layout.alignment: Qt.AlignHCenter
+                text: qsTr("MCU Check")
+                color: mcu_check_fault ? "red" : "white"
+                font.pointSize: 36
             }
         }
-    }
-
-    Text {
-        x: (parent.width - width) / 2
-        y: 25
-        text: restartEnable ? "Uh oh... Something's wrong with your car." : "Oh hey, your car's fine now.\nTap this window to close it."
-    }
-
-    ColumnLayout {
-        anchors.centerIn: parent
-        spacing: 5
 
         Text {
-            //x: (restartPopup.width - width) / 2
-            //y: restartPopup.height / 2 + 40
-            text: qsTr("Battery Pack Switch")
-            color: battery_eStop ? "black" : "red"
-            font.pointSize: 12
+            x: (parent.width - width) / 2
+            y: parent.height - height - 20
+            horizontalAlignment: Text.AlignHCenter
+            font.pointSize: 20
+            text: restartEnable ? qsTr("") : qsTr("All faults cleared\nTap anywhere to clear warning")
+            color: "#ffffff"
         }
-
-        Text {
-            //x: (restartPopup.width - width) / 2
-            //y: restartPopup.height / 2 + 60
-            text: qsTr("Driver Shutdown Switch")
-            color: driver_eStop ? "black" : "red"
-            font.pointSize: 12
-        }
-
-        /*CheckBox {
-            /*topInset: -2
-            leftInset: -2
-            rightInset: -2
-            bottomInset: -2
-            background: Rectangle {
-                opacity: battery_eStop ? 0 : 0.5
-                color: "red"
-            }*/
-            // Change text color based on shutdown circuit input value
-            /*text: qsTr("<font color=\"%1\">Battery Pack Switch</font>".arg(battery_eStop ? "black" : "red"))
-            checkable: false // Don't allow user input
-            focusPolicy: Qt.NoFocus // CheckBox won't accept focus
-            Binding on checked { value: battery_eStop }
-        }
-
-        CheckBox {
-            /*topInset: -2
-            leftInset: -2
-            rightInset: -2
-            bottomInset: -2
-            background: Rectangle {
-                opacity: driver_eStop ? 0 : 0.5
-                color: "red"
-            }*/
-            // Change text color based on shutdown circuit input value
-            /*text: qsTr("<font color=\"%1\">Driver Shutdown Switch</font>".arg(driver_eStop ? "black" : "red"))
-            checkable: false // Don't allow user input
-            focusPolicy: Qt.NoFocus // CheckBox won't accept focus
-            Binding on checked { value: driver_eStop }
-
-        }*/
     }
 }
-/*
-Window {
-    id: restartWindow
-    flags: Qt.Window | Qt.WindowStaysOnTopHint | Qt.WindowTitleHint
-    title: "WARNING: Restart Enable Required"
-    x: (parent.width - width) / 2
-    y: (parent.height - height) / 2
-    width: 500
-    height: 500
-
-    Rectangle {
-        anchors.fill: parent
-        color: "lightGrey"
-
-        Text {
-            anchors.centerIn: parent
-            text: restartEnable ? "Uh oh... Something's wrong with your car." : "Oh hey, your car's fine now.\nTap this window to close it."
-        }
-
-        Text {
-            x: (restartWindow.width - width) / 2
-            y: restartWindow.height / 2 + 40
-            text: qsTr("Battery Pack Switch: " + battery_eStop)
-        }
-        Text {
-            x: (restartWindow.width - width) / 2
-            y: restartWindow.height / 2 + 60
-            text: qsTr("Driver Shutdown Switch: " + driver_eStop)
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                if(!restartEnable) {
-                    restartWindow.close();
-                }
-            }
-        }
-
-    }
-}*/
