@@ -41,7 +41,7 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
                 dataToByteArray(data,(uint8_t)speedFunc(timeArg));
             } else if(names[i] == "rtc_hr") {
                 time(&rawTime);
-                dataToByteArray(data,(uint8_t)((gmtime(&rawTime)->tm_hour-6)%24));
+                dataToByteArray(data,(uint8_t)((gmtime(&rawTime)->tm_hour+18)%24));
             } else if(names[i] == "rtc_mn") {
                 time(&rawTime);
                 dataToByteArray(data,(uint8_t)(gmtime(&rawTime)->tm_min));
@@ -107,7 +107,6 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
             addDoubleToArray(data,(double)rand()/((RAND_MAX+1u)/200));
         }
     }
-    // TODO errTimeLeft--;
 }
 
 

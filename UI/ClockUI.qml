@@ -7,7 +7,7 @@ Item {
 
     function updateTime(){
         var date = new Date
-        hours = (date.getUTCHours()+24-6)%24
+        hours = (date.getUTCHours()+18)%24
         minutes = date.getMinutes()
         seconds = date.getUTCSeconds()
     }
@@ -16,6 +16,17 @@ Item {
         if(time<10)
             return "0"+time
         return time
+    }
+
+    function getDelay(packetHr, packetMin, packetSec) {
+        var realTime = new Date
+        var packetTime = new Date
+        realTime.setHours(hours)
+        packetTime.setHours(packetHr)
+        packetTime.setMinutes(packetMin)
+        packetTime.setSeconds(packetSec)
+
+        return (realTime.getTime() - packetTime.getTime()) / 1000;
     }
 
     width: 400
@@ -34,19 +45,19 @@ Item {
             x: (rectangle.width-width)/2
             y: (rectangle.height/2-height)/2
             color: "#ffffff"
-            text: hours + ":" + formatTime(minutes) + ":" + formatTime(seconds)
+            text: formatTime(hours) + ":" + formatTime(minutes) + ":" + formatTime(seconds)
             font.pixelSize: 80
         }
 
         Text {
-            property bool delay: (backEnd.rtc_hr !== hours) || (backEnd.rtc_mn !== minutes) || (backEnd.rtc_sc !== seconds)
+            property int delay: getDelay(backEnd.rtc_hr, backEnd.rtc_mn, backEnd.rtc_sc)
 
             id: packetDelay
             x: (rectangle.width-width)/2
             y: (rectangle.height/2+height)/2
-            color: delay ? "red" : "#ffffff"
-            text: (delay ? "-" : "") + Math.abs(backEnd.rtc_hr - hours) + ":" + formatTime(Math.abs(backEnd.rtc_mn - minutes)) + ":" + formatTime(Math.abs(backEnd.rtc_sc - seconds))
-            font.pixelSize: 80
+            color: (delay < 2) ? "#ffffff" : "red"
+            text: ((delay > 0) ? "-" : "") + formatTime((Math.floor((delay/3600))%24)) + ":" + formatTime(Math.floor((delay/60))%60) + ":" + formatTime(delay%60)
+            font.pixelSize: 60
         }
     }
 

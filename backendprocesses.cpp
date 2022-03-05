@@ -75,6 +75,10 @@ void BackendProcesses::threadProcedure()
 
     data.getData(bytes, names, types, time);
 
+    // TODO set time received data here
+
+
+
     for (QTcpSocket* socket : _sockets) {
         //socket->write(QByteArray::fromStdString("From solar car: connected to server! " + std::to_string(time) + "\n"));
         //socket->write(QByteArray::fromStdString("Speed: " + std::to_string(speed) + "; Size: " + std::to_string(sizeof(bytes)) + "\n"));
