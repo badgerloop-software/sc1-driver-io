@@ -4,6 +4,7 @@ Item {
     property int hours
     property int minutes
     property int seconds
+    property int delay
 
     function updateTime(){
         var date = new Date
@@ -18,15 +19,17 @@ Item {
         return time
     }
 
-    function getDelay(packetHr, packetMin, packetSec) {
+    function updateDelay(packetHr, packetMin, packetSec, packetMSec) {
         var realTime = new Date
         var packetTime = new Date
+
         realTime.setHours(hours)
         packetTime.setHours(packetHr)
         packetTime.setMinutes(packetMin)
         packetTime.setSeconds(packetSec)
+        packetTime.setMilliseconds(packetMSec)
 
-        return (realTime.getTime() - packetTime.getTime()) / 1000;
+        delay = realTime.getTime() - packetTime.getTime()
     }
 
     width: 400
@@ -50,13 +53,12 @@ Item {
         }
 
         Text {
-            property int delay: getDelay(backEnd.rtc_hr, backEnd.rtc_mn, backEnd.rtc_sc)
-
             id: packetDelay
             x: (rectangle.width-width)/2
             y: (rectangle.height/2+height)/2
-            color: (delay < 2) ? "#ffffff" : "red"
-            text: ((delay > 0) ? "-" : "") + formatTime((Math.floor((delay/3600))%24)) + ":" + formatTime(Math.floor((delay/60))%60) + ":" + formatTime(delay%60)
+            color: (delay < 2000) ? "#ffffff" : "red"
+            text: ((delay > 0) ? "-" : "") + formatTime(Math.floor(delay/3600000)%24) + ":" + formatTime(Math.floor(delay/60000)%60) + ":" + formatTime(Math.round(delay/1000)%60)
+            //text: formatTime(backEnd.tstamp_hr) + ":" + formatTime(backEnd.tstamp_mn) + ":" + formatTime(backEnd.tstamp_sc) + ":" + backEnd.tstamp_ms
             font.pixelSize: 60
         }
     }
@@ -65,6 +67,9 @@ Item {
         interval: 100
         running: true
         repeat: true
-        onTriggered: updateTime()
+        onTriggered: {
+            updateTime()
+            updateDelay(backEnd.tstamp_hr, backEnd.tstamp_mn, backEnd.tstamp_sc, backEnd.tstamp_ms)
+        }
     }
 }
