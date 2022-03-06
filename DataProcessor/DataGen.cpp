@@ -8,8 +8,8 @@ int lastSpeed=0;
 int lastT=0;
 time_t errStartTime=0;
 std::string errors="";
-time_t rawTime;
-//TODO struct tm *currTime;
+// TODO time_t rawTime;
+// TODO struct tm *currTime;
 
 /**
  * Generates an array of test data
@@ -39,17 +39,28 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
         } else if(types[i] == "uint8") {
             if(names[i] == "speed") {
                 dataToByteArray(data,(uint8_t)speedFunc(timeArg));
-            } else if(names[i] == "rtc_hr") {
-                time(&rawTime);
-                dataToByteArray(data,(uint8_t)((gmtime(&rawTime)->tm_hour+18)%24));
-            } else if(names[i] == "rtc_mn") {
-                time(&rawTime);
-                dataToByteArray(data,(uint8_t)(gmtime(&rawTime)->tm_min));
-            } else if(names[i] == "rtc_sc") {
-                time(&rawTime);
-                dataToByteArray(data,(uint8_t)(gmtime(&rawTime)->tm_sec));
+            } else if(names[i] == "tstamp_hr") {
+                //time(&rawTime);
+                //dataToByteArray(data,(uint8_t)((gmtime(&rawTime)->tm_hour+18)%24));
+                dataToByteArray(data,(uint8_t)0);
+            } else if(names[i] == "tstamp_mn") {
+                //time(&rawTime);
+                //dataToByteArray(data,(uint8_t)(gmtime(&rawTime)->tm_min));
+                dataToByteArray(data,(uint8_t)0);
+            } else if(names[i] == "tstamp_sc") {
+                //time(&rawTime);
+                //dataToByteArray(data,(uint8_t)(gmtime(&rawTime)->tm_sec));
+                dataToByteArray(data,(uint8_t)0);
             } else {
                 dataToByteArray(data,(uint8_t)fmod(rand(),200));
+            }
+        }  else if(types[i] == "uint16") {
+            if(names[i] == "tstamp_ms") {
+                //time(&rawTime);
+                //dataToByteArray(data,(uint16_t)(gmtime(&rawTime)->tm_sec));
+                dataToByteArray(data,(uint16_t)0);
+            } else {
+                dataToByteArray(data,(uint16_t)fmod(rand(),200));
             }
         } else if(types[i] == "bool") {
             // For shutdown circuit inputs, any triggerred error will stay triggered for 3 seconds after the most recent error is triggered

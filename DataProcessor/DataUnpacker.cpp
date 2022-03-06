@@ -49,18 +49,32 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     Document d;
     d.ParseStream(is);
 
+    int arrayOffset = 0;
+    timestampOffsets tstampOff;
 
     for(Value::ConstMemberIterator itr = d.MemberBegin(); itr != d.MemberEnd(); ++itr) {
         std::string name = itr->name.GetString();
         const Value& arr = itr->value.GetArray();
+
         names.push_back(name);
         byteNums.push_back(arr[0].GetInt());
         types.push_back(arr[1].GetString());
+
+        if(name == "tstamp_hr") {
+            tstampOff.hr = arrayOffset;
+        } else if(name == "tstamp_mn") {
+            tstampOff.mn = arrayOffset;
+        } else if(name == "tstamp_sc") {
+            tstampOff.sc = arrayOffset;
+        } else if(name == "tstamp_ms") {
+            tstampOff.ms = arrayOffset;
+        }
+        arrayOffset += arr[0].GetInt();
     }
 
     fclose(fp);
 
-    BackendProcesses* retriever = new BackendProcesses(bytes, names, types);
+    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff);
 
     retriever->moveToThread(&dataHandlingThread);
     connect(&dataHandlingThread, &QThread::started, retriever, &BackendProcesses::startThread);
@@ -91,6 +105,11 @@ void DataUnpacker::unpack()
             // Make sure the property exists
             if(this->property(names[i].c_str()).isValid()) {
                 this->setProperty(names[i].c_str(), bytesToGeneralData(bytes, currByte, currByte + byteNums[i] - 1, (uint8_t)0));
+            }
+        } else if(types[i] == "uint16") {
+            // Make sure the property exists
+            if(this->property(names[i].c_str()).isValid()) {
+                this->setProperty(names[i].c_str(), bytesToGeneralData(bytes, currByte, currByte + byteNums[i] - 1, (uint16_t)0));
             }
         } else if(types[i] == "bool") {
             // Make sure the property exists
