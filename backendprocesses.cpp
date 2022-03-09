@@ -81,27 +81,26 @@ void BackendProcesses::threadProcedure()
     auto curr_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     //time_t now = time(NULL);
 
-    //uint8_t hour_time = (gmtime(&now)->tm_hour + 18) % 24;
     uint8_t hour_time = (curr_msec/3600000 + 18) % 24;
+    //uint8_t hour_time = (gmtime(&now)->tm_hour + 18) % 24;
+    uint8_t min_time = (curr_msec/60000) % 60;
     //uint8_t min_time = gmtime(&now)->tm_min;
-    uint8_t min_time = (curr_msec/60000)%60;
+    uint8_t sec_time = (curr_msec/1000) % 60;
     //uint8_t sec_time = gmtime(&now)->tm_sec;
-    uint8_t sec_time = (curr_msec/1000)%60;
-    //uint16_t msec_time = gmtime(&now)->tm_sec;
-    uint16_t msec_time = curr_msec % 1000; // TODO Sometimes msec_time is near the upper limit of a uint16_t
+    uint16_t msec_time = curr_msec % 1000;
+
     data.getData(bytes, names, types, sec_time%7+msec_time/1000.0);
 
     // Update timestamp in byte array
     bytes.remove(tstampOffsets.hr,1);
-    bytes.insert(tstampOffsets.hr, hour_time >> 0 & 0xFF);
+    bytes.insert(tstampOffsets.hr, hour_time & 0xFF);
     bytes.remove(tstampOffsets.mn,1);
-    bytes.insert(tstampOffsets.mn, min_time >> 0 & 0xFF);
+    bytes.insert(tstampOffsets.mn, min_time & 0xFF);
     bytes.remove(tstampOffsets.sc,1);
-    bytes.insert(tstampOffsets.sc, sec_time >> 0 & 0xFF);
+    bytes.insert(tstampOffsets.sc, sec_time & 0xFF);
     bytes.remove(tstampOffsets.ms,2);
-    for (int i = 0; i <= 1 ; i++) {
-        bytes.insert(tstampOffsets.ms, msec_time >> (8 * i) & 0xFF);
-    }
+    bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
+    bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
 
     for (QTcpSocket* socket : _sockets) {
         //socket->write(QByteArray::fromStdString("From solar car: connected to server! " + std::to_string(time) + "\n"));

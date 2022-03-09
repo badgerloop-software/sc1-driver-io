@@ -27,16 +27,8 @@ E bytesToGeneralData(QByteArray data, int startPos, int endPos, E typeZero)
     auto var = typeZero;
 
     for(int i = startPos ; i<=endPos ; i++) {
-        if(sizeof(var) == 2) {
-            qDebug() << "unpack (" << i << "): " << ((uint8_t)(data[i])<<(byteNum*8));
-            qDebug() << "unpack (" << i << "): " << 0+data[i];
-        }
         var = var + (((uint8_t) data[i]) << (byteNum * 8));
         byteNum--;
-    }
-
-    if(sizeof(var) == 2) {
-        qDebug() << "unpacked: " << var;
     }
 
     return var;
@@ -117,9 +109,6 @@ void DataUnpacker::unpack()
         } else if(types[i] == "uint16") {
             // Make sure the property exists
             if(this->property(names[i].c_str()).isValid()) {
-                //uint64_t curr_msec = llround(std::chrono::duration<uint64_t, std::milli>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())).count());
-                //uint16_t msec_time = curr_msec % 1000;
-                //this->setProperty(names[i].c_str(), msec_time);
                 this->setProperty(names[i].c_str(), bytesToGeneralData(bytes, currByte, currByte + byteNums[i] - 1, (uint16_t)0));
             }
         } else if(types[i] == "bool") {
