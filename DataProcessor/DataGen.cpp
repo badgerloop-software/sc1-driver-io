@@ -8,8 +8,6 @@ int lastSpeed=0;
 int lastT=0;
 time_t errStartTime=0;
 std::string errors="";
-// TODO time_t rawTime;
-// TODO struct tm *currTime;
 
 /**
  * Generates an array of test data
@@ -21,15 +19,9 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
     // Data displayed on the driver dash are given appropriate values
     for(uint i = 0; i < types.size(); i++) {
         if(types[i] == "float") {
-            /*if(names[i] == "solarPower") {
-                addFloatToArray(data,(float)solarFunc(timeArg));
-            } else*/ if((names[i] == "pack_voltage") || (names[i] == "pack_current")) {
+            if((names[i] == "pack_voltage") || (names[i] == "pack_current")) {
                 addFloatToArray(data,(float)sqrt(abs(solarFunc(timeArg)-0.5*1000*(speedFunc(timeArg)*speedFunc(timeArg)-lastSpeed*lastSpeed)/efficiency)));
-            }/* else if(names[i] == "batteryPower") {
-                addFloatToArray(data,(float)solarFunc(timeArg)-0.5*1000*(speedFunc(timeArg)*speedFunc(timeArg)-lastSpeed*lastSpeed)/efficiency);
-            } else if(names[i] == "motorPower") {
-                addFloatToArray(data,(float)(0.5*1000*(speedFunc(timeArg)*speedFunc(timeArg)-lastSpeed*lastSpeed)/efficiency));
-            }*/ else if((names[i] == "pack_temp") || (names[i] == "motor_temp")) {
+            } else if((names[i] == "pack_temp") || (names[i] == "motor_temp")) {
                 addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
             } else if(names[i] == "soc") {
                 addFloatToArray(data,(float)batteryFunc(timeArg));
@@ -39,29 +31,11 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
         } else if(types[i] == "uint8") {
             if(names[i] == "speed") {
                 dataToByteArray(data,(uint8_t)speedFunc(timeArg));
-            } else if(names[i] == "tstamp_hr") {
-                //time(&rawTime);
-                //dataToByteArray(data,(uint8_t)((gmtime(&rawTime)->tm_hour+18)%24));
-                dataToByteArray(data,(uint8_t)0);
-            } else if(names[i] == "tstamp_mn") {
-                //time(&rawTime);
-                //dataToByteArray(data,(uint8_t)(gmtime(&rawTime)->tm_min));
-                dataToByteArray(data,(uint8_t)0);
-            } else if(names[i] == "tstamp_sc") {
-                //time(&rawTime);
-                //dataToByteArray(data,(uint8_t)(gmtime(&rawTime)->tm_sec));
-                dataToByteArray(data,(uint8_t)0);
             } else {
                 dataToByteArray(data,(uint8_t)fmod(rand(),200));
             }
-        }  else if(types[i] == "uint16") {
-            if(names[i] == "tstamp_ms") {
-                //time(&rawTime);
-                //dataToByteArray(data,(uint16_t)(gmtime(&rawTime)->tm_sec));
-                dataToByteArray(data,(uint16_t)0);
-            } else {
-                dataToByteArray(data,(uint16_t)fmod(rand(),200));
-            }
+        } else if(types[i] == "uint16") {
+            dataToByteArray(data,(uint16_t)fmod(rand(),200));
         } else if(types[i] == "bool") {
             // For shutdown circuit inputs, any triggerred error will stay triggered for 3 seconds after the most recent error is triggered
             // When a new error is triggerred, the countdown will restart from 3 seconds for all currently triggered errors
