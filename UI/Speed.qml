@@ -44,12 +44,11 @@ Item {
 
         Rectangle {
             id: genRect
-            x: 0
-            y: 200
+            //x: 0
+            //y: 200
             width: 10
             height: 100
-            color: "green"
-            //property int prevSpeed: prevSpeed
+            color: "#00fcff"
             property int prevSpeed: 0
             property int newSpeed: 0
             property int speed: backEnd.speed
@@ -73,8 +72,8 @@ Item {
                             centerY: 200
                             radiusX: 200
                             radiusY: 200
-                            startAngle: 180 + (genRect.prevSpeed/100)*180
-                            sweepAngle: ((genRect.speed-genRect.prevSpeed)/100)*180
+                            startAngle: 135 + (genRect.prevSpeed/100)*270
+                            sweepAngle: ((genRect.speed-genRect.prevSpeed)/100)*270
                         }
                     }
                 }
