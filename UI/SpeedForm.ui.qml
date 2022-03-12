@@ -1,7 +1,7 @@
-import QtQuick 2.4
+/*import QtQuick 2.4
 
 Item {
-    id:speedBox
+    id: speedBox
     width: 400
     height: 400
     Rectangle {
@@ -15,8 +15,8 @@ Item {
 
         Text {
             id: text1
-            x: (speedBox.width-width)/2
-            y: (speedBox.height-height)/2
+            x: (speedBox.width - width) / 2
+            y: (speedBox.height - height) / 2
             color: "#ffffff"
             text: backEnd.speed
             font.pixelSize: 150
@@ -37,3 +37,9 @@ Item {
         }
     }
 }
+
+/*##^##
+Designer {
+    D{i:0;formeditorZoom:0.66}D{i:2}D{i:3}D{i:1}
+}
+##^##*/
