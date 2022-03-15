@@ -33,14 +33,14 @@ Item {
     }
 
     width: 400
-    height: 220
+    height: 200
 
     Rectangle {
         id: rectangle
         x: 0
         y: 0
         width: 400
-        height: 220
+        height: 200
         color: "#000000"
 
         Text {
@@ -50,6 +50,8 @@ Item {
             color: "#ffffff"
             text: formatTime(hours) + ":" + formatTime(minutes) + ":" + formatTime(seconds)
             font.pixelSize: 80
+            font.styleName: "Regular"
+            font.family: "Work Sans"
         }
 
         Text {
@@ -60,6 +62,8 @@ Item {
             text: ((delay > 0) ? "-" : "") + formatTime(Math.floor(delay/3600000)%24) + ":" + formatTime(Math.floor(delay/60000)%60) + ":" + formatTime(Math.round(delay/1000)%60)
             //text: formatTime(backEnd.tstamp_hr) + ":" + formatTime(backEnd.tstamp_mn) + ":" + formatTime(backEnd.tstamp_sc) + ":" + backEnd.tstamp_ms
             font.pixelSize: 60
+            font.styleName: "Regular"
+            font.family: "Work Sans"
         }
     }
 

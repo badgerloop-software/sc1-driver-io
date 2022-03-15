@@ -21,5 +21,9 @@
         <file>UI/Cruise.qml</file>
         <file>UI/CruiseForm.ui.qml</file>
         <file>RestartWindow.qml</file>
+        <file>UI/fonts/work sans/WorkSans-VariableFont_wght.ttf</file>
+        <file>UI/Accelerator.qml</file>
+        <file>UI/BatterySolarBox.qml</file>
+        <file>UI/CellStringTemps.qml</file>
     </qresource>
 </RCC>

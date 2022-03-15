@@ -1,7 +1,6 @@
 import QtQuick 2.4
 
 Item {
-
     function getColor(cruise) {
         if(cruise)
             return "#40C321"
