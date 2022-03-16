@@ -25,5 +25,17 @@
         <file>UI/Accelerator.qml</file>
         <file>UI/BatterySolarBox.qml</file>
         <file>UI/CellStringTemps.qml</file>
+        <file>UI/Images/Blinker.png</file>
+        <file>UI/Images/Cabin.png</file>
+        <file>UI/Images/Cell String 1 (No Number).png</file>
+        <file>UI/Images/Cell String 1 Top Box.png</file>
+        <file>UI/Images/Cell String 2 (No Number).png</file>
+        <file>UI/Images/Cell String 3 (No Number).png</file>
+        <file>UI/Images/Cruise Control.png</file>
+        <file>UI/Images/Headlights.png</file>
+        <file>UI/Images/Main IO Comms Lost.png</file>
+        <file>UI/Images/Power Warning.png</file>
+        <file>UI/Images/Masked SpeedometerNo Numbers.svg</file>
+        <file>UI/Images/Needle (More Fade).svg</file>
     </qresource>
 </RCC>
