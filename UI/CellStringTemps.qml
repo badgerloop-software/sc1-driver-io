@@ -5,11 +5,11 @@ Item {
     height: 161
 
 
-    function getColor(temp){
-        if((temp >= 20) && (temp <= 50)){
+    function getColor(temp) {
+        if((temp >= 20) && (temp <= 50)) {
             return "#000000"
         }
-        else{
+        else {
             return "#bbbb00"
         }
     }

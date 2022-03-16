@@ -44,7 +44,7 @@ Item {
             width: 200
             height: 70
             color: "#ffffff"
-            text: qsTr("683.6")
+            text: (backEnd.pack_voltage * backEnd.pack_current).toFixed(1)
             font.pixelSize: 72
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -69,7 +69,7 @@ Item {
             width: 160
             height: 70
             color: "#ffffff"
-            text: qsTr("108.5")
+            text: backEnd.pack_voltage.toFixed(1)
             font.pixelSize: 64
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -84,7 +84,7 @@ Item {
             width: 160
             height: 70
             color: "#ffffff"
-            text: qsTr("6.3")
+            text: backEnd.pack_current.toFixed(1)
             font.pixelSize: 64
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -141,7 +141,7 @@ Item {
             width: 150
             height: 70
             color: "#ffffff"
-            text: qsTr("50.5")
+            text: backEnd.pack_temp.toFixed(1)
             font.pixelSize: 60
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -198,7 +198,7 @@ Item {
             width: 64
             height: 70
             color: "#ffffff"
-            text: qsTr("5")
+            text: backEnd.fan_speed
             font.pixelSize: 60
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -246,7 +246,7 @@ Item {
             width: 200
             height: 70
             color: "#ffffff"
-            text: qsTr("564.2")
+            text: (backEnd.pack_voltage * backEnd.mppt_current_out).toFixed(1)
             font.pixelSize: 72
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -261,7 +261,7 @@ Item {
             width: 160
             height: 70
             color: "#ffffff"
-            text: qsTr("108.5")
+            text: backEnd.pack_voltage.toFixed(1)
             font.pixelSize: 64
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -276,7 +276,7 @@ Item {
             width: 160
             height: 70
             color: "#ffffff"
-            text: qsTr("5.2")
+            text: backEnd.mppt_current_out.toFixed(1)
             font.pixelSize: 64
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -327,11 +327,3 @@ Item {
         }
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:0.66}D{i:3}D{i:2}D{i:4}D{i:5}D{i:6}D{i:7}D{i:8}D{i:9}D{i:10}
-D{i:11}D{i:12}D{i:13}D{i:14}D{i:15}D{i:1}D{i:18}D{i:17}D{i:19}D{i:20}D{i:21}D{i:22}
-D{i:23}D{i:24}D{i:16}
-}
-##^##*/
