@@ -4,6 +4,27 @@ Item {
     width: 575
     height: 161
 
+
+    function getColor(temp){
+        if((temp >= 20) && (temp <= 50)){
+            return "#000000"
+        }
+        else{
+            return "#bbbb00"
+        }
+    }
+
+
+    Rectangle {
+        id: cellString2Background
+        x: 288
+        y: 3
+        width: 284
+        height: 155
+        color: getColor(backEnd.string2_temp)
+        border.width: 0
+    }
+
     Image {
         id: cellString2
         x: 0
@@ -38,7 +59,7 @@ Item {
             height: 67
             visible: true
             color: "#ffffff"
-            text: qsTr("50.5")
+            text: backEnd.string2_temp.toFixed(1)
             font.pixelSize: 60
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -61,6 +82,16 @@ Item {
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
+    }
+
+    Rectangle {
+        id: cellString3Background
+        x: 3
+        y: 3
+        width: 284
+        height: 79
+        color: getColor(backEnd.string3_temp)
+        border.width: 0
     }
 
     Image {
@@ -97,7 +128,7 @@ Item {
             height: 67
             visible: true
             color: "#ffffff"
-            text: qsTr("50.5")
+            text: backEnd.string3_temp.toFixed(1)
             font.pixelSize: 60
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -120,6 +151,16 @@ Item {
             font.styleName: "Regular"
             textFormat: Text.RichText
         }
+    }
+
+    Rectangle {
+        id: cellString1Background
+        x: 5
+        y: 83
+        width: 387
+        height: 73
+        color: getColor(backEnd.string1_temp)
+        border.width: 0
     }
 
     Image {
@@ -156,7 +197,7 @@ Item {
             height: 67
             visible: true
             color: "#ffffff"
-            text: qsTr("50.5")
+            text: backEnd.string1_temp.toFixed(1)
             font.pixelSize: 60
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -179,7 +220,16 @@ Item {
             font.styleName: "Regular"
             textFormat: Text.RichText
         }
+    }
 
+    Rectangle {
+        id: cellString1TopBoxBackground
+        x: 258
+        y: 53
+        width: 29
+        height: 32
+        color: getColor(backEnd.string1_temp)
+        border.width: 0
     }
 
     Image {
@@ -206,10 +256,3 @@ Item {
         fillMode: Image.PreserveAspectFit
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:1.75}D{i:2}D{i:3}D{i:4}D{i:1}D{i:6}D{i:7}D{i:8}D{i:5}D{i:10}
-D{i:11}D{i:12}D{i:9}D{i:13}D{i:14}
-}
-##^##*/
