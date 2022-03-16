@@ -45,6 +45,9 @@ class DataUnpacker : public QObject
     Q_PROPERTY(float pack_current MEMBER pack_current NOTIFY dataChanged);
     Q_PROPERTY(float pack_temp MEMBER pack_temp NOTIFY dataChanged);
     Q_PROPERTY(float motor_temp MEMBER motor_temp NOTIFY dataChanged);
+    Q_PROPERTY(float driverIO_temp MEMBER driverIO_temp NOTIFY dataChanged);
+    Q_PROPERTY(float mainIO_temp MEMBER mainIO_temp NOTIFY dataChanged);
+    Q_PROPERTY(float cabin_temp MEMBER cabin_temp NOTIFY dataChanged);
     Q_PROPERTY(float string1_temp MEMBER string1_temp NOTIFY dataChanged);
     Q_PROPERTY(float string2_temp MEMBER string2_temp NOTIFY dataChanged);
     Q_PROPERTY(float string3_temp MEMBER string3_temp NOTIFY dataChanged);
@@ -65,7 +68,7 @@ private:
     // TOOD Include only the properties that need to be displayed on the driver dashboard
     uint8_t speed, fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
     uint16_t tstamp_ms;
-    float accelerator, soc, mppt_current_out, pack_voltage, pack_current, pack_temp, motor_temp, string1_temp, string2_temp, string3_temp;
+    float accelerator, soc, mppt_current_out, pack_voltage, pack_current, pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, string1_temp, string2_temp, string3_temp;
     bool bps_fault, cruise, left_turn, right_turn, driver_eStop, battery_eStop, external_eStop, crash, door, mcu_check, imd_status;
     QString state;
 

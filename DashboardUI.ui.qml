@@ -30,10 +30,10 @@ Item {
 
     Temperature {
         id: temperature
-        x: 691
+        x: 616
+        y: 925
         //x: 212
         //y: 436
-        y: dashboard.height - height * (scale + 1) / 2
         scale: 1
     }
 
