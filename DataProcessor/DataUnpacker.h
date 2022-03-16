@@ -29,7 +29,9 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool left_turn MEMBER left_turn NOTIFY dataChanged);
     Q_PROPERTY(bool right_turn MEMBER right_turn NOTIFY dataChanged);
     Q_PROPERTY(bool hazards MEMBER hazards NOTIFY dataChanged);
+    Q_PROPERTY(bool headlights MEMBER headlights NOTIFY dataChanged);
     Q_PROPERTY(bool cruise MEMBER cruise NOTIFY dataChanged);
+    Q_PROPERTY(bool mainIO_heartbeat MEMBER mainIO_heartbeat NOTIFY dataChanged);
     // Shutdown circuit
     Q_PROPERTY(bool battery_eStop MEMBER battery_eStop NOTIFY dataChanged);
     Q_PROPERTY(bool driver_eStop MEMBER driver_eStop NOTIFY dataChanged);
@@ -70,7 +72,7 @@ private:
     uint8_t speed, fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
     uint16_t tstamp_ms;
     float accelerator, soc, mppt_current_out, pack_voltage, pack_current, pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, string1_temp, string2_temp, string3_temp;
-    bool bps_fault, cruise, left_turn, right_turn, hazards, driver_eStop, battery_eStop, external_eStop, crash, door, mcu_check, imd_status;
+    bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat, bps_fault, driver_eStop, battery_eStop, external_eStop, crash, door, mcu_check, imd_status;
     QString state;
 
     QByteArray bytes;
