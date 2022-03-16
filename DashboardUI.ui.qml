@@ -38,12 +38,9 @@ Item {
     }
 
     Blinkers {
-        id: rightBlinker
-        x: 1353
+        id: blinkers
+        x: 628
         y: 123
-        //x: -272
-        //y: -140
-        scale: 1
     }
 
     ClockUI {
@@ -74,14 +71,6 @@ Item {
         id: stringTemps
         x: 10
         y: 894
-    }
-
-    Blinkers {
-        id: leftBlinker
-        x: 628
-        y: 123
-        rotation: 180
-        scale: 1
     }
 
     Image {
@@ -226,8 +215,8 @@ Cruise {
 
 /*##^##
 Designer {
-    D{i:0;formeditorZoom:0.5}D{i:1}D{i:2}D{i:3}D{i:4}D{i:5}D{i:6}D{i:7}D{i:8}D{i:9}D{i:10}
-D{i:11}D{i:12}D{i:13}
+    D{i:0;formeditorZoom:0.66}D{i:1}D{i:2}D{i:3}D{i:4}D{i:5}D{i:6}D{i:7}D{i:8}D{i:9}D{i:10}
+D{i:11}D{i:12}
 }
 ##^##*/
 
