@@ -4,14 +4,13 @@ Item {
     width: 362
     height: 45
 
-
     Rectangle {
         id: acceleratorPosition
         x: 5
         y: 3
-        width: 75
+        width: 352*backEnd.accelerator/5
         height: 39
-        color: "#00fff0"
+        color: "#e600fff0"
     }
     Rectangle {
         id: rectangle
@@ -23,8 +22,6 @@ Item {
         radius: 5
         border.color: "#ffffff"
         border.width: 5
-
-
 
         Rectangle {
             id: rectangle1
@@ -126,10 +123,3 @@ Item {
         }
     }
 }
-
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:2}D{i:1}D{i:3}D{i:4}D{i:5}D{i:6}D{i:7}D{i:8}D{i:9}D{i:10}D{i:11}
-D{i:12}D{i:13}D{i:2}
-}
-##^##*/
