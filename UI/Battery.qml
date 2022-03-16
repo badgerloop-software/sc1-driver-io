@@ -22,8 +22,8 @@ Item {
         x: 40
         y: 550
         width: 220
-        height: 25
-        color: "#000000"
+        height: 715*backEnd.soc/100
+        color: getColor(backEnd.soc)
         anchors.bottom: battery.top
         anchors.bottomMargin: -735
         transformOrigin: Item.Center
@@ -252,7 +252,7 @@ Item {
         width: 246
         height: 100
         color: "#ffffff"
-        text: qsTr("31.0")
+        text: backEnd.soc.toFixed(1)
         font.pixelSize: 96
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
@@ -273,69 +273,4 @@ Item {
         font.family: "Work Sans"
         font.styleName: "Regular"
     }
-
-
-
-
-
-
-
 }
-
-/*Rectangle {
-    id: rectangle
-    x: 0
-    y: 0
-    width: 400
-    height: 800
-    color: "#000000"
-    border.color: "#000000"
-
-    Text {
-        id: batVal
-        x: (bat.width - width) / 2
-        y: 640
-        color: "#ffffff"
-        text: backEnd.soc.toFixed(1)
-        font.pixelSize: 60
-    }
-
-
-    Rectangle {
-        id: batLevel
-        x: 100
-        y: 605 - height
-        width: 200
-        height: 530 * ( batVal.text / 100)
-        color: getColor(backEnd.soc)
-        border.color: "#000000"
-    }
-
-
-    Image {
-        id: image
-        x: 58
-        y: 37
-        width: 285
-        height: 597
-        source: "Images/Battery.png"
-        fillMode: Image.PreserveAspectFit
-    }
-    Text {
-        id: text1
-        x: 188
-        y: 708
-        color: "#ffffff"
-        text: qsTr("%")
-        font.pixelSize: 30
-        z: 1
-    }
-}*/
-
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:0.66}D{i:1}D{i:3}D{i:4}D{i:5}D{i:6}D{i:7}D{i:8}D{i:9}D{i:10}
-D{i:11}D{i:12}D{i:13}D{i:14}D{i:15}D{i:16}D{i:17}D{i:18}D{i:19}D{i:20}D{i:21}D{i:22}
-D{i:23}D{i:2}D{i:24}D{i:25}
-}
-##^##*/
