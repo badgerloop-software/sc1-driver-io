@@ -1,12 +1,4 @@
-/*import QtQuick 2.4
-
-SpeedForm {
-
-}*/
-
 import QtQuick 2.15
-import QtQuick.Studio.Components 1.0
-import QtQuick.Shapes 1.0
 
 Item {
     id: speedBox
@@ -30,7 +22,7 @@ Item {
             width: 337
             height: 168
             color: "#ffffff"
-            text: qsTr("15")
+            text: backEnd.speed
             font.pixelSize: 238
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -45,7 +37,7 @@ Item {
             width: 166
             height: 166
             color: "#ffffff"
-            text: qsTr("D")
+            text: qsTr(backEnd.state)
             font.pixelSize: 142
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -219,6 +211,37 @@ Item {
             smooth: true
             clip: false
             fillMode: Image.PreserveAspectFit
+
+            property int prevSpeed: 0
+            property int newSpeed: 0
+
+            Connections {
+                target: backEnd
+                function onDataChanged() {
+                    needle.prevSpeed = needle.newSpeed
+                    needle.newSpeed = backEnd.speed
+                }
+            }
+
+            Behavior on newSpeed {
+                PathAnimation {
+                    id: arcPath
+                    target: needle
+                    anchorPoint: Qt.point(0, 14.5)
+                    orientation: (backEnd.speed - needle.prevSpeed >= 0) ? PathAnimation.TopFirst : PathAnimation.BottomFirst;
+                    duration: 1000
+                    path: Path {
+                        PathAngleArc {
+                            centerX: 437.5
+                            centerY: 437.5
+                            radiusX: 407.5
+                            radiusY: 407.5
+                            startAngle: 135 + (needle.prevSpeed/90)*270
+                            sweepAngle: ((backEnd.speed-needle.prevSpeed)/90)*270
+                        }
+                    }
+                }
+            }
         }
 
         Accelerator {
@@ -272,48 +295,3 @@ Item {
 
 
 }
-
-/*Rectangle {
-    id: genRect
-    //x: 0
-    //y: 200
-    width: 10
-    height: 100
-    color: "#00fcff"
-    property int prevSpeed: 0
-    property int newSpeed: 0
-    property int speed: backEnd.speed
-
-    onSpeedChanged: {
-        prevSpeed = newSpeed
-        newSpeed = speed
-    }
-
-    //rotation: backEnd.speed
-    Behavior on newSpeed {
-        PathAnimation {
-            id: arcPath
-            target: genRect
-            anchorPoint: Qt.point(5, 50)
-            orientation: PathAnimation.RightFirst
-            duration: 1000
-            path: Path {
-                PathAngleArc {
-                    centerX: 200
-                    centerY: 200
-                    radiusX: 200
-                    radiusY: 200
-                    startAngle: 135 + (genRect.prevSpeed/100)*270
-                    sweepAngle: ((genRect.speed-genRect.prevSpeed)/100)*270
-                }
-            }
-        }
-    }
-}*/
-
-/*##^##
-Designer {
-    D{i:0;formeditorZoom:0.66}D{i:2}D{i:3}D{i:4}D{i:5}D{i:6}D{i:7}D{i:8}D{i:9}D{i:10}
-D{i:11}D{i:12}D{i:13}D{i:14}D{i:15}D{i:16}D{i:17}D{i:18}D{i:19}D{i:1}
-}
-##^##*/
