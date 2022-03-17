@@ -12,7 +12,9 @@ SOURCES += \
         DataProcessor/DataGen.cpp \
         DataProcessor/DataUnpacker.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += qml.qrc \
+    UI/Images/images.qrc \
+    UI/fonts/fonts.qrc
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
@@ -26,20 +28,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    Battery.qml \
-    BatteryForm.ui.qml \
-    Blinkers.qml \
-    BlinkersForm.ui.qml \
-    Cruise.qml \
-    Cruise.ui.qml \
-    Dashboard.qml \
-    DashboardUI.ui.qml \
-    Power.qml \
-    PowerForm.ui.qml \
-    Speed.qml \
-    SpeedForm.ui.qml \
-    Window.qml \
-    WindowForm.ui.qml \
     #android/AndroidManifest.xml \
     #android/AndroidManifest.xml \
     #android/build.gradle \

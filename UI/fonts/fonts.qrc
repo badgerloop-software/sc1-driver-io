@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/UI/fonts">
+        <file>work sans/WorkSans-VariableFont_wght.ttf</file>
+    </qresource>
+</RCC>

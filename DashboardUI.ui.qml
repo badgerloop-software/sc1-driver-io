@@ -37,8 +37,8 @@ Item {
         y: 123
     }
 
-    ClockUI {
-        id: clockUI
+    Clock {
+        id: clock
         x: dashboard.width - width * (scale + 1) / 2
         y: height * (scale - 1) / 2
         scale: 1

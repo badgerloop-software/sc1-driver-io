@@ -4,38 +4,13 @@
         <file>DashboardUI.ui.qml</file>
         <file>Dashboard.qml</file>
         <file>UI/Battery.qml</file>
-        <file>UI/BatteryForm.ui.qml</file>
         <file>UI/Blinkers.qml</file>
-        <file>UI/BlinkersForm.ui.qml</file>
-        <file>UI/Power.qml</file>
-        <file>UI/PowerForm.ui.qml</file>
         <file>UI/Speed.qml</file>
-        <file>UI/SpeedForm.ui.qml</file>
         <file>UI/Temperature.qml</file>
-        <file>UI/TemperatureForm.ui.qml</file>
-        <file>UI/Alerts.qml</file>
-        <file>UI/AlertsForm.ui.qml</file>
-        <file>UI/ClockUI.qml</file>
-        <file>UI/State.qml</file>
-        <file>UI/StateForm.ui.qml</file>
-        <file>UI/Cruise.qml</file>
-        <file>UI/CruiseForm.ui.qml</file>
+        <file>UI/Clock.qml</file>
         <file>RestartWindow.qml</file>
-        <file>UI/fonts/work sans/WorkSans-VariableFont_wght.ttf</file>
         <file>UI/Accelerator.qml</file>
         <file>UI/BatterySolarBox.qml</file>
         <file>UI/CellStringTemps.qml</file>
-        <file>UI/Images/Blinker.png</file>
-        <file>UI/Images/Cabin.png</file>
-        <file>UI/Images/Cell String 1 (No Number).png</file>
-        <file>UI/Images/Cell String 1 Top Box.png</file>
-        <file>UI/Images/Cell String 2 (No Number).png</file>
-        <file>UI/Images/Cell String 3 (No Number).png</file>
-        <file>UI/Images/Cruise Control.png</file>
-        <file>UI/Images/Headlights.png</file>
-        <file>UI/Images/Main IO Comms Lost.png</file>
-        <file>UI/Images/Power Warning.png</file>
-        <file>UI/Images/Masked SpeedometerNo Numbers.svg</file>
-        <file>UI/Images/Needle (More Fade).svg</file>
     </qresource>
 </RCC>
