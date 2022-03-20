@@ -1,4 +1,4 @@
-#include "embedded/drivers/include/i2c.h"
+#include "i2c.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-#include "embedded/drivers/include/i2c-dev.h"
+#include "i2c-dev.h"
 
 /* Also need deconsturctor to close file descriptor */
 I2c::I2c(int bus, int addr, int mode) {
@@ -60,21 +60,6 @@ int I2c::write_byte(uint8_t reg) {
   return 0;
 }
 
-int I2c::write_data(uint8_t reg, uint8_t val) {
-  uint8_t buff[2];
-  buff[0] = reg;
-  buff[1] = val;
-
-  if (write(this->fd, buff, 2) != 2) {
-    std::cerr << "I2C write data error\n";
-    return -EIO;
-  }
-#ifdef TEST
-  usleep(500000);
-#endif
-  return 0;
-}
-
 int I2c::read_data(uint8_t *buff, int size) {
   if (read(this->fd, buff, size) != size) {
     std::cerr << "I2C read data error\n";
@@ -95,4 +80,15 @@ uint8_t I2c::read_from_reg(uint8_t reg) {
   rc = this->read_data(buff, 1);
   if (rc < 0) return 0xFF;
   return buff[0];
+}
+
+int I2c::read_bytes_from_reg(uint8_t reg, uint8_t *buff, int nBytes) {
+  int rc;
+  int i;
+
+  rc = this->write_byte(reg);
+  if (rc) return rc;
+  rc = this->read_data(buff, nBytes);
+  if (rc) return rc;
+  return 0;
 }
