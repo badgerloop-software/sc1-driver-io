@@ -1,7 +1,7 @@
 #ifndef __ADS1219_H__
 #define __ADS1219_H__
 
-#include "i2c.h"
+#include "embedded/drivers/include/i2c.h"
 #include <array>
 #include <stdint.h>
 #include <thread>
