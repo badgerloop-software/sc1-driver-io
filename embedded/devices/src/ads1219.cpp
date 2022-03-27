@@ -1,4 +1,6 @@
-#include "ads1219.h"
+#include "embedded/devices/include/ads1219.h"
+
+
 #define WRITE_CONFIG_REG 0x40 // 0100 00xx
 #define READ_CONFIG_REG 0x20 // 0010 00xx
 #define READ_STATUS_REG 0x24 // 0010 01xx
@@ -52,7 +54,7 @@ int Ads1219::begin() {
     rc = this->open_i2c();
     if (rc) return rc;
     this->write_byte(RESET);
-    ads_thread = std::thread(loop);
+    this->ads_thread = std::thread(&Ads1219::loop, this);
 
     return 0;
 }
