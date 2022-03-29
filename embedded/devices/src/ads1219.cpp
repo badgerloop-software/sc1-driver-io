@@ -1,4 +1,5 @@
 #include "embedded/devices/include/ads1219.h"
+#include<iostream>
 
 
 #define WRITE_CONFIG_REG 0x40 // 0100 00xx
@@ -45,7 +46,11 @@ void Ads1219::loop() {
 }
 
 float Ads1219::getVoltage(int chan) {
-    return this->voltages.at(chan).getValue();
+    if(chan >= 0 || chan <= 3){
+        return this->voltages.at(chan).getValue();
+    }
+    std::cout << "Channel number not valid.\n";
+    return 0;
 }
 
 int Ads1219::begin() {
