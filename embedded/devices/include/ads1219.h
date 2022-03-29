@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <thread>
 
-#define ADS11219_NUM_CHANNELS   0x3
+#define ADS11219_NUM_CHANNELS   0x4
 
 template <typename T>
 struct mutexVar {
