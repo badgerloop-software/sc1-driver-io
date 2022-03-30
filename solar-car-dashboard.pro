@@ -12,7 +12,8 @@ SOURCES += \
         DataProcessor/DataGen.cpp \
         DataProcessor/DataUnpacker.cpp \
         embedded/drivers/src/i2c.cpp \
-        embedded/drivers/src/serial.cpp
+        embedded/drivers/src/serial.cpp \
+        embedded/devices/src/ads1219.cpp
 
 RESOURCES += qml.qrc
 
@@ -72,4 +73,5 @@ HEADERS += \
     backendprocesses.h \
     embedded/drivers/include/i2c.h \
     embedded/drivers/include/i2c-dev.h \
-    embedded/drivers/include/serial.h
+    embedded/drivers/include/serial.h \
+    embedded/devices/include/ads1219.h

@@ -14,13 +14,13 @@ class I2c {
   int bus;
   int deviceAddress;
   int openMode;
-  int write_byte(uint8_t reg);
 
  protected:
   I2c(int bus, int addr, int mode);
   ~I2c();
   int open_i2c();
   bool is_open();
+  int write_byte(uint8_t reg);
   template <class T>
   int write_data(uint8_t reg, T val);
   int read_data(uint8_t *buff, int size);
