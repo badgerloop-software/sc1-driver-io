@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 5.0.3, 2022-01-25T14:52:08. -->
+<!-- Written by QtCreator 5.0.3, 2022-03-30T23:11:44. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -242,9 +242,8 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">solar-car-dashboard2</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/Users/mcli/Downloads/solar-car-dashboard-SW-44-tcp-communication/solar-car-dashboard.pro</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/Users/mcli/Downloads/solar-car-dashboard-SW-44-tcp-communication/solar-car-dashboard.pro</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/Users/mcli/Downloads/sc1-driver-io-SW-29-redesign/solar-car-dashboard.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/Users/mcli/Downloads/sc1-driver-io-SW-29-redesign/solar-car-dashboard.pro</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>

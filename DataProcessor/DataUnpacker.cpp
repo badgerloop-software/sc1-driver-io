@@ -27,7 +27,7 @@ E bytesToGeneralData(QByteArray data, int startPos, int endPos, E typeZero)
     auto var = typeZero;
 
     for(int i = startPos ; i<=endPos ; i++) {
-        var=var+data[i]<<byteNum*8;
+        var = var + (((uint8_t) data[i]) << (byteNum * 8));
         byteNum--;
     }
 
@@ -38,9 +38,9 @@ E bytesToGeneralData(QByteArray data, int startPos, int endPos, E typeZero)
 
 DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 {
-    FILE* fp = fopen("../sc1-driver-io/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+    FILE* fp = fopen("/Users/mcli/Desktop/BadgerLoop/sc1-driver-io-SW-29-redesign/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     if(fp == 0) {
-        fp = fopen("../solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+        fp = fopen("/Users/mcli/Desktop/BadgerLoop/sc1-driver-io-SW-29-redesign/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     }
 
     char readBuffer[65536];
@@ -49,18 +49,32 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     Document d;
     d.ParseStream(is);
 
+    int arrayOffset = 0;
+    timestampOffsets tstampOff;
 
     for(Value::ConstMemberIterator itr = d.MemberBegin(); itr != d.MemberEnd(); ++itr) {
         std::string name = itr->name.GetString();
         const Value& arr = itr->value.GetArray();
+
         names.push_back(name);
         byteNums.push_back(arr[0].GetInt());
         types.push_back(arr[1].GetString());
+
+        if(name == "tstamp_hr") {
+            tstampOff.hr = arrayOffset;
+        } else if(name == "tstamp_mn") {
+            tstampOff.mn = arrayOffset;
+        } else if(name == "tstamp_sc") {
+            tstampOff.sc = arrayOffset;
+        } else if(name == "tstamp_ms") {
+            tstampOff.ms = arrayOffset;
+        }
+        arrayOffset += arr[0].GetInt();
     }
 
     fclose(fp);
 
-    BackendProcesses* retriever = new BackendProcesses(bytes, names, types);
+    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff,mutex);
 
     retriever->moveToThread(&dataHandlingThread);
     connect(&dataHandlingThread, &QThread::started, retriever, &BackendProcesses::startThread);
@@ -81,6 +95,7 @@ void DataUnpacker::unpack()
 {
     int currByte = 0;
 
+    mutex.lock();
     for(uint i=0; i < names.size(); i++) {
         if(types[i] == "float") {
             // Make sure the property exists
@@ -91,6 +106,11 @@ void DataUnpacker::unpack()
             // Make sure the property exists
             if(this->property(names[i].c_str()).isValid()) {
                 this->setProperty(names[i].c_str(), bytesToGeneralData(bytes, currByte, currByte + byteNums[i] - 1, (uint8_t)0));
+            }
+        } else if(types[i] == "uint16") {
+            // Make sure the property exists
+            if(this->property(names[i].c_str()).isValid()) {
+                this->setProperty(names[i].c_str(), bytesToGeneralData(bytes, currByte, currByte + byteNums[i] - 1, (uint16_t)0));
             }
         } else if(types[i] == "bool") {
             // Make sure the property exists
@@ -110,6 +130,7 @@ void DataUnpacker::unpack()
         currByte += byteNums[i];
     }
 
+    mutex.unlock();
     // Signal data update for front end
     emit dataChanged();
     // Signal to get new data

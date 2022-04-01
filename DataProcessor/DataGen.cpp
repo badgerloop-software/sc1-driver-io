@@ -6,40 +6,69 @@
 
 int lastSpeed=0;
 int lastT=0;
+time_t errStartTime=0;
+std::string errors="";
 
 /**
  * Generates an array of test data
  * @param data The vector array to store the data, put an empty vector.
- * @param time time
+ * @param timeArg time
  */
-void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::vector<std::string> &types, double time) {
+void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::vector<std::string> &types, double timeArg) {
     // Add random data to bytes according to the type of each piece of data
     // Data displayed on the driver dash are given appropriate values
     for(uint i = 0; i < types.size(); i++) {
         if(types[i] == "float") {
-            /*if(names[i] == "solarPower") {
-                addFloatToArray(data,(float)solarFunc(time));
-            } else*/ if((names[i] == "pack_voltage") || (names[i] == "pack_current")) {
-                addFloatToArray(data,(float)sqrt(abs(solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency)));
-            }/* else if(names[i] == "batteryPower") {
-                addFloatToArray(data,(float)solarFunc(time)-0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency);
-            } else if(names[i] == "motorPower") {
-                addFloatToArray(data,(float)(0.5*1000*(speedFunc(time)*speedFunc(time)-lastSpeed*lastSpeed)/efficiency));
-            }*/ else if((names[i] == "pack_temp") || (names[i] == "motor_temp")) {
+            if((names[i] == "pack_voltage") || (names[i] == "pack_current")) {
+                addFloatToArray(data,(float)sqrt(abs(solarFunc(timeArg)-0.5*1000*(speedFunc(timeArg)*speedFunc(timeArg)-lastSpeed*lastSpeed)/efficiency)));
+            } else if((names[i] == "pack_temp") || (names[i] == "motor_temp") || (names[i] == "driverIO_temp") ||
+                      (names[i] == "mainIO_temp") || (names[i] == "cabin_temp")) {
                 addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
             } else if(names[i] == "soc") {
-                addFloatToArray(data,(float)batteryFunc(time));
+                addFloatToArray(data,(float)batteryFunc(timeArg));
+            } else if(names[i] == "accelerator") {
+                addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/5));
             } else {
                 addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/100));
             }
         } else if(types[i] == "uint8") {
             if(names[i] == "speed") {
-                dataToByteArray(data,(uint8_t)speedFunc(time));
+                dataToByteArray(data,(uint8_t)speedFunc(timeArg));
             } else {
                 dataToByteArray(data,(uint8_t)fmod(rand(),200));
             }
+        } else if(types[i] == "uint16") {
+            dataToByteArray(data,(uint16_t)fmod(rand(),200));
         } else if(types[i] == "bool") {
-            dataToByteArray(data,rand()>rand());
+            // For shutdown circuit inputs, any triggerred error will stay triggered for 3 seconds after the most recent error is triggered
+            // When a new error is triggerred, the countdown will restart from 3 seconds for all currently triggered errors
+            if((names[i] == "battery_eStop") || (names[i] == "driver_eStop") || (names[i] == "external_eStop") ||
+               (names[i] == "imd_status") || (names[i] == "door") || (names[i] == "mcu_check")) {
+                // NC/preferred true shutdown circuit inputs
+                std::size_t errPos = errors.find(names[i]);
+                bool error = (rand()%200+1 >= 2) && !((errStartTime > time(NULL) - 3) && (errPos != std::string::npos));
+                dataToByteArray(data,error);
+                if(!error && (errPos == std::string::npos)) {
+                    time(&errStartTime);
+                    errors += names[i];
+                } else if((errPos != std::string::npos) && (errStartTime <= time(NULL) - 3)) {
+                    errors.erase(errPos,names[i].length());
+                }
+            } else if(names[i] == "crash") {
+                // NO/preferred false shutdown circuit inputs
+                std::size_t errPos = errors.find(names[i]);
+                bool error = (rand()%200+1 <= 2) || ((errStartTime > time(NULL) - 3) && (errPos != std::string::npos));
+                dataToByteArray(data,error);
+                if(error && (errPos == std::string::npos)) {
+                    time(&errStartTime);
+                    errors += names[i];
+                } else if((errPos != std::string::npos) && (errStartTime <= time(NULL) - 3)) {
+                    errors.erase(errPos,names[i].length());
+                }
+            } else {
+                // Not a shutdown circuit input
+                dataToByteArray(data,rand()>rand());
+            }
         } else if(types[i] == "char") {
             if(names[i] == "state") {
                 switch((int)fmod(rand(),4)) {
@@ -67,6 +96,10 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
         }
     }
 }
+
+
+
+
 
 DataGen::DataGen(func speedFunc, func solarFunc, func batteryFunc, float efficiency) {
     this->speedFunc=speedFunc;
