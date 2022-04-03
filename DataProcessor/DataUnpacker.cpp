@@ -129,6 +129,10 @@ void DataUnpacker::unpack()
         currByte += byteNums[i];
     }
 
+    // TODO Finish this
+    this->restart_enable = !battery_eStop || !driver_eStop || !external_eStop || !imd_status || !door || crash || !mcu_check || restart_enable;
+    //this->setProperty("restart_enable", !battery_eStop || !driver_eStop || !external_eStop || !imd_status || !door || crash || !mcu_check);
+
     // Signal data update for front end
     emit dataChanged();
     // Signal to get new data

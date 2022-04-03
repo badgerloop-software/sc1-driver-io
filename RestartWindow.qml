@@ -15,7 +15,10 @@ Popup {
     closePolicy: Popup.NoAutoClose
 
     Overlay.onPressed: {
-        if(!restartEnable) {
+        // TODO if(battery_eStop_fault===true || driver_eStop_fault===true || external_eStop_fault===true || imd_status_fault===true || door_fault===true || crash_fault===true || mcu_check_fault===true)
+        // TODO if(!restartEnable) {
+        if(!battery_eStop_fault && !driver_eStop_fault && !external_eStop_fault && !imd_status_fault && !door_fault && !crash_fault && !mcu_check_fault) {
+            backEnd.restart_enable = false; // TODO Maybe I should use a getter and setter for restart_enable instead of using a member. Would this mess with getting controls the restart enable siganl? Could I just also modify an additional member inside of the getter/settter methods?
             restartPopup.close();
         }
     }
@@ -29,6 +32,7 @@ Popup {
     }
 
     contentItem: Rectangle {
+        id: popupRect
         color: "#000000"
 
         Text {
@@ -91,12 +95,36 @@ Popup {
             }
 
             Text {
+                id: mcu_check_text
                 Layout.alignment: Qt.AlignHCenter
                 text: qsTr("MCU Check")
                 color: mcu_check_fault ? "red" : "white"
                 font.pointSize: 36
             }
+
+            ColumnLayout {
+                id: mcu_check
+                Layout.alignment: Qt.AlignHCenter
+                spacing: 3
+
+                Text {
+                    Layout.alignment: Qt.AlignHCenter
+                    visible: over_voltage_fault || under_voltage_fault
+                    text: qsTr(over_voltage_fault ? "Overvoltage" : under_voltage_fault ? "Undervoltage" : "")
+                    color: (over_voltage_fault || under_voltage_fault) ? "red" : "white"
+                    font.pointSize: 30
+                }
+
+                Text {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: qsTr("Driver Shutdown Switch")
+                    color: driver_eStop_fault ? "red" : "white"
+                    font.pointSize: 30
+                }
+            }
         }
+
+
 
         Text {
             x: (parent.width - width) / 2

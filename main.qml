@@ -22,7 +22,15 @@ Window {
     property bool door_fault: !backEnd.door
     property bool crash_fault: backEnd.crash
     property bool mcu_check_fault: !backEnd.mcu_check
-    property bool restartEnable: battery_eStop_fault===true || driver_eStop_fault===true || external_eStop_fault===true || imd_status_fault===true || door_fault===true || crash_fault===true || mcu_check_fault===true
+    property bool over_voltage_fault: backEnd.pack_voltage > 108
+    property bool under_voltage_fault: backEnd.pack_voltage < 69
+    property bool over_current_fault: backEnd.pack_current > 100 // TODO
+    property bool under_current_fault: backEnd.pack_current < 0 // TODO
+    property bool over_temp_fault: backEnd.pack_temp > 60 // TODO
+
+
+
+    property bool restartEnable: backEnd.restart_enable // TODO battery_eStop_fault===true || driver_eStop_fault===true || external_eStop_fault===true || imd_status_fault===true || door_fault===true || crash_fault===true || mcu_check_fault===true
 
     onRestartEnableChanged: {
         root.restartWin.open();
