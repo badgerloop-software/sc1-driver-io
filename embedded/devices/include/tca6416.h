@@ -1,6 +1,6 @@
 #ifndef __tca__h__
 #define __tca__h__
-#include "i2c.h"
+#include "embedded/drivers/include/i2c.h"
 #include "stdint.h"
 
 #define TCA_CFG0_REG 0x06

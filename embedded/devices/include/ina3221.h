@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "i2c.h"
+#include "embedded/drivers/include/i2c.h"
 
 #define INA_NUM_CHANNELS 0x3
 
