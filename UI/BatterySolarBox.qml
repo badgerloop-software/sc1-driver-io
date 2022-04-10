@@ -4,6 +4,18 @@ Item {
     width: 585
     height: 600
     visible: true
+    z: 0
+
+    function threshold(val, min, max){
+        if(val <= max && val >=min) {
+            return "#000000"
+        }
+        else {
+            return "#bbbb00"
+        }
+    }
+
+
 
     Rectangle {
         id: battery
@@ -13,6 +25,7 @@ Item {
         height: 375
         color: "#000000"
         border.color: "#ffffff"
+        z: 0
 
         Rectangle {
             x: 0
@@ -48,6 +61,7 @@ Item {
             font.pixelSize: 72
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -60,6 +74,7 @@ Item {
             height: 150
             color: "#000000"
             border.color: "#ffffff"
+            z: 0
         }
 
         Text {
@@ -73,6 +88,7 @@ Item {
             font.pixelSize: 64
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -88,6 +104,7 @@ Item {
             font.pixelSize: 64
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -102,6 +119,7 @@ Item {
             font.pixelSize: 42
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -116,6 +134,7 @@ Item {
             font.pixelSize: 42
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -130,6 +149,7 @@ Item {
             font.pixelSize: 42
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -145,6 +165,7 @@ Item {
             font.pixelSize: 60
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -159,6 +180,7 @@ Item {
             font.pixelSize: 42
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -173,6 +195,7 @@ Item {
             font.pixelSize: 30
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -187,6 +210,7 @@ Item {
             font.pixelSize: 30
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -202,10 +226,61 @@ Item {
             font.pixelSize: 60
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
 
+        Rectangle {
+            id: voltrect
+            x: 1
+            y: 62
+            width: 268
+            height: 81
+            color: threshold(packVoltage.text,30,1000000)
+            rotation: 0
+            z: 0
+        }
+
+        Rectangle {
+            id: amprect
+            x: 1
+            y: 144
+            width: 268
+            height: 81
+            color: threshold(packCurrent.text,0,60)
+            z: 0
+        }
+
+        Rectangle {
+            id: wattrect
+            x: 269
+            y: 62
+            width: 315
+            height: 163
+            color: threshold(packPower.text,0,4000)
+            z: 0
+        }
+
+        Rectangle {
+            id: packtmprect
+            x: 1
+            y: 227
+            width: 292
+            height: 148
+            color: threshold(packTemp.text,0,100)
+            z: 0
+        }
+
+        Rectangle {
+            id: fanspeedrect
+            x: 293
+            y: 227
+            width: 291
+            height: 148
+            color: threshold(fanSpeed.text,0,100)
+            z: 0
+        }
     }
 
     Rectangle {
@@ -250,6 +325,7 @@ Item {
             font.pixelSize: 72
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -265,6 +341,7 @@ Item {
             font.pixelSize: 64
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -280,6 +357,7 @@ Item {
             font.pixelSize: 64
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -294,6 +372,7 @@ Item {
             font.pixelSize: 42
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -308,6 +387,7 @@ Item {
             font.pixelSize: 42
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
         }
@@ -322,8 +402,40 @@ Item {
             font.pixelSize: 42
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
+            z: 1
             font.family: "Work Sans"
             font.styleName: "Regular"
+        }
+
+        Rectangle {
+            id: svoltrect
+            x: 1
+            y: 62
+            width: 268
+            height: 81
+            color: threshold(solarVoltage.text, 40,100000)
+            rotation: 0
+            z: 0
+        }
+
+        Rectangle {
+            id: samprect1
+            x: 1
+            y: 142
+            width: 268
+            height: 81
+            color: threshold(solarCurrent.text, 0,60)
+            z: 0
+        }
+
+        Rectangle {
+            id: swattrect1
+            x: 269
+            y: 62
+            width: 315
+            height: 162
+            color: threshold(solarPower.text, 0,1000)
+            z: 0
         }
     }
 }

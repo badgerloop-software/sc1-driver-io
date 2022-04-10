@@ -16,6 +16,12 @@ Item {
         return "#ff0000"
     }
 
+    function getOpacity(num) {
+        if(num<20)
+            return 1
+        return 0
+    }
+
 
     Rectangle {
         id: batteryLevel
@@ -28,6 +34,20 @@ Item {
         anchors.bottomMargin: -735
         transformOrigin: Item.Center
     }
+
+    Image {
+        id: exclamation
+        x: (bat.width-width)/2
+        y: (bat.height-height)/2-50
+        z: 1
+        source: "Images/Exclamation.png"
+        opacity: getOpacity(backEnd.soc)
+        scale: 1.5
+        fillMode: Image.PreserveAspectFit
+        sourceSize.width: 150
+        sourceSize.height: 104
+    }
+
 
     Item {
         id: battery
