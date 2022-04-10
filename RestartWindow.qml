@@ -7,24 +7,49 @@ Popup {
     id: restartPopup
     parent: Overlay.overlay
     anchors.centerIn: parent
-    width: 750
-    height: 750
+    width: 1500
+    height: 800
     padding: 25
     modal: true
     //focus: true
     closePolicy: Popup.NoAutoClose
 
+    // TODO Assuming NC E-stops, imd_status=true preferred, NO door sensor, crash=false preferred, and mcu_check=false preferred
+
+    property int mcu_check_point_size: 22
+    property int mcu_check_pref_height: 40
+    property int shutdown_input_text_size: 30
+    property int shutdown_input_pref_height: 50
+    property bool can_close: !battery_eStop_rect.battery_eStop_fault && !driver_eStop_rect.driver_eStop_fault && !external_eStop_rect.external_eStop_fault && !imd_status_rect.imd_status_fault && !door_rect.door_fault && !crash_rect.crash_fault && !mcu_check_rect.mcu_check_fault
+
+    function getCellGroupFaults() {
+        var cellGroups = "Cell group voltage(s)\n"
+        for(const i in backEnd.cell_group_voltages) {
+            if((backEnd.cell_group_voltages[i] * 0.073) > 7.2) { // TODO Remove multiplier
+                cellGroups += i + " high, "
+            } else if((backEnd.cell_group_voltages[i] + 6) < 6.4) { // TODO Remove addition
+                cellGroups += i + " low, "
+            }
+        }
+
+        if(cellGroups.length > 22) {
+            return cellGroups.substring(0, cellGroups.length - 2)
+        } else {
+            return ""
+        }
+    }
+
+
     Overlay.onPressed: {
-        // TODO if(battery_eStop_fault===true || driver_eStop_fault===true || external_eStop_fault===true || imd_status_fault===true || door_fault===true || crash_fault===true || mcu_check_fault===true)
-        // TODO if(!restartEnable) {
-        if(!battery_eStop_fault && !driver_eStop_fault && !external_eStop_fault && !imd_status_fault && !door_fault && !crash_fault && !mcu_check_fault) {
-            backEnd.restart_enable = false; // TODO Maybe I should use a getter and setter for restart_enable instead of using a member. Would this mess with getting controls the restart enable siganl? Could I just also modify an additional member inside of the getter/settter methods?
+        if(can_close) {
+            backEnd.restart_enable = false;
+            backEnd.enableRestart(); // Signal user has enabled restart
             restartPopup.close();
         }
     }
 
     Overlay.modal: Rectangle {
-        color: "#409f6060"
+        color: "#809f6060"
     }
 
     background: Rectangle {
@@ -32,107 +57,682 @@ Popup {
     }
 
     contentItem: Rectangle {
-        id: popupRect
         color: "#000000"
 
         Text {
+            id: shutdownHeader
             x: (parent.width - width) / 2
-            y: (errors.y - parent.y) / 2 - 10
+            y:  height / 2
             horizontalAlignment: Text.AlignHCenter
-            //font.pointSize: restartEnable ? 30 : 24
-            //text: restartEnable ? "Shutdown Fault" : "All faults cleared\nTap anywhere to clear warning"
-            font.pointSize: 30
-            text: qsTr("Shutdown Fault")
+            font.pointSize: 24
+            text: qsTr("Shutdown Faults")
             color: "#ffffff"
         }
 
-        ColumnLayout {
+
+        GridLayout {
             id: errors
             x: (parent.width - width) / 2
-            y: (parent.height - height) / 2
-            spacing: 7
+            y: 2 * shutdownHeader.y + shutdownHeader.height
+            width: parent.width
+            columns: 3
+            columnSpacing: 0
+            rowSpacing: 10
 
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: qsTr("Battery Pack Switch")
-                color: battery_eStop_fault ? "red" : "white"
-                font.pointSize: 36
-            }
+            Rectangle {
+                id: battery_eStop_rect
+                color: 'black'
+                Layout.fillWidth: true
+                Layout.minimumWidth: (errors.width / 3) - 1
+                Layout.preferredWidth: errors.width / 3
+                Layout.preferredHeight: shutdown_input_pref_height
+                visible: false
 
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: qsTr("Driver Shutdown Switch")
-                color: driver_eStop_fault ? "red" : "white"
-                font.pointSize: 36
-            }
-
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: qsTr("External Shutdown Switch")
-                color: external_eStop_fault ? "red" : "white"
-                font.pointSize: 36
-            }
-
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: qsTr("Isolation")
-                color: imd_status_fault ? "red" : "white"
-                font.pointSize: 36
-            }
-
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: qsTr("Driver Door")
-                color: door_fault ? "red" : "white"
-                font.pointSize: 36
-            }
-
-            Text {
-                Layout.alignment: Qt.AlignHCenter
-                text: qsTr("Crash")
-                color: crash_fault ? "red" : "white"
-                font.pointSize: 36
-            }
-
-            Text {
-                id: mcu_check_text
-                Layout.alignment: Qt.AlignHCenter
-                text: qsTr("MCU Check")
-                color: mcu_check_fault ? "red" : "white"
-                font.pointSize: 36
-            }
-
-            ColumnLayout {
-                id: mcu_check
-                Layout.alignment: Qt.AlignHCenter
-                spacing: 3
-
-                Text {
-                    Layout.alignment: Qt.AlignHCenter
-                    visible: over_voltage_fault || under_voltage_fault
-                    text: qsTr(over_voltage_fault ? "Overvoltage" : under_voltage_fault ? "Undervoltage" : "")
-                    color: (over_voltage_fault || under_voltage_fault) ? "red" : "white"
-                    font.pointSize: 30
+                property bool battery_eStop_fault: !backEnd.battery_eStop
+                onBattery_eStop_faultChanged: {
+                    if(battery_eStop_fault) {
+                        this.visible = true;
+                    }
                 }
 
                 Text {
-                    Layout.alignment: Qt.AlignHCenter
+                    anchors.centerIn: parent
+                    text: qsTr("Battery Pack Switch")
+                    color: parent.battery_eStop_fault ? "red" : "white"
+                    font.pointSize: shutdown_input_text_size
+                }
+            }
+
+            Rectangle {
+                id: driver_eStop_rect
+                color: 'black'
+                Layout.fillWidth: true
+                Layout.minimumWidth: (errors.width / 3) - 1
+                Layout.preferredWidth: errors.width / 3
+                Layout.preferredHeight: shutdown_input_pref_height
+                visible: false
+
+                property bool driver_eStop_fault: !backEnd.driver_eStop
+                onDriver_eStop_faultChanged: {
+                    if(driver_eStop_fault) {
+                        this.visible = true;
+                    }
+                }
+
+                Text {
+                    anchors.centerIn: parent
                     text: qsTr("Driver Shutdown Switch")
-                    color: driver_eStop_fault ? "red" : "white"
-                    font.pointSize: 30
+                    color: parent.driver_eStop_fault ? "red" : "white"
+                    font.pointSize: shutdown_input_text_size
+                }
+            }
+
+            Rectangle {
+                id: external_eStop_rect
+                color: 'black'
+                Layout.fillWidth: true
+                Layout.minimumWidth: (errors.width / 3) - 1
+                Layout.preferredWidth: errors.width / 3
+                Layout.preferredHeight: shutdown_input_pref_height
+                visible: false
+
+                property bool external_eStop_fault: !backEnd.external_eStop
+                onExternal_eStop_faultChanged: {
+                    if(external_eStop_fault) {
+                        this.visible = true;
+                    }
+                }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: qsTr("External Shutdown Switch")
+                    color: parent.external_eStop_fault ? "red" : "white"
+                    font.pointSize: shutdown_input_text_size
+                }
+            }
+
+            Rectangle {
+                id: imd_status_rect
+                color: 'black'
+                Layout.fillWidth: true
+                Layout.minimumWidth: (errors.width / 3) - 1
+                Layout.preferredWidth: errors.width / 3
+                Layout.preferredHeight: shutdown_input_pref_height
+                visible: false
+
+                property bool imd_status_fault: !backEnd.imd_status
+                onImd_status_faultChanged: {
+                    if(imd_status_fault) {
+                        this.visible = true;
+                    }
+                }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: qsTr("Isolation")
+                    color: parent.imd_status_fault ? "red" : "white"
+                    font.pointSize: shutdown_input_text_size
+                }
+            }
+
+            Rectangle {
+                id: door_rect
+                color: 'black'
+                Layout.fillWidth: true
+                Layout.minimumWidth: (errors.width / 3) - 1
+                Layout.preferredWidth: errors.width / 3
+                Layout.preferredHeight: shutdown_input_pref_height
+                visible: false
+
+                property bool door_fault: !backEnd.door
+                onDoor_faultChanged: {
+                    if(door_fault) {
+                        this.visible = true;
+                    }
+                }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: qsTr("Driver Door")
+                    color: parent.door_fault ? "red" : "white"
+                    font.pointSize: shutdown_input_text_size
+                }
+            }
+
+            Rectangle {
+                id: crash_rect
+                color: 'black'
+                Layout.fillWidth: true
+                Layout.minimumWidth: (errors.width / 3) - 1
+                Layout.preferredWidth: errors.width / 3
+                Layout.preferredHeight: shutdown_input_pref_height
+                visible: false
+
+                property bool crash_fault: backEnd.crash
+                onCrash_faultChanged: {
+                    if(crash_fault) {
+                        this.visible = true;
+                    }
+                }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: qsTr("Crash")
+                    color: parent.crash_fault ? "red" : "white"
+                    font.pointSize: shutdown_input_text_size
+                }
+            }
+
+            Rectangle { // TODO SEE ASC REGULATIONS
+                id: bps_fault_rect
+                color: 'black'
+                Layout.columnSpan: 3
+                Layout.fillWidth: true
+                Layout.preferredHeight: 75
+                visible: false
+
+                property bool bps_fault: !backEnd.bps_fault
+                onBps_faultChanged: {
+                    if(bps_fault) {
+                        this.visible = true;
+                    }
+                }
+
+                Text {
+                    anchors.centerIn: parent
+                    font.weight: Font.Bold
+                    text: qsTr("BPS Fault")
+                    color: parent.bps_fault ? "red" : "white"
+                    font.pointSize: shutdown_input_text_size
+                }
+            }
+
+            Rectangle {
+                id: mcu_check_rect
+                color: 'black'
+                Layout.columnSpan: 3
+                Layout.fillWidth: true
+                Layout.preferredHeight: shutdown_input_pref_height
+                visible: false
+
+                property bool mcu_check_fault: !backEnd.mcu_check
+                onMcu_check_faultChanged: {
+                    if(mcu_check_fault) {
+                        this.visible = true;
+                    }
+                }
+
+                Text {
+                    id: mcu_check_text
+                    anchors.centerIn: parent
+                    font.weight: Font.Bold
+                    text: qsTr("MCU Check")
+                    color: parent.mcu_check_fault ? "red" : "white"
+                    font.pointSize: shutdown_input_text_size
+                }
+
+                GridLayout {
+                    id: mcu_check
+                    y: mcu_check_text.height + 10
+                    Layout.fillWidth: true
+                    columns: 4
+                    columnSpacing: 0
+                    rowSpacing: 10
+
+                    Rectangle {
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false
+
+                        property bool mps_enable_fault: !backEnd.mps_enable
+                        onMps_enable_faultChanged: {
+                            if(mps_enable_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "MPS Enable"
+                            color: parent.mps_enable_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false
+
+                        property bool over_voltage_fault: backEnd.pack_voltage > 108
+                        onOver_voltage_faultChanged: {
+                            if(over_voltage_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Battery overvoltage"
+                            color: parent.over_voltage_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false
+
+                        property bool under_voltage_fault: backEnd.pack_voltage < 69
+                        onUnder_voltage_faultChanged: {
+                            if(under_voltage_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Battery undervoltage"
+                            color: parent.under_voltage_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false
+
+                        property bool over_current_fault: backEnd.pack_current > 100 // TODO
+                        onOver_current_faultChanged: {
+                            if(over_current_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Battery overcurrent"
+                            color: parent.over_current_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false
+
+                        property bool under_current_fault: backEnd.pack_current < 0 // TODO
+                        onUnder_current_faultChanged: {
+                            if(under_current_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Battery undercurrent"
+                            color: parent.under_current_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false
+
+                        property bool bms_input_voltage_high_fault: backEnd.bms_input_voltage > 24
+                        onBms_input_voltage_high_faultChanged: {
+                            if(bms_input_voltage_high_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "BMS input voltage high"
+                            color: parent.bms_input_voltage_high_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false
+
+                        property bool bms_input_voltage_low_fault: backEnd.bms_input_voltage < 12
+                        onBms_input_voltage_low_faultChanged: {
+                            if(bms_input_voltage_low_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "BMS input voltage low"
+                            color: parent.bms_input_voltage_low_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false // TODO
+
+                        property bool over_temp_fault: backEnd.pack_temp > 60
+                        onOver_temp_faultChanged: {
+                            if(over_temp_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Battery overtemperature"
+                            color: parent.over_temp_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false
+
+                        property bool bms_canbus_failure_fault: backEnd.bms_canbus_failure
+                        onBms_canbus_failure_faultChanged: {
+                            if(bms_canbus_failure_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "BMS CANBUS failure"
+                            color: parent.bms_canbus_failure_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false
+
+                        property bool voltage_failsafe_fault: backEnd.voltage_failsafe
+                        onVoltage_failsafe_faultChanged: {
+                            if(voltage_failsafe_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "BMS voltage failsafe"
+                            color: parent.voltage_failsafe_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false
+
+                        property bool current_failsafe_fault: backEnd.current_failsafe
+                        onCurrent_failsafe_faultChanged: {
+                            if(current_failsafe_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "BMS current failsafe"
+                            color: parent.current_failsafe_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false
+
+                        property bool supply_power_failsafe_fault: backEnd.supply_power_failsafe
+                        onSupply_power_failsafe_faultChanged: {
+                            if(supply_power_failsafe_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "BMS supply power failsafe"
+                            color: parent.supply_power_failsafe_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+
+                    }
+
+                    Rectangle {
+                        property bool memory_failsafe_fault: backEnd.memory_failsafe
+
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false
+
+                        onMemory_failsafe_faultChanged: {
+                            if(memory_failsafe_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "BMS memory failsafe"
+                            color: parent.memory_failsafe_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+                    }
+
+                    Rectangle {
+                        property bool relay_failsafe_fault: backEnd.relay_failsafe
+
+                        color: 'black'
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+                        visible: false
+
+                        onRelay_failsafe_faultChanged: {
+                            if(relay_failsafe_fault) {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "BMS relay failsafe"
+                            color: parent.relay_failsafe_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        Layout.columnSpan: 4
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: contentItem.width - 20
+                        Layout.minimumHeight: mcu_check_pref_height
+                        Layout.preferredHeight: 2.5 * mcu_check_pref_height
+                        visible: false
+
+                        property var cell_group_faults: restartPopup.getCellGroupFaults()
+                        onCell_group_faultsChanged: {
+                            if(cell_group_faults !== "") {
+                                this.visible = true;
+                            }
+                        }
+
+                        Text {
+                            wrapMode: Text.Wrap
+                            width: contentItem.width - 20
+                            anchors.centerIn: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            text: parent.cell_group_faults
+                            color: "red"
+                            font.pointSize: 18
+                        }
+                    }
                 }
             }
         }
 
-
-
         Text {
             x: (parent.width - width) / 2
-            y: parent.height - height - 20
+            y: parent.height - height - 15
             horizontalAlignment: Text.AlignHCenter
-            font.pointSize: 20
-            text: restartEnable ? qsTr("") : qsTr("All faults cleared\nTap anywhere to clear warning")
+            font.pointSize: 18
+            text: can_close ? qsTr("All faults cleared\nTap anywhere to clear warning") : qsTr("")
             color: "#ffffff"
         }
     }
 }
+
+/*
+ColumnLayout {
+    id: errors
+    x: (parent.width - width) / 2
+    y: (parent.height - height) / 2
+    spacing: 7
+
+    Text {
+        Layout.alignment: Qt.AlignHCenter
+        text: qsTr("Battery Pack Switch")
+        color: battery_eStop_fault ? "red" : "white"
+        font.pointSize: 36
+    }
+
+    Text {
+        Layout.alignment: Qt.AlignHCenter
+        text: qsTr("Driver Shutdown Switch")
+        color: driver_eStop_fault ? "red" : "white"
+        font.pointSize: 36
+    }
+
+    Text {
+        Layout.alignment: Qt.AlignHCenter
+        text: qsTr("External Shutdown Switch")
+        color: external_eStop_fault ? "red" : "white"
+        font.pointSize: 36
+    }
+
+    Text {
+        Layout.alignment: Qt.AlignHCenter
+        text: qsTr("Isolation")
+        color: imd_status_fault ? "red" : "white"
+        font.pointSize: 36
+    }
+
+    Text {
+        Layout.alignment: Qt.AlignHCenter
+        text: qsTr("Driver Door")
+        color: door_fault ? "red" : "white"
+        font.pointSize: 36
+    }
+
+    Text {
+        Layout.alignment: Qt.AlignHCenter
+        text: qsTr("Crash")
+        color: crash_fault ? "red" : "white"
+        font.pointSize: 36
+    }
+
+    Text {
+        id: mcu_check_text
+        Layout.alignment: Qt.AlignHCenter
+        text: qsTr("MCU Check")
+        color: mcu_check_fault ? "red" : "white"
+        font.pointSize: 36
+    }
+
+    ColumnLayout {
+        id: mcu_check
+        Layout.alignment: Qt.AlignHCenter
+        spacing: 3
+
+        Text {
+            Layout.alignment: Qt.AlignHCenter
+            visible: over_voltage_fault || under_voltage_fault
+            text: qsTr(over_voltage_fault ? "Overvoltage" : under_voltage_fault ? "Undervoltage" : "")
+            color: (over_voltage_fault || under_voltage_fault) ? "red" : "white"
+            font.pointSize: 30
+        }
+
+        Text {
+            Layout.alignment: Qt.AlignHCenter
+            text: qsTr("Driver Shutdown Switch")
+            color: driver_eStop_fault ? "red" : "white"
+            font.pointSize: 30
+        }
+
+        Text {
+            property var cell_group_faults: getCellGroupFaults()
+
+            wrapMode: Text.Wrap
+            width: 50//restartPopup.width - 50
+            Layout.preferredWidth: contentItem.width - 20
+            Layout.alignment: Qt.AlignHCenter
+            text: cell_group_faults
+            visible: cell_group_faults !== ""
+            color: "red"
+            font.pointSize: 18 // TODO 30
+        }
+    }
+}*/

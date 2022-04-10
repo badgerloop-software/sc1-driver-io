@@ -51,6 +51,9 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
     int arrayOffset = 0;
     timestampOffsets tstampOff;
+    int dataCount = 0;
+    cell_group_voltages_begin = -1;
+    cell_group_voltages_end = -1;
 
     for(Value::ConstMemberIterator itr = d.MemberBegin(); itr != d.MemberEnd(); ++itr) {
         std::string name = itr->name.GetString();
@@ -68,8 +71,17 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
             tstampOff.sc = arrayOffset;
         } else if(name == "tstamp_ms") {
             tstampOff.ms = arrayOffset;
+        } else if(name.substr(0, 10) == "cell_group") {
+            if(cell_group_voltages_begin == -1) {
+                cell_group_voltages_begin = dataCount;
+            } else {
+                cell_group_voltages_end = dataCount;
+            }
+            cell_group_voltages.push_back(0);
         }
+        qDebug() << cell_group_voltages_begin;
         arrayOffset += arr[0].GetInt();
+        dataCount++;
     }
 
     fclose(fp);
@@ -100,6 +112,8 @@ void DataUnpacker::unpack()
             // Make sure the property exists
             if(this->property(names[i].c_str()).isValid()) {
                 this->setProperty(names[i].c_str(), bytesToFloat(bytes, currByte));
+            } else if((i >= cell_group_voltages_begin) && (i <= cell_group_voltages_end)) {
+                cell_group_voltages[i - cell_group_voltages_begin] = bytesToFloat(bytes, currByte);
             }
         } else if(types[i] == "uint8") {
             // Make sure the property exists
@@ -129,9 +143,7 @@ void DataUnpacker::unpack()
         currByte += byteNums[i];
     }
 
-    // TODO Finish this
     this->restart_enable = !battery_eStop || !driver_eStop || !external_eStop || !imd_status || !door || crash || !mcu_check || restart_enable;
-    //this->setProperty("restart_enable", !battery_eStop || !driver_eStop || !external_eStop || !imd_status || !door || crash || !mcu_check);
 
     // Signal data update for front end
     emit dataChanged();
