@@ -17,7 +17,7 @@ Item {
     }
 
     function getOpacity(num) {
-        if(num<20)
+        if(num<5)
             return 1
         return 0
     }
@@ -42,7 +42,7 @@ Item {
         z: 1
         source: "Images/Exclamation.png"
         opacity: getOpacity(backEnd.soc)
-        scale: 1.5
+        scale: 1
         fillMode: Image.PreserveAspectFit
         sourceSize.width: 150
         sourceSize.height: 104

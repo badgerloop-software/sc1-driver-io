@@ -20,22 +20,27 @@ Item {
         var x=c*(1-abs((hue/60)%2-1))
         var m=value/100-c
 
-        if(hue >= 0 && hue < 60) {
+        if(hue >= 0 && hue < 45) {
             rp=c
-            gp=x
+            gp=c*(hue/60)
             bp=0
+        }
+        if(hue >= 45 && hue < 60) {
+            rp=c
+            gp=c*(hue/60)
+            bp=c*(hue/240)
         }
 
         if(hue >= 60 && hue < 120) {
-            rp=x
+            rp=0
             gp=c
-            bp=0
+            bp=c*(hue/120)
         }
 
         else if(hue >= 120 && hue < 180) {
             rp=0
             gp=c
-            bp=x
+            bp=c
         }
 
         else if(hue >= 180 && hue < 240) {
@@ -79,16 +84,16 @@ Item {
 
     //for mapping the accelerator value to desired hue 0≤x≤120, 0≤f(x)≤120
     function f(x){
-        return(120/(1+Math.pow(2.718,-(x/15-2))))
+        return(172/(1+Math.pow(2.718,-(x/15-2))))
     }
 
     Rectangle {
         id: acceleratorPosition
         x: 5
         y: 3
-        width: 352*backEnd.accelerator/5
+        width: 352*(backEnd.speed/10)/5
         height: 39
-        color: "#"+hsv2rgb(f((5-backEnd.accelerator)*24),100,100)
+        color: "#"+hsv2rgb(f((5-backEnd.speed/10)*24),100,100)
 
     }
 

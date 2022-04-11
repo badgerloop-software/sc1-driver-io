@@ -237,7 +237,7 @@ Item {
             y: 62
             width: 268
             height: 81
-            color: threshold(packVoltage.text,30,1000000)
+            color: threshold(packVoltage.text,69,108)
             rotation: 0
             z: 0
         }
@@ -248,7 +248,7 @@ Item {
             y: 144
             width: 268
             height: 81
-            color: threshold(packCurrent.text,0,60)
+            color: threshold(packCurrent.text,0,100)
             z: 0
         }
 
@@ -258,7 +258,7 @@ Item {
             y: 62
             width: 315
             height: 163
-            color: threshold(packPower.text,0,4000)
+            color: threshold(packPower.text,0,10800)
             z: 0
         }
 
@@ -268,7 +268,7 @@ Item {
             y: 227
             width: 292
             height: 148
-            color: threshold(packTemp.text,0,100)
+            color: threshold(packTemp.text,0,60)
             z: 0
         }
 
@@ -278,7 +278,7 @@ Item {
             y: 227
             width: 291
             height: 148
-            color: threshold(fanSpeed.text,0,100)
+            color: threshold(fanSpeed.text,0,6)
             z: 0
         }
     }
@@ -413,7 +413,7 @@ Item {
             y: 62
             width: 268
             height: 81
-            color: threshold(solarVoltage.text, 40,100000)
+            color: threshold(solarVoltage.text, 69, 108)
             rotation: 0
             z: 0
         }
@@ -424,7 +424,7 @@ Item {
             y: 142
             width: 268
             height: 81
-            color: threshold(solarCurrent.text, 0,60)
+            color: threshold(solarCurrent.text, 0, 7)
             z: 0
         }
 
@@ -434,7 +434,7 @@ Item {
             y: 62
             width: 315
             height: 162
-            color: threshold(solarPower.text, 0,1000)
+            color: threshold(solarPower.text, 0, 756)
             z: 0
         }
     }
