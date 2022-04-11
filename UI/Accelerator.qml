@@ -91,9 +91,9 @@ Item {
         id: acceleratorPosition
         x: 5
         y: 3
-        width: 352*(backEnd.speed/10)/5
+        width: 352*backEnd.accelerator/5
         height: 39
-        color: "#"+hsv2rgb(f((5-backEnd.speed/10)*24),100,100)
+        color: "#"+hsv2rgb(f((5-backEnd.accelerator)*24),100,100)
 
     }
 
