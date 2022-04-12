@@ -25,10 +25,10 @@ Popup {
     function getCellGroupFaults() {
         var cellGroups = "Cell group voltage(s)\n"
         for(const i in backEnd.cell_group_voltages) {
-            if((backEnd.cell_group_voltages[i] * 0.073) > 7.2) { // TODO Remove multiplier
-                cellGroups += i + " high, "
-            } else if((backEnd.cell_group_voltages[i] + 6) < 6.4) { // TODO Remove addition
-                cellGroups += i + " low, "
+            if(backEnd.cell_group_voltages[i] > 7.2) {
+                cellGroups += (parseInt(i) + 1) + " high, "
+            } else if(backEnd.cell_group_voltages[i] < 6.4) {
+                cellGroups += (parseInt(i) + 1) + " low, "
             }
         }
 
