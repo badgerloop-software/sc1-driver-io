@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <math.h>
 #include <random>
+#include <QDebug>
 
 typedef double(*func)(double);
 

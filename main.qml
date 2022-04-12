@@ -17,7 +17,9 @@ Window {
     property bool restartEnable: backEnd.restart_enable
 
     onRestartEnableChanged: {
-        root.restartWin.open();
+        if(!restartEnable) {
+            root.restartWin.open();
+        }
     }
 
     Dashboard {

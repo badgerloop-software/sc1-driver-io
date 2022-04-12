@@ -82,6 +82,7 @@ Item {
         y: 46
         width: 95
         height: 169
+        visible: backEnd.power_warnings
         // TODO If there are no specific power warnings, maybe just use this as an alert for when any voltages/currents are within 10% of their nominal min/max
         //      In that case, maybe add an icon to do the same thing but for temperatures.
         source: "UI/Images/Power Warning.png"

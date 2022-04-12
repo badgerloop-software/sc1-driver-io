@@ -71,7 +71,8 @@ void BackendProcesses::startThread()
 
 void BackendProcesses::threadProcedure()
 {
-    usleep(1000000);
+    //usleep(1000000);
+    usleep(25000);
 
     DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
 
@@ -89,7 +90,7 @@ void BackendProcesses::threadProcedure()
     //uint8_t sec_time = gmtime(&now)->tm_sec;
     uint16_t msec_time = curr_msec % 1000;
 
-    data.getData(bytes, names, types, sec_time%7+msec_time/1000.0);
+    data.getData(bytes, names, types, sec_time%10+msec_time/1000.0);
 
     // Update timestamp in byte array
     bytes.remove(tstampOffsets.hr,1);

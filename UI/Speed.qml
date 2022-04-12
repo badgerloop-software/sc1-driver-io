@@ -229,7 +229,7 @@ Item {
                     target: needle
                     anchorPoint: Qt.point(0, 14.5)
                     orientation: (backEnd.speed - needle.prevSpeed >= 0) ? PathAnimation.TopFirst : PathAnimation.BottomFirst;
-                    duration: 1000
+                    duration: 25
                     path: Path {
                         PathAngleArc {
                             centerX: 437.5
