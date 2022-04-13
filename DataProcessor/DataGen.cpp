@@ -27,7 +27,7 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
             } else if(names[i] == "soc") {
                 addFloatToArray(data,(float)batteryFunc(timeArg));
             } else if(names[i] == "accelerator") {
-                addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/5));
+                addFloatToArray(data,std::fmod(timeArg,5)/*(float)rand()/((RAND_MAX+1u)/5)*/);
             } else {
                 addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/100));
             }

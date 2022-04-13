@@ -38,9 +38,9 @@ E bytesToGeneralData(QByteArray data, int startPos, int endPos, E typeZero)
 
 DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 {
-    FILE* fp = fopen("../sc1-driver-io/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+    FILE* fp = fopen("/Users/mcli/Desktop/BadgerLoop/sc1-driver-io-SW-29-redesign/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     if(fp == 0) {
-        fp = fopen("../solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+        fp = fopen("/Users/mcli/Desktop/BadgerLoop/sc1-driver-io-SW-29-redesign/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     }
 
     char readBuffer[65536];
@@ -92,8 +92,11 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     connect(&dataHandlingThread, &QThread::started, retriever, &BackendProcesses::startThread);
     connect(this, &DataUnpacker::getData, retriever, &BackendProcesses::threadProcedure);
     connect(retriever, &BackendProcesses::dataReady, this, &DataUnpacker::unpack);
+    connect(retriever, &BackendProcesses::eng_dash_connected, this, &DataUnpacker::eng_dash_connected);
+    connect(retriever, &BackendProcesses::eng_dash_disconnected, this, &DataUnpacker::eng_dash_disconnected);
     connect(&dataHandlingThread, &QThread::finished, retriever, &QObject::deleteLater);
     connect(&dataHandlingThread, &QThread::finished, &dataHandlingThread, &QThread::deleteLater);
+
 
     dataHandlingThread.start();
 }
@@ -149,4 +152,12 @@ void DataUnpacker::unpack()
     emit dataChanged();
     // Signal to get new data
     emit getData();
+}
+
+void DataUnpacker::eng_dash_connected() {
+    eng_dash_commfail = 0;
+}
+
+void DataUnpacker::eng_dash_disconnected() {
+    eng_dash_commfail = 1;
 }

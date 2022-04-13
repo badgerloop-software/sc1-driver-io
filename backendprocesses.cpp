@@ -37,6 +37,7 @@ void BackendProcesses::onNewConnection()
    connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));
 
     _sockets.push_back(clientSocket);
+    emit eng_dash_connected();
     /*for (QTcpSocket* socket : _sockets) {
         socket->write(QByteArray::fromStdString("From solar car: " + clientSocket->peerAddress().toString().toStdString() + " connected to server !\n"));
     }*/
@@ -48,6 +49,7 @@ void BackendProcesses::onSocketStateChanged(QAbstractSocket::SocketState socketS
     {
         QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
         _sockets.removeOne(sender);
+        emit eng_dash_disconnected();
     }
 }
 

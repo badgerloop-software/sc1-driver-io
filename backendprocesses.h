@@ -34,6 +34,8 @@ public slots:
     void startThread();
 signals:
     void dataReady();
+    void eng_dash_connected();
+    void eng_dash_disconnected();
 private:
     QTcpServer _server;
     QList<QTcpSocket*> _sockets;
