@@ -16,7 +16,8 @@ SOURCES += \
         embedded/devices/src/ads1219.cpp \
         embedded/devices/src/ina3221.cpp \
         embedded/devices/src/tca6416.cpp \
-        embedded/drivers/src/gpio.cpp
+        embedded/drivers/src/gpio.cpp \
+        embedded/controlsWrapper.cpp
 
 RESOURCES += qml.qrc \
     UI/Images/images.qrc \
@@ -68,4 +69,5 @@ HEADERS += \
     embedded/devices/include/ads1219.h \
     embedded/devices/include/ina3221.h \
     embedded/devices/include/tca6416.h \
-    embedded/drivers/include/gpio.h
+    embedded/drivers/include/gpio.h \
+    embedded/controlsWrapper.h
