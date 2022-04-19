@@ -65,7 +65,7 @@ Item {
         g=(gp+m)*255
         b=(bp+m)*255
 
-        console.log(r)
+
         var rgbDec=Math.floor((r<<16)+(g<<8)+b)
         var str= rgbDec.toString(16);
 
@@ -78,18 +78,19 @@ Item {
         else if(str.length==5) {
             str = "0"+str;
         }
-        console.log(str)
+
         return str;
 
     }
 
-    //for mapping the accelerator value to desired hue 0≤x≤120, 0≤f(x)≤120
-    function h(x){
+    //for mapping the accelerator value to desired hue
+    function hue(x){
         return(172/(1+Math.pow(2.718,4*(x-2.5))))
     }
 
     //-50*e^-(2*(x-3.5))^2
-    function s(x) {
+    //for mapping the accelerator value to desired saturation
+    function saturation(x) {
         return(-40*Math.pow(2.718,-(Math.pow(2*(x-3.5),2))))+100
     }
 
@@ -99,7 +100,7 @@ Item {
         y: 3
         width: 352*backEnd.accelerator/5
         height: 39
-        color: "#"+hsv2rgb(h(backEnd.accelerator),s(backEnd.accelerator),100)
+        color: "#"+hsv2rgb(hue(backEnd.accelerator),saturation(backEnd.accelerator),100)
 
     }
 
