@@ -81,6 +81,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 DataUnpacker::~DataUnpacker()
 {
     dataHandlingThread.quit();
+    controlsThread.quit();
 }
 
 void DataUnpacker::unpack()
