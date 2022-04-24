@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QCursor>
 #include <DataProcessor/DataUnpacker.h>
 #include <vector>
 
@@ -21,6 +22,9 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
     QQmlContext * rootContext = engine.rootContext();
     rootContext->setContextProperty("backEnd", &unpacker);
+
+    // Hide mouse cursor
+    app.setOverrideCursor(QCursor(Qt::BlankCursor));
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
