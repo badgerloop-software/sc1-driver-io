@@ -23,7 +23,6 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     this->bytes = bytes;
     this->names = names;
     this->types = types;
-
     this->tstampOffsets.hr = timeDataOffsets.hr;
     this->tstampOffsets.mn = timeDataOffsets.mn;
     this->tstampOffsets.sc = timeDataOffsets.sc;
