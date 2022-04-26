@@ -17,8 +17,9 @@ double batteryFunc(double t)
 
 
 
-BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QObject *parent) : QObject(parent), bytes(bytes), names(names), types(types)
+BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent) : QObject(parent), bytes(bytes), names(names), types(types), mutex(mutex)
 {
+
     this->bytes = bytes;
     this->names = names;
     this->types = types;
@@ -75,6 +76,8 @@ void BackendProcesses::threadProcedure()
 
     DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
 
+    mutex.lock();
+
     bytes.clear();
 
     // Get time data is received (then written to byte array right after byte array is updated/data is received)
@@ -107,6 +110,6 @@ void BackendProcesses::threadProcedure()
         //socket->write(QByteArray::fromStdString("Speed: " + std::to_string(speed) + "; Size: " + std::to_string(sizeof(bytes)) + "\n"));
         socket->write(bytes);
     }
-
+    mutex.unlock();
     emit dataReady();
 }

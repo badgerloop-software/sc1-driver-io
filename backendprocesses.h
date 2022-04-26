@@ -9,6 +9,7 @@
 #include <ctime>
 #include <vector>
 #include <unistd.h>
+#include <QMutex>
 #include "DataProcessor/DataGen.h"
 
 struct timestampOffsets {
@@ -23,7 +24,7 @@ class BackendProcesses : public QObject
     Q_OBJECT
 
 public:
-    explicit BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QObject *parent = nullptr);
+    explicit BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent = nullptr);
     //~BackendProcesses();
 public slots:
     void onNewConnection();
@@ -41,6 +42,8 @@ private:
     timestampOffsets tstampOffsets;
 
     QByteArray &bytes;
+
+    QMutex &mutex;
     std::vector<std::string> &names;
     std::vector<std::string> &types;
 };
