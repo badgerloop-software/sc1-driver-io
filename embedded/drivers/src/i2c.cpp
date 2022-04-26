@@ -9,7 +9,7 @@
 
 #include "embedded/drivers/include/i2c-dev.h"
 
-/* Also need deconsturctor to close file descriptor */
+/* Also need deconstructor to close file descriptor */
 I2c::I2c(int bus, int addr, int mode) {
   this->bus = bus;
   this->deviceAddress = addr;
@@ -85,10 +85,17 @@ uint8_t I2c::read_from_reg(uint8_t reg) {
 int I2c::read_bytes_from_reg(uint8_t reg, uint8_t *buff, int nBytes) {
   int rc;
   int i;
+  int j;
+  uint8_t swp;
 
   rc = this->write_byte(reg);
   if (rc) return rc;
   rc = this->read_data(buff, nBytes);
   if (rc) return rc;
+  for (i = 0, j = nBytes - 1; i < nBytes / 2; i++, j--) {
+    swp = buff[i];
+    buff[i] = buff[j];
+    buff[j] = swp;
+  }
   return 0;
 }
