@@ -5,6 +5,14 @@ Item {
     width: 875
     height: 802
 
+    property int displaySpeed: 0
+    property int refreshTime: 1000
+
+    function updateSpeed() {
+        console.log("triggered")
+        displaySpeed = backEnd.speed;
+    }
+
     Image {
         id: speedometer
         x: 0
@@ -22,7 +30,7 @@ Item {
             width: 337
             height: 168
             color: "#ffffff"
-            text: backEnd.speed
+            text: displaySpeed
             font.pixelSize: 238
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -219,7 +227,7 @@ Item {
                 target: backEnd
                 function onDataChanged() {
                     needle.prevSpeed = needle.newSpeed
-                    needle.newSpeed = backEnd.speed
+                    needle.newSpeed = displaySpeed
                 }
             }
 
@@ -228,8 +236,8 @@ Item {
                     id: arcPath
                     target: needle
                     anchorPoint: Qt.point(0, 14.5)
-                    orientation: (backEnd.speed - needle.prevSpeed >= 0) ? PathAnimation.TopFirst : PathAnimation.BottomFirst;
-                    duration: 1000
+                    orientation: (displaySpeed - needle.prevSpeed >= 0) ? PathAnimation.TopFirst : PathAnimation.BottomFirst;
+                    duration: refreshTime
                     path: Path {
                         PathAngleArc {
                             centerX: 437.5
@@ -237,7 +245,7 @@ Item {
                             radiusX: 407.5
                             radiusY: 407.5
                             startAngle: 135 + (needle.prevSpeed/90)*270
-                            sweepAngle: ((backEnd.speed-needle.prevSpeed)/90)*270
+                            sweepAngle: ((displaySpeed-needle.prevSpeed)/90)*270
                         }
                     }
                 }
@@ -293,5 +301,9 @@ Item {
         }
     }
 
+    Timer {
+        interval: refreshTime; running: true; repeat: true
+        onTriggered: updateSpeed();
+    }
 
 }
