@@ -1,4 +1,6 @@
 #include <QObject>
+#include <vector>
+#include <unistd.h>
 
 class controlsWrapper : public QObject
 {
@@ -9,6 +11,10 @@ class controlsWrapper : public QObject
         // need other slot for a signal
     signals:
 
+    private:
+        QByteArray &bytes;
+        QMutex mutex;
 
-
+        std::vector<std::string> &names;
+        std::vector<std::string> &types;
 };

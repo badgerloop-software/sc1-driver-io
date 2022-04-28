@@ -5,8 +5,16 @@
 #include <embedded/devices/include/ads1219.h>
 #include <embedded/devices/src/ads1219.cpp>
 
-controlsWrapper::controlsWrapper() {
+controlsWrapper::controlsWrapper(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, QObject *parent) : QObject(parent), bytes(bytes), names(names), types(types) {
+    this->bytes = bytes;
+    this->names = names;
+    this->types = types;
+}
 
+void controlsWrapper::addFloatToArray(QByteArray &dataArr, float data) {
+    const unsigned char* ptr = reinterpret_cast<const unsigned char*>(&data);
+    for (size_t i = 0; i < sizeof(float); ++i)
+        dataArr.push_back(ptr[i]);
 }
 
 // This is the firmware main loop. It's called in a separate thread in DataUnpacker.cpp
@@ -15,13 +23,19 @@ void controlsWrapper::startThread() {
     // test ads1219
     Ads1219 testADS = new Ads1219(1, 0x40);
     testADS.begin();
+    float returnedVolt;
     // loop goes here
     while(true) {
         qDebug() << "test\n";
         sleep(5);
-        std::cout << "Channel 0: " << testADS.getVoltage(0);
-        std::cout << "Channel 1: " << testADS.getVoltage(1);
-        std::cout << "Channel 2: " << testADS.getVoltage(2);
-        std::cout << "Channel 3: " << testADS.getVoltage(3);
+        mutex.lock();
+        for (int i = 0; i < 4; i++) {
+            returnedVolt = testADS.getVoltage(i);
+            std::cout << "Channel " << i << ": " << returnedVolt << std::endl;
+            addFloatToArray(bytes, returnedVolt);
+        }
+        mutex.unlock();
+
+        emit dataReady();
     }
 }
