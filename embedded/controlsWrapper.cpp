@@ -12,9 +12,11 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, std::vector<std::string> &na
 }
 
 void controlsWrapper::addFloatToArray(QByteArray &dataArr, float data) {
+    mutex.lock();
     const unsigned char* ptr = reinterpret_cast<const unsigned char*>(&data);
     for (size_t i = 0; i < sizeof(float); ++i)
         dataArr.push_back(ptr[i]);
+    mutex.unlock();
 }
 
 // This is the firmware main loop. It's called in a separate thread in DataUnpacker.cpp
@@ -28,14 +30,14 @@ void controlsWrapper::startThread() {
     while(true) {
         qDebug() << "test\n";
         sleep(5);
-        mutex.lock();
+
         for (int i = 0; i < 4; i++) {
             returnedVolt = testADS.getVoltage(i);
             std::cout << "Channel " << i << ": " << returnedVolt << std::endl;
             addFloatToArray(bytes, returnedVolt);
         }
-        mutex.unlock();
 
-        emit dataReady();
+
+        //emit dataReady(); ? Unsure if needed at end of printing all data to signal read
     }
 }
