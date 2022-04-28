@@ -1,3 +1,6 @@
+#ifndef CONTROLSWRAPPER_H
+#define CONTROLSWRAPPER_H
+
 #include <QObject>
 #include <vector>
 #include <unistd.h>
@@ -10,7 +13,7 @@ class controlsWrapper : public QObject
         void startThread();
         // need other slot for a signal
     signals:
-
+        void dataReady();
     private:
         QByteArray &bytes;
         QMutex mutex;
@@ -18,3 +21,5 @@ class controlsWrapper : public QObject
         std::vector<std::string> &names;
         std::vector<std::string> &types;
 };
+
+#endif // CONTROLSWRAPPER_H

@@ -36,8 +36,8 @@ void controlsWrapper::startThread() {
             std::cout << "Channel " << i << ": " << returnedVolt << std::endl;
             addFloatToArray(bytes, returnedVolt);
         }
-
-
+        // Delay so loop reads at 10Hz
+        usleep(100000);
         //emit dataReady(); ? Unsure if needed at end of printing all data to signal read
     }
 }
