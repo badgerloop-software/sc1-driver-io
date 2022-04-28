@@ -23,8 +23,8 @@ void controlsWrapper::addFloatToArray(QByteArray &dataArr, float data) {
 // Put your testing code here!
 void controlsWrapper::startThread() {
     // test ads1219
-    Ads1219 testADS = new Ads1219(1, 0x40);
-    testADS.begin();
+    Ads1219 *testADS = new Ads1219(1, 0x40);
+    testADS->begin();
     float returnedVolt;
     // loop goes here
     while(true) {
@@ -32,7 +32,7 @@ void controlsWrapper::startThread() {
         sleep(5);
 
         for (int i = 0; i < 4; i++) {
-            returnedVolt = testADS.getVoltage(i);
+            returnedVolt = testADS->getVoltage(i);
             std::cout << "Channel " << i << ": " << returnedVolt << std::endl;
             addFloatToArray(bytes, returnedVolt);
         }

@@ -9,13 +9,15 @@
 class controlsWrapper : public QObject
 {
     public:
-        explicit controlsWrapper();
+        explicit controlsWrapper(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, QObject *parent = nullptr);
     public slots: 
         void startThread();
         // need other slot for a signal
     signals:
         void dataReady();
     private:
+        void addFloatToArray(QByteArray &dataArr, float data);
+
         QByteArray &bytes;
         QMutex mutex;
 
