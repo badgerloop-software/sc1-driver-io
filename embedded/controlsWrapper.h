@@ -4,6 +4,7 @@
 #include <QObject>
 #include <vector>
 #include <unistd.h>
+#include <QMutex>
 
 class controlsWrapper : public QObject
 {
