@@ -10,6 +10,7 @@
 #include "backendprocesses.h"
 #include "3rdparty/rapidjson/document.h"
 #include "3rdparty/rapidjson/filereadstream.h"
+#include "embedded/controlsWrapper.h"
 
 using namespace rapidjson;
 
@@ -43,6 +44,7 @@ signals:
     void dataChanged();
 private:
     QThread dataHandlingThread;
+    QThread controlsThread;
 
     // TOOD Include only the properties that need to be displayed on the driver dashboard
     uint8_t speed;

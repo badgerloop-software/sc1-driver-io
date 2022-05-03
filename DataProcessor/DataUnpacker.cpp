@@ -69,12 +69,19 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     connect(&dataHandlingThread, &QThread::finished, retriever, &QObject::deleteLater);
     connect(&dataHandlingThread, &QThread::finished, &dataHandlingThread, &QThread::deleteLater);
 
+    controlsWrapper* loop = new controlsWrapper(bytes, names, types, mutex);
+    loop->moveToThread(&controlsThread);
+    connect(&controlsThread, &QThread::started, loop, &controlsWrapper::startThread);
+    connect(&controlsThread, &QThread::finished, loop, &QObject::deleteLater);
+
     dataHandlingThread.start();
+    controlsThread.start();
 }
 
 DataUnpacker::~DataUnpacker()
 {
     dataHandlingThread.quit();
+    controlsThread.quit();
 }
 
 void DataUnpacker::unpack()
