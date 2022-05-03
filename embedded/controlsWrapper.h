@@ -9,7 +9,7 @@
 class controlsWrapper : public QObject
 {
     public:
-        explicit controlsWrapper(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, QObject *parent = nullptr);
+        explicit controlsWrapper(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, QMutex &mutex, QObject *parent = nullptr);
     public slots: 
         void startThread();
         // need other slot for a signal
@@ -19,7 +19,7 @@ class controlsWrapper : public QObject
         void addFloatToArray(QByteArray &dataArr, float data);
 
         QByteArray &bytes;
-        QMutex mutex;
+        QMutex &mutex;
 
         std::vector<std::string> &names;
         std::vector<std::string> &types;
