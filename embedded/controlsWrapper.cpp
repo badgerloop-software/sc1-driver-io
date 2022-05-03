@@ -5,10 +5,11 @@
 #include <embedded/devices/include/ads1219.h>
 #include <embedded/devices/src/ads1219.cpp>
 
-controlsWrapper::controlsWrapper(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, QObject *parent) : QObject(parent), bytes(bytes), names(names), types(types) {
+controlsWrapper::controlsWrapper(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, QMutex &mutex, QObject *parent) : QObject(parent), bytes(bytes), names(names), types(types) {
     this->bytes = bytes;
     this->names = names;
     this->types = types;
+    this->mutex = mutex;
 }
 
 void controlsWrapper::addFloatToArray(QByteArray &dataArr, float data) {
