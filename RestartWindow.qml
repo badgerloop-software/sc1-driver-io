@@ -19,6 +19,8 @@ Popup {
     property int mcu_check_pref_height: 40
     property int shutdown_input_text_size: 30
     property int shutdown_input_pref_height: 50
+    property double hidden_opacity: 0.25
+    // TODO change IDs to Texts' IDs since the fault properties changed parents
     property bool can_close: !battery_eStop_rect.battery_eStop_fault && !driver_eStop_rect.driver_eStop_fault && !external_eStop_rect.external_eStop_fault && !imd_status_rect.imd_status_fault && !door_rect.door_fault && !crash_rect.crash_fault && !mcu_check_rect.mcu_check_fault
 
     function getCellGroupFaults() {
@@ -43,6 +45,9 @@ Popup {
         if(can_close) {
             backEnd.restart_enable = false;
             backEnd.enableRestart(); // Signal user has enabled restart
+
+            // TODO Reset all faults so that they are hidden/transparent when the restart enable pop-up appears again
+
             restartPopup.close();
         }
     }
@@ -87,20 +92,28 @@ Popup {
                 Layout.minimumWidth: (errors.width / 3) - 1
                 Layout.preferredWidth: errors.width / 3
                 Layout.preferredHeight: shutdown_input_pref_height
-                visible: false
+                /*visible: false
 
                 property bool battery_eStop_fault: !backEnd.battery_eStop
                 onBattery_eStop_faultChanged: {
                     if(battery_eStop_fault) {
                         this.visible = true;
                     }
-                }
+                }*/
 
                 Text {
+                    property bool battery_eStop_fault: !backEnd.battery_eStop
+                    onBattery_eStop_faultChanged: {
+                        if(battery_eStop_fault) {
+                            this.opacity = 1;
+                        }
+                    }
+
                     anchors.centerIn: parent
                     text: qsTr("Battery Pack Switch")
-                    color: parent.battery_eStop_fault ? "red" : "white"
+                    color: battery_eStop_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size
+                    opacity: hidden_opacity
                 }
             }
 
@@ -113,6 +126,7 @@ Popup {
                 Layout.minimumWidth: (errors.width / 3) - 1
                 Layout.preferredWidth: errors.width / 3
                 Layout.preferredHeight: shutdown_input_pref_height
+                /* TODO
                 visible: false
 
                 property bool driver_eStop_fault: !backEnd.driver_eStop
@@ -120,13 +134,21 @@ Popup {
                     if(driver_eStop_fault) {
                         this.visible = true;
                     }
-                }
+                }*/
 
                 Text {
+                    property bool driver_eStop_fault: !backEnd.driver_eStop
+                    onDriver_eStop_faultChanged: {
+                        if(driver_eStop_fault) {
+                            this.opacity = 1;
+                        }
+                    }
+
                     anchors.centerIn: parent
                     text: qsTr("Driver Shutdown Switch")
-                    color: parent.driver_eStop_fault ? "red" : "white"
+                    color: driver_eStop_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size
+                    opacity: hidden_opacity
                 }
             }
 
@@ -139,20 +161,28 @@ Popup {
                 Layout.minimumWidth: (errors.width / 3) - 1
                 Layout.preferredWidth: errors.width / 3
                 Layout.preferredHeight: shutdown_input_pref_height
-                visible: false
+                /*visible: false
 
                 property bool external_eStop_fault: !backEnd.external_eStop
                 onExternal_eStop_faultChanged: {
                     if(external_eStop_fault) {
                         this.visible = true;
                     }
-                }
+                }*/
 
                 Text {
+                    property bool external_eStop_fault: !backEnd.external_eStop
+                    onExternal_eStop_faultChanged: {
+                        if(external_eStop_fault) {
+                            this.opacity = true;
+                        }
+                    }
+
                     anchors.centerIn: parent
                     text: qsTr("External Shutdown Switch")
-                    color: parent.external_eStop_fault ? "red" : "white"
+                    color: external_eStop_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size
+                    opacity: hidden_opacity
                 }
             }
 
@@ -165,20 +195,28 @@ Popup {
                 Layout.minimumWidth: (errors.width / 3) - 1
                 Layout.preferredWidth: errors.width / 3
                 Layout.preferredHeight: shutdown_input_pref_height
-                visible: false
+                /*visible: false
 
                 property bool imd_status_fault: !backEnd.imd_status
                 onImd_status_faultChanged: {
                     if(imd_status_fault) {
                         this.visible = true;
                     }
-                }
+                }*/
 
                 Text {
+                    property bool imd_status_fault: !backEnd.imd_status
+                    onImd_status_faultChanged: {
+                        if(imd_status_fault) {
+                            this.opacity = 1;
+                        }
+                    }
+
                     anchors.centerIn: parent
                     text: qsTr("Isolation")
-                    color: parent.imd_status_fault ? "red" : "white"
+                    color: imd_status_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size
+                    opacity: hidden_opacity
                 }
             }
 
@@ -191,20 +229,28 @@ Popup {
                 Layout.minimumWidth: (errors.width / 3) - 1
                 Layout.preferredWidth: errors.width / 3
                 Layout.preferredHeight: shutdown_input_pref_height
-                visible: false
+                /*visible: false
 
                 property bool door_fault: !backEnd.door
                 onDoor_faultChanged: {
                     if(door_fault) {
                         this.visible = true;
                     }
-                }
+                }*/
 
                 Text {
+                    property bool door_fault: !backEnd.door
+                    onDoor_faultChanged: {
+                        if(door_fault) {
+                            this.opacity = 1;
+                        }
+                    }
+
                     anchors.centerIn: parent
                     text: qsTr("Driver Door")
-                    color: parent.door_fault ? "red" : "white"
+                    color: door_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size
+                    opacity: hidden_opacity
                 }
             }
 
@@ -217,20 +263,28 @@ Popup {
                 Layout.minimumWidth: (errors.width / 3) - 1
                 Layout.preferredWidth: errors.width / 3
                 Layout.preferredHeight: shutdown_input_pref_height
-                visible: false
+                /*visible: false
 
                 property bool crash_fault: backEnd.crash
                 onCrash_faultChanged: {
                     if(crash_fault) {
                         this.visible = true;
                     }
-                }
+                }*/
 
                 Text {
+                    property bool crash_fault: backEnd.crash
+                    onCrash_faultChanged: {
+                        if(crash_fault) {
+                            this.opacity = 1;
+                        }
+                    }
+
                     anchors.centerIn: parent
                     text: qsTr("Crash")
-                    color: parent.crash_fault ? "red" : "white"
+                    color: crash_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size
+                    opacity: hidden_opacity
                 }
             }
 
@@ -241,7 +295,7 @@ Popup {
                 Layout.columnSpan: 3
                 Layout.fillWidth: true
                 Layout.preferredHeight: shutdown_input_pref_height * 1.5
-                visible: false
+                /*visible: false
 
                 // Trigger BPS fault whenever the external power cut off switch is pressed (and consequently when the MPS is opened)
                 // See ASC regulations 8.6.B-8.6.C for more info on BPS fault dash indication:
@@ -251,14 +305,25 @@ Popup {
                     if(bps_fault) {
                         this.visible = true;
                     }
-                }
+                }*/
 
                 Text {
+                    // Trigger BPS fault whenever the external power cut off switch is pressed (and consequently when the MPS is opened)
+                    // See ASC regulations 8.6.B-8.6.C for more info on BPS fault dash indication:
+                    //      https://www.americansolarchallenge.org/ASC/wp-content/uploads/2022/03/ASC2022-Regs-EXTERNAL-RELEASE-B.pdf
+                    property bool bps_fault: backEnd.bps_fault || !backEnd.external_eStop || !backEnd.mps_enable
+                    onBps_faultChanged: {
+                        if(bps_fault) {
+                            this.opacity = 1;
+                        }
+                    }
+
                     anchors.centerIn: parent
                     font.weight: Font.Bold
                     text: qsTr("BPS Fault")
-                    color: parent.bps_fault ? "red" : "white"
+                    color: bps_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size * 1.5
+                    opacity: hidden_opacity
                 }
             }
 
@@ -269,22 +334,31 @@ Popup {
                 Layout.columnSpan: 3
                 Layout.fillWidth: true
                 Layout.preferredHeight: shutdown_input_pref_height
-                visible: false
+                /*visible: false
 
                 property bool mcu_check_fault: !backEnd.mcu_check
                 onMcu_check_faultChanged: {
                     if(mcu_check_fault) {
                         this.visible = true;
                     }
-                }
+                }*/
 
                 Text {
                     id: mcu_check_text
+
+                    property bool mcu_check_fault: !backEnd.mcu_check
+                    onMcu_check_faultChanged: {
+                        if(mcu_check_fault) {
+                            this.opacity = 1;
+                        }
+                    }
+
                     anchors.centerIn: parent
                     font.weight: Font.Bold
                     text: qsTr("MCU Check")
-                    color: parent.mcu_check_fault ? "red" : "white"
+                    color: mcu_check_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size
+                    opacity: hidden_opacity
                 }
 
                 GridLayout {

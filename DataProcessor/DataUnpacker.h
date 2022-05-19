@@ -84,14 +84,15 @@ signals:
 private:
     QThread dataHandlingThread;
 
-    // TOOD Include only the properties that need to be displayed on the driver dashboard
+    // TODO Include only the properties that need to be displayed on the driver dashboard
     uint8_t speed, fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
     uint16_t tstamp_ms;
     float accelerator, soc, mppt_current_out, pack_voltage, pack_current, pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, string1_temp, string2_temp, string3_temp;
     bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat;
     QString state;
     // Data for shutdown circuit
-    bool driver_eStop, battery_eStop, external_eStop, crash, door, mcu_check, imd_status, mps_enable, bps_fault, bms_canbus_failure, voltage_failsafe, current_failsafe, supply_power_failsafe, memory_failsafe, relay_failsafe, bms_input_voltage, restart_enable=false;
+    // TODO Check initial values (should be nominal values)
+    bool driver_eStop=true, battery_eStop=true, external_eStop=true, crash=false, door=true, mcu_check=true, imd_status=true, mps_enable=true, bps_fault=false, bms_canbus_failure=false, voltage_failsafe=false, current_failsafe=false, supply_power_failsafe=false, memory_failsafe=false, relay_failsafe=false, bms_input_voltage, restart_enable=false;
     QVector<float> cell_group_voltages;
 
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format
