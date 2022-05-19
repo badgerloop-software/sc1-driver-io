@@ -91,7 +91,7 @@ private:
     bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat;
     QString state;
     // Data for shutdown circuit
-    bool driver_eStop, battery_eStop, external_eStop, crash, door, mcu_check, imd_status, mps_enable, bps_fault, bms_canbus_failure, voltage_failsafe, current_failsafe, supply_power_failsafe, memory_failsafe, relay_failsafe, bms_input_voltage, restart_enable;
+    bool driver_eStop, battery_eStop, external_eStop, crash, door, mcu_check, imd_status, mps_enable, bps_fault, bms_canbus_failure, voltage_failsafe, current_failsafe, supply_power_failsafe, memory_failsafe, relay_failsafe, bms_input_voltage, restart_enable=false;
     QVector<float> cell_group_voltages;
 
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format
