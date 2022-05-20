@@ -42,6 +42,9 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool mcu_check MEMBER mcu_check NOTIFY dataChanged);
     Q_PROPERTY(bool imd_status MEMBER imd_status NOTIFY dataChanged);
     Q_PROPERTY(bool mps_enable MEMBER mps_enable NOTIFY dataChanged);
+    Q_PROPERTY(bool mppt_contactor MEMBER mppt_contactor NOTIFY dataChanged);
+    Q_PROPERTY(bool motor_controller_contactor MEMBER motor_controller_contactor NOTIFY dataChanged);
+    Q_PROPERTY(bool low_contactor MEMBER low_contactor NOTIFY dataChanged);
     Q_PROPERTY(bool bms_canbus_failure MEMBER bms_canbus_failure NOTIFY dataChanged);
     Q_PROPERTY(bool voltage_failsafe MEMBER voltage_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool current_failsafe MEMBER current_failsafe NOTIFY dataChanged);
@@ -91,8 +94,9 @@ private:
     bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat;
     QString state;
     // Data for shutdown circuit
-    // TODO Check initial values (should be nominal values)
-    bool driver_eStop=true, battery_eStop=true, external_eStop=true, crash=false, door=true, mcu_check=true, imd_status=true, mps_enable=true, bps_fault=false, bms_canbus_failure=false, voltage_failsafe=false, current_failsafe=false, supply_power_failsafe=false, memory_failsafe=false, relay_failsafe=false, bms_input_voltage, restart_enable=false;
+    // TODO Check initial values (should be nominal values, except for contactors and mps_enable, which should be open/false during restart)
+    float bms_input_voltage;
+    bool driver_eStop=true, battery_eStop=true, external_eStop=true, crash=false, door=true, mcu_check=true, imd_status=true, bps_fault=false, bms_canbus_failure=false, voltage_failsafe=false, current_failsafe=false, supply_power_failsafe=false, memory_failsafe=false, relay_failsafe=false, mps_enable=false, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false, restart_enable=false;
     QVector<float> cell_group_voltages;
 
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format
