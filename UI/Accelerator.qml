@@ -14,7 +14,7 @@ Item {
     }
 
     function hsv2rgb(hue,saturation,value){
-        console.log(hue)
+        //console.log(hue)
         var r,g,b,rp,gp,bp
         var c=value*saturation/10000
         var x=c*(1-abs((hue/60)%2-1))
@@ -65,7 +65,7 @@ Item {
         g=(gp+m)*255
         b=(bp+m)*255
 
-        console.log(r)
+        //console.log(r)
         var rgbDec=Math.floor((r<<16)+(g<<8)+b)
         var str= rgbDec.toString(16);
 

@@ -42,8 +42,7 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
         } else if(types[i] == "bool") {
             // For shutdown circuit inputs, any triggerred error will stay triggered for 3 seconds after the most recent error is triggered
             // When a new error is triggerred, the countdown will restart from 3 seconds for all currently triggered errors
-            if((names[i] == "battery_eStop") || (names[i] == "driver_eStop") || (names[i] == "external_eStop") ||
-               (names[i] == "imd_status") || (names[i] == "door") || (names[i] == "mcu_check")) {
+            if(names[i] == "door") {
                 // NC/preferred true shutdown circuit inputs
                 std::size_t errPos = errors.find(names[i]);
                 bool error = (rand()%200+1 >= 2) && !((errStartTime > time(NULL) - 3) && (errPos != std::string::npos));
@@ -54,7 +53,8 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
                 } else if((errPos != std::string::npos) && (errStartTime <= time(NULL) - 3)) {
                     errors.erase(errPos,names[i].length());
                 }
-            } else if(names[i] == "crash") {
+            } else if((names[i] == "battery_eStop") || (names[i] == "driver_eStop") || (names[i] == "external_eStop") ||
+                      (names[i] == "imd_status") || (names[i] == "crash") || (names[i] == "mcu_check")) {
                 // NO/preferred false shutdown circuit inputs
                 std::size_t errPos = errors.find(names[i]);
                 bool error = (rand()%200+1 <= 2) || ((errStartTime > time(NULL) - 3) && (errPos != std::string::npos));

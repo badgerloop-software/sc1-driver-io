@@ -9,7 +9,7 @@ Item {
     property int refreshTime: 1000
 
     function updateSpeed() {
-        console.log("triggered")
+        //console.log("triggered")
         displaySpeed = backEnd.speed;
     }
 

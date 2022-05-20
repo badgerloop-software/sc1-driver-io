@@ -94,9 +94,9 @@ private:
     bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat;
     QString state;
     // Data for shutdown circuit
-    // TODO Check initial values (should be nominal values, except for contactors and mps_enable, which should be open/false during restart)
+    // TODO Check initial values (should be nominal values, except for contactors, which should be open/false during restart)
     float bms_input_voltage;
-    bool driver_eStop=true, battery_eStop=true, external_eStop=true, crash=false, door=true, mcu_check=true, imd_status=true, bps_fault=false, bms_canbus_failure=false, voltage_failsafe=false, current_failsafe=false, supply_power_failsafe=false, memory_failsafe=false, relay_failsafe=false, mps_enable=false, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false, restart_enable=false;
+    bool driver_eStop=false, battery_eStop=false, external_eStop=false, crash=false, door=true, mcu_check=false, imd_status=false, bps_fault=false, bms_canbus_failure=false, voltage_failsafe=false, current_failsafe=false, supply_power_failsafe=false, memory_failsafe=false, relay_failsafe=false, mps_enable=true, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false, restart_enable=false;
     QVector<float> cell_group_voltages;
 
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format
