@@ -20,14 +20,23 @@ Popup {
     property int shutdown_input_text_size: 30
     property int shutdown_input_pref_height: 50
     property double hidden_opacity: 0.25
-    property bool can_close: !battery_eStop_text.battery_eStop_fault && !driver_eStop_text.driver_eStop_fault && !external_eStop_text.external_eStop_fault && !imd_status_text.imd_status_fault && !door_text.door_fault && !crash_text.crash_fault && !mcu_check_text.mcu_check_fault
+    property bool can_close: !battery_eStop_text.battery_eStop_fault && !driver_eStop_text.driver_eStop_fault && !external_eStop_text.external_eStop_fault
+                             && !imd_status_text.imd_status_fault && !door_text.door_fault && !crash_text.crash_fault && !mcu_check_text.mcu_check_fault
 
     Overlay.onPressed: {
         if(can_close) {
             backEnd.restart_enable = false;
             backEnd.enableRestart(); // Signal user has enabled restart
 
-            // TODO Reset all faults so that they are hidden/transparent when the restart enable pop-up appears again
+            // Reset opacities of fault texts to hidden_opacity so that they aren't shown as being triggered when restartPopup opens again
+            var ids = { battery_eStop_text, driver_eStop_text, external_eStop_text, imd_status_text, door_text, crash_text, bps_fault_text, mcu_check_text,
+                        mps_enable_text, mppt_contactor_text, low_contactor_text, motor_controller_contactor_text, over_voltage_text, under_voltage_text,
+                        over_current_text, under_current_text, bms_input_voltage_high_text, bms_input_voltage_low_text, over_temp_text, bms_canbus_failure_text,
+                        voltage_failsafe_text, current_failsafe_text, supply_power_failsafe_text, memory_failsafe_text, relay_failsafe_text, cell_group_voltages_text };
+
+            for(const idx in ids) {
+                ids[idx].opacity = hidden_opacity;
+            }
 
             restartPopup.close();
         }
@@ -228,6 +237,8 @@ Popup {
                 Layout.preferredHeight: shutdown_input_pref_height * 1.5
 
                 Text {
+                    id: bps_fault_text
+
                     // Trigger BPS fault whenever the external power cut off switch is pressed (and consequently when the MPS is opened)
                     // See ASC regulations 8.6.B-8.6.C for more info on BPS fault dash indication:
                     //      https://www.americansolarchallenge.org/ASC/wp-content/uploads/2022/03/ASC2022-Regs-EXTERNAL-RELEASE-B.pdf
@@ -290,6 +301,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
+                            id: mps_enable_text
+
                             property bool mps_enable_fault: !backEnd.mps_enable && restartPopup.opened
                             onMps_enable_faultChanged: {
                                 if(mps_enable_fault) {
@@ -315,6 +328,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
+                            id: mppt_contactor_text
+
                             property bool mppt_contactor_fault: backEnd.mppt_contactor && restartPopup.opened
                             onMppt_contactor_faultChanged: {
                                 if(mppt_contactor_fault) {
@@ -340,6 +355,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
+                            id: low_contactor_text
+
                             property bool low_contactor_fault: backEnd.low_contactor && restartPopup.opened
                             onLow_contactor_faultChanged: {
                                 if(low_contactor_fault) {
@@ -365,6 +382,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
+                            id: motor_controller_contactor_text
+
                             property bool motor_controller_contactor_fault: backEnd.motor_controller_contactor && restartPopup.opened
                             onMotor_controller_contactor_faultChanged: {
                                 if(motor_controller_contactor_fault) {
@@ -390,6 +409,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height * 2 - 5
 
                         Text {
+                            id: over_voltage_text
+
                             property bool over_voltage_fault: (backEnd.pack_voltage > 108) && restartPopup.opened
                             onOver_voltage_faultChanged: {
                                 if(over_voltage_fault) {
@@ -406,6 +427,8 @@ Popup {
                         }
 
                         Text {
+                            id: under_voltage_text
+
                             property bool under_voltage_fault: (backEnd.pack_voltage < 69) && restartPopup.opened
                             onUnder_voltage_faultChanged: {
                                 if(under_voltage_fault) {
@@ -432,6 +455,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height * 2 - 5
 
                         Text {
+                            id: over_current_text
+
                             property bool over_current_fault: (backEnd.pack_current > 100) && restartPopup.opened // TODO
                             onOver_current_faultChanged: {
                                 if(over_current_fault) {
@@ -448,6 +473,8 @@ Popup {
                         }
 
                         Text {
+                            id: under_current_text
+
                             property bool under_current_fault: (backEnd.pack_current < 0) && restartPopup.opened // TODO
                             onUnder_current_faultChanged: {
                                 if(under_current_fault) {
@@ -474,6 +501,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height * 2 - 5
 
                         Text {
+                            id: bms_input_voltage_high_text
+
                             property bool bms_input_voltage_high_fault: (backEnd.bms_input_voltage > 24) && restartPopup.opened
                             onBms_input_voltage_high_faultChanged: {
                                 if(bms_input_voltage_high_fault) {
@@ -490,6 +519,8 @@ Popup {
                         }
 
                         Text {
+                            id: bms_input_voltage_low_text
+
                             property bool bms_input_voltage_low_fault: (backEnd.bms_input_voltage < 12) && restartPopup.opened
                             onBms_input_voltage_low_faultChanged: {
                                 if(bms_input_voltage_low_fault) {
@@ -516,6 +547,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
+                            id: over_temp_text
+
                             property bool over_temp_fault: (backEnd.pack_temp > 60) && restartPopup.opened
                             onOver_temp_faultChanged: {
                                 if(over_temp_fault) {
@@ -541,6 +574,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
+                            id: bms_canbus_failure_text
+
                             property bool bms_canbus_failure_fault: backEnd.bms_canbus_failure && restartPopup.opened
                             onBms_canbus_failure_faultChanged: {
                                 if(bms_canbus_failure_fault) {
@@ -566,6 +601,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
+                            id: voltage_failsafe_text
+
                             property bool voltage_failsafe_fault: backEnd.voltage_failsafe && restartPopup.opened
                             onVoltage_failsafe_faultChanged: {
                                 if(voltage_failsafe_fault) {
@@ -591,6 +628,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
+                            id: current_failsafe_text
+
                             property bool current_failsafe_fault: backEnd.current_failsafe && restartPopup.opened
                             onCurrent_failsafe_faultChanged: {
                                 if(current_failsafe_fault) {
@@ -616,6 +655,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
+                            id: supply_power_failsafe_text
+
                             property bool supply_power_failsafe_fault: backEnd.supply_power_failsafe && restartPopup.opened
                             onSupply_power_failsafe_faultChanged: {
                                 if(supply_power_failsafe_fault) {
@@ -642,6 +683,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
+                            id: memory_failsafe_text
+
                             property bool memory_failsafe_fault: backEnd.memory_failsafe && restartPopup.opened
                             onMemory_failsafe_faultChanged: {
                                 if(memory_failsafe_fault) {
@@ -667,6 +710,8 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
+                            id: relay_failsafe_text
+
                             property bool relay_failsafe_fault: backEnd.relay_failsafe && restartPopup.opened
                             onRelay_failsafe_faultChanged: {
                                 if(relay_failsafe_fault) {
@@ -693,9 +738,11 @@ Popup {
                         Layout.preferredHeight: 2.5 * mcu_check_pref_height
 
                         Text {
+                            id: cell_group_voltages_text
+
                             function getCellGroupFaults() {
                                 for(const i in backEnd.cell_group_voltages) {
-                                    if((backEnd.cell_group_voltages[i] > 7.2) || (backEnd.cell_group_voltages[i] < 6.4))
+                                    if((backEnd.cell_group_voltages[i] > 100) || (backEnd.cell_group_voltages[i] < 1))
                                         return true;
                                 }
                                 return false;
@@ -744,7 +791,7 @@ Popup {
 
                                              Text {
                                                  id: cell_group" + parseInt(i) + "_fault_text_num
-                                                 property bool cell_group_voltage_fault: ((backEnd.cell_group_voltages[" + i + "] > 7.2) || (backEnd.cell_group_voltages[" + i + "] < 6.4)) && restartPopup.opened
+                                                 property bool cell_group_voltage_fault: ((backEnd.cell_group_voltages[" + i + "] > 100) || (backEnd.cell_group_voltages[" + i + "] < 1)) && restartPopup.opened
                                                  onCell_group_voltage_faultChanged: {
                                                      if(cell_group_voltage_fault) {
                                                          this.opacity = 1;
@@ -753,7 +800,6 @@ Popup {
 
                                                  anchors.verticalCenter: parent.verticalCenter
                                                  x: (parent.width - width - cell_group" + parseInt(i) + "_fault_text_high.width - cell_group" + parseInt(i) + "_fault_text_div.width - cell_group" + parseInt(i) + "_fault_text_low.width) / 2
-                                                 //anchors.left: parent.left
                                                  text: \"" + (parseInt(i) + 1) + "\"
                                                  color: cell_group_voltage_fault ? \"red\" : \"white\"
                                                  font.pointSize: mcu_check_point_size / 1.1
@@ -763,7 +809,7 @@ Popup {
                                              Text {
                                                 id: cell_group" + parseInt(i) + "_fault_text_high
 
-                                                 property bool cell_group_voltage_high_fault: (backEnd.cell_group_voltages[" + i + "] > 7.2) && restartPopup.opened
+                                                 property bool cell_group_voltage_high_fault: (backEnd.cell_group_voltages[" + i + "] > 100) && restartPopup.opened
                                                  onCell_group_voltage_high_faultChanged: {
                                                      if(cell_group_voltage_high_fault) {
                                                          this.opacity = 1;
@@ -792,7 +838,7 @@ Popup {
                                              Text {
                                                  id: cell_group" + parseInt(i) + "_fault_text_low
 
-                                                 property bool cell_group_voltage_low_fault: (backEnd.cell_group_voltages[" + i + "] < 6.4) && restartPopup.opened
+                                                 property bool cell_group_voltage_low_fault: (backEnd.cell_group_voltages[" + i + "] < 1) && restartPopup.opened
                                                  onCell_group_voltage_low_faultChanged: {
                                                      if(cell_group_voltage_low_fault) {
                                                          this.opacity = 1;
@@ -805,6 +851,16 @@ Popup {
                                                  color: cell_group_voltage_low_fault ? \"red\" : \"white\"
                                                  font.pointSize: mcu_check_point_size / 1.25
                                                  opacity: hidden_opacity
+                                             }
+
+                                             // Change opacity of cell group text when restartPopup closes (div text opacity depends on other opacities, so don't set it)
+                                             Connections {
+                                                 target: restartPopup
+                                                 function onClosed() {
+                                                     cell_group" + parseInt(i) + "_fault_text_num.opacity = hidden_opacity;
+                                                     cell_group" + parseInt(i) + "_fault_text_high.opacity = hidden_opacity;
+                                                     cell_group" + parseInt(i) + "_fault_text_low.opacity = hidden_opacity;
+                                                 }
                                              }
                                          }",
                                         cell_group_fault_grid,
