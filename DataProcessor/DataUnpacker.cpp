@@ -86,7 +86,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
     fclose(fp);
 
-    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff);
+    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff,mutex);
 
     retriever->moveToThread(&dataHandlingThread);
     connect(&dataHandlingThread, &QThread::started, retriever, &BackendProcesses::startThread);
@@ -110,6 +110,7 @@ void DataUnpacker::unpack()
 {
     int currByte = 0;
 
+    mutex.lock();
     for(uint i=0; i < names.size(); i++) {
         if(types[i] == "float") {
             // Make sure the property exists
@@ -146,6 +147,7 @@ void DataUnpacker::unpack()
         currByte += byteNums[i];
     }
 
+    mutex.unlock();
     this->restart_enable = !battery_eStop || !driver_eStop || !external_eStop || !imd_status || !door || crash || !mcu_check || restart_enable;
 
     // Signal data update for front end

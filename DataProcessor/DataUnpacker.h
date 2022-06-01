@@ -7,6 +7,7 @@
 
 #include <QObject>
 #include <QThread>
+#include <QMutex>
 #include "backendprocesses.h"
 #include "3rdparty/rapidjson/document.h"
 #include "3rdparty/rapidjson/filereadstream.h"
@@ -104,6 +105,7 @@ private:
     std::vector<std::string> names;
     std::vector<int> byteNums;
     std::vector<std::string> types;
+    QMutex mutex;
 };
 
 
