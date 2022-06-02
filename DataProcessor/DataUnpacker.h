@@ -79,8 +79,7 @@ public:
     ~DataUnpacker();
 public slots:
     void unpack();
-    void eng_dash_connected();
-    void eng_dash_disconnected();
+    void eng_dash_connection(bool state);
 signals:
     void getData();
     void dataChanged();
