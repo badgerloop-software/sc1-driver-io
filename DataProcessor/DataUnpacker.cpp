@@ -38,9 +38,9 @@ E bytesToGeneralData(QByteArray data, int startPos, int endPos, E typeZero)
 
 DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 {
-    FILE* fp = fopen("../sc1-driver-io/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+    FILE* fp = fopen("/Users/mcli/Desktop/BadgerLoop/sc1-driver-io-SW-29-redesign/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     if(fp == 0) {
-        fp = fopen("../solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+        fp = fopen("/Users/mcli/Desktop/BadgerLoop/sc1-driver-io-SW-29-redesign/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     }
 
     char readBuffer[65536];
@@ -86,14 +86,13 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
     fclose(fp);
 
-    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff,mutex);
+    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff);
 
     retriever->moveToThread(&dataHandlingThread);
     connect(&dataHandlingThread, &QThread::started, retriever, &BackendProcesses::startThread);
     connect(this, &DataUnpacker::getData, retriever, &BackendProcesses::threadProcedure);
     connect(retriever, &BackendProcesses::dataReady, this, &DataUnpacker::unpack);
-    connect(retriever, &BackendProcesses::eng_dash_connected, this, &DataUnpacker::eng_dash_connected);
-    connect(retriever, &BackendProcesses::eng_dash_disconnected, this, &DataUnpacker::eng_dash_disconnected);
+    connect(retriever, &BackendProcesses::eng_dash_connection, this, &DataUnpacker::eng_dash_connection);
     connect(&dataHandlingThread, &QThread::finished, retriever, &QObject::deleteLater);
     connect(&dataHandlingThread, &QThread::finished, &dataHandlingThread, &QThread::deleteLater);
 
@@ -110,7 +109,6 @@ void DataUnpacker::unpack()
 {
     int currByte = 0;
 
-    mutex.lock();
     for(uint i=0; i < names.size(); i++) {
         if(types[i] == "float") {
             // Make sure the property exists
@@ -147,7 +145,6 @@ void DataUnpacker::unpack()
         currByte += byteNums[i];
     }
 
-    mutex.unlock();
     this->restart_enable = !battery_eStop || !driver_eStop || !external_eStop || !imd_status || !door || crash || !mcu_check || restart_enable;
 
     // Signal data update for front end
@@ -156,10 +153,7 @@ void DataUnpacker::unpack()
     emit getData();
 }
 
-void DataUnpacker::eng_dash_connected() {
-    eng_dash_commfail = 0;
+void DataUnpacker::eng_dash_connection(bool state) {
+    eng_dash_commfail = !state;
 }
 
-void DataUnpacker::eng_dash_disconnected() {
-    eng_dash_commfail = 1;
-}
