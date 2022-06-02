@@ -40,7 +40,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 {
     FILE* fp = fopen("../sc1-driver-io/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     if(fp == 0) {
-        fp = fopen("../sc1-driver-io-SW-29-redesign/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+        fp = fopen("../sc1-driver-io/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     }
 
     char readBuffer[65536];
