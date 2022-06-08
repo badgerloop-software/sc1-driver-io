@@ -33,6 +33,8 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool headlights MEMBER headlights NOTIFY dataChanged);
     Q_PROPERTY(bool cruise MEMBER cruise NOTIFY dataChanged);
     Q_PROPERTY(bool mainIO_heartbeat MEMBER mainIO_heartbeat NOTIFY dataChanged);
+    Q_PROPERTY(bool eng_dash_commfail MEMBER eng_dash_commfail NOTIFY dataChanged);
+
     // Shutdown circuit
     Q_PROPERTY(bool battery_eStop MEMBER battery_eStop NOTIFY dataChanged);
     Q_PROPERTY(bool driver_eStop MEMBER driver_eStop NOTIFY dataChanged);
@@ -77,6 +79,7 @@ public:
     ~DataUnpacker();
 public slots:
     void unpack();
+    void eng_dash_connection(bool state);
 signals:
     void getData();
     void dataChanged();
@@ -91,7 +94,7 @@ private:
     bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat;
     QString state;
     // Data for shutdown circuit
-    bool driver_eStop, battery_eStop, external_eStop, crash, door, mcu_check, imd_status, mps_enable, bps_fault, bms_canbus_failure, voltage_failsafe, current_failsafe, supply_power_failsafe, memory_failsafe, relay_failsafe, bms_input_voltage, restart_enable;
+    bool driver_eStop, battery_eStop, external_eStop, crash, door, mcu_check, imd_status, mps_enable, bps_fault, bms_canbus_failure, voltage_failsafe, current_failsafe, supply_power_failsafe, memory_failsafe, relay_failsafe, bms_input_voltage, restart_enable, eng_dash_commfail=1;
     QVector<float> cell_group_voltages;
 
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format

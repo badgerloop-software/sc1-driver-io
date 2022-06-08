@@ -6,7 +6,7 @@ Item {
     width: 362
     height: 45
 
-    function abs(val) {
+    /*function abs(val) {
         if(val>0)
             return val
         else
@@ -65,7 +65,7 @@ Item {
         g=(gp+m)*255
         b=(bp+m)*255
 
-        console.log(r)
+
         var rgbDec=Math.floor((r<<16)+(g<<8)+b)
         var str= rgbDec.toString(16);
 
@@ -80,23 +80,47 @@ Item {
         }
 
         return str;
+
     }
 
-    //for mapping the accelerator value to desired hue 0≤x≤120, 0≤f(x)≤120
-    function f(x){
-        return(172/(1+Math.pow(2.718,-(x/15-2))))
+    //for mapping the accelerator value to desired hue
+    function hue(x){
+        return(172/(1+Math.pow(2.718,4*(x-2.5))))
+    }
+
+    //-50*e^-(2*(x-3.5))^2
+    //for mapping the accelerator value to desired saturation
+    function saturation(x) {
+        return(-40*Math.pow(2.718,-(Math.pow(2*(x-3.5),2))))+100
+    }
+    */
+
+    function bluebar(val) {
+        return val>3.5?3.5:val
+    }
+
+    function redbar(val) {
+        return val>3.5?val:0
     }
 
     Rectangle {
-        id: acceleratorPosition
+        id: acceleratorBlue
         x: 5
         y: 3
-        width: 352*backEnd.accelerator/5
-        height: 39
-        color: "#"+hsv2rgb(f((5-backEnd.accelerator)*24),100,100)
-
+        width: 352*bluebar(backEnd.accelerator)/5
+        height: 41
+        color: "#00ffff"
     }
 
+    Rectangle {
+        id: acceleratorRed
+        x:5
+        y:3
+        z: -1
+        width: 352*redbar(backEnd.accelerator)/5
+        height: 40
+        color: "#ff0000"
+    }
 
     Rectangle {
         id: rectangle
