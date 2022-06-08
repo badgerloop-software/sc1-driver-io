@@ -108,6 +108,8 @@ DataUnpacker::~DataUnpacker()
 void DataUnpacker::unpack()
 {
     int currByte = 0;
+    
+    mutex.lock();
 
     for(uint i=0; i < names.size(); i++) {
         if(types[i] == "float") {
@@ -144,6 +146,8 @@ void DataUnpacker::unpack()
 
         currByte += byteNums[i];
     }
+    
+    mutex.unlock
 
     this->restart_enable = !battery_eStop || !driver_eStop || !external_eStop || !imd_status || !door || crash || !mcu_check || restart_enable;
 
