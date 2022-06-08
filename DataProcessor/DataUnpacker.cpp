@@ -39,9 +39,9 @@ E bytesToGeneralData(QByteArray data, int startPos, int endPos, E typeZero)
 DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 {
     FILE* fp = fopen("../sc1-driver-io/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
-     if(fp == 0) {
-         fp = fopen("../solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
-     }
+    if(fp == 0) {
+        fp = fopen("../solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+    }
 
     char readBuffer[65536];
     FileReadStream is(fp, readBuffer, sizeof(readBuffer));
