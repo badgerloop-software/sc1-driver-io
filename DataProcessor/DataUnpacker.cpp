@@ -86,7 +86,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
     fclose(fp);
 
-    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff);
+    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff,mutex);
 
     retriever->moveToThread(&dataHandlingThread);
     connect(&dataHandlingThread, &QThread::started, retriever, &BackendProcesses::startThread);
