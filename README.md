@@ -75,7 +75,7 @@
     ./solar-car-dashboard
     ```
 ### Start on boot
-   To start the program on boot
+   To start the program on boot we need to edit the rc.local file.
    ```
    sudo -i
    nano /etc/rc.local
