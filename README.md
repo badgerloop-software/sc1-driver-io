@@ -63,7 +63,7 @@
    ```
    #include <QtGlobal>
    ```
-   and in first line of int main()
+   and at the first line of int main()
    ```
    qputenv("QT_QPA_PLATFORM","eglfs");
    ```
