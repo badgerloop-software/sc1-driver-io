@@ -59,7 +59,7 @@
    ```
    export QT_QPA_PLATFORM=eglfs
    ```
-   or in main
+   or in main.cpp
    ```
    #include <QtGlobal>
    ```
@@ -83,5 +83,6 @@
    Add following lines before end0
    ```
    cd /home/username/directory
+   export QT_QPA_PLATFORM=eglfs #add this line if enviornment variable is not set in main.cpp
    ./solar-car-dashboard
    ```
