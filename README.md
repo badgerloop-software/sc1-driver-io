@@ -74,3 +74,14 @@
     make
     ./solar-car-dashboard
     ```
+### Start on boot
+   To start the program on boot
+   ```
+   sudo -i
+   nano /etc/rc.local
+   ```
+   Add following lines before end0
+   ```
+   cd /home/username/directory
+   ./solar-car-dashboard
+   ```
