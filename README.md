@@ -45,6 +45,29 @@
     sudo apt-get install qt5-doc qtbase5-examples qtbase5-doc-html qtdeclarative5-dev qml-module-qtquick-controls2
     ```
 1. Copy the project to the Raspberry Pi.
+-------------------
+#### Additional steps for compiling on Raspbian Lite.
+   Install Xorg to provide the window system
+   ```
+   sudo apt install xserver-xorg xinit x11-xserver-utils
+   ```
+   Install QtQuick library
+   ```
+   sudo apt-get install qml-module-qtquick-controls
+   ```
+   Set enviornment variable
+   ```
+   export QT_QPA_PLATFORM=eglfs
+   ```
+   or in main
+   ```
+   #include <QtGlobal>
+   ```
+   and in first line of int main()
+   ```
+   qputenv("QT_QPA_PLATFORM","eglfs");
+   ```
+--------------------
 2. Make and run the project on the Raspberry Pi by running the following commands:
     ```
     qmake solar-car-dashboard.pro
