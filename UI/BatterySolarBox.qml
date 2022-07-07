@@ -6,8 +6,8 @@ Item {
     visible: true
     z: 0
 
-    function threshold(val, min, max){
-        if(val <= max && val >=min) {
+    function threshold(val, min, max) {
+        if(val <= max && val >= min) {
             return "#000000"
         }
         else {
@@ -237,7 +237,7 @@ Item {
             y: 62
             width: 268
             height: 81
-            color: threshold(packVoltage.text,69,108)
+            color: threshold(packVoltage.text, 69, 108)
             rotation: 0
             z: 0
         }
@@ -248,7 +248,7 @@ Item {
             y: 144
             width: 268
             height: 81
-            color: threshold(packCurrent.text,0,100)
+            color: threshold(packCurrent.text, 0, 100)
             z: 0
         }
 
@@ -258,7 +258,7 @@ Item {
             y: 62
             width: 315
             height: 163
-            color: threshold(packPower.text,0,10800)
+            color: threshold(packPower.text, 0, 10800)
             z: 0
         }
 
@@ -268,7 +268,7 @@ Item {
             y: 227
             width: 292
             height: 148
-            color: threshold(packTemp.text,0,60)
+            color: threshold(packTemp.text, 0, 60)
             z: 0
         }
 
@@ -278,7 +278,7 @@ Item {
             y: 227
             width: 291
             height: 148
-            color: threshold(fanSpeed.text,0,6)
+            color: threshold(fanSpeed.text, (backEnd.pack_temp < 50) ? Math.floor(((backEnd.pack_temp >= 20) ? (backEnd.pack_temp - 15) : 0) / 5) : 6, 6)
             z: 0
         }
     }
