@@ -70,10 +70,26 @@ Since the BBB adc has a 1.8 volt maximum threshold, the voltage output from devi
 
 ### Setting up pins
 
-Ensure rpi.gpio is installed (run "find /usr | grep -i gpio", should see many files)
-If not, install with "sudo apt install rpio.gpio-common"
+Ensure rpi.gpio is installed 
+```c++ 
+find /usr | grep -i gpio
+```
 
-To give user permission to use gpio run "sudo adduser "${USER}" dialout" and then reboot
+If not, install with 
+```c++ 
+sudo apt install rpio.gpio-common
+```
 
-To export pin run "echo "16" >> /sys/class/gpio/export". Replace 16 with your GPIO pin number
-To unexport pin run "echo "16" >> /sys/class/gpio/unexport". Replace 16 with your GPIO pin number
+To give user permission to use gpio 
+```c++
+sudo adduser "${USER}" dialout
+```
+Reboot to update permissions
+
+To export pin
+```c++
+echo "16" >> /sys/class/gpio/export
+```
+Replace 16 with your GPIO number if different
+
+To unexport pin, run export command with unexport instead
