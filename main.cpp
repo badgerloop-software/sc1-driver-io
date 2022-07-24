@@ -3,6 +3,7 @@
 #include <QQmlContext>
 #include <DataProcessor/DataUnpacker.h>
 #include <vector>
+#include "embedded/devices/include/tca6416.h"
 
 
 int main(int argc, char *argv[])
@@ -32,4 +33,15 @@ int main(int argc, char *argv[])
     engine.load(url);
 
     return app.exec();
+
+    // tca6416 test
+    uint8_t directions[] = {1,1,1,1,1,1,1,1,1,  // assuming 1
+                            1,1,1,1,1,1,1,1,1}; // is output
+    Tca6416 dut(2,0x21);
+    dut.begin(directions);
+    while(true) {
+      for (int i=0;i<8;i++) { dut.set_state(true,i,true); dut.set_state(false,i,true); }
+      usleep(500000);
+      for (int i=0;i<8;i++) { dut.set_state(true,i,false); dut.set_state(false,i,false); }
+    }
 }

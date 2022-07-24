@@ -32,11 +32,12 @@ int Gpio::begin() {
   std::string dirString =
       "/sys/class/gpio/gpio" + std::to_string(pinNumber) + "/direction";
   const char* dirPath = dirString.c_str();
-
-  int fd = open(dirPath, O_WRONLY);  // set up direction
+  
+  int fd = open(dirPath, O_WRONLY | O_CREAT, S_IWUSR | S_IRUSR);  // set up direction
   if (fd == -1) {
     std::cout << "Unable to open /sys/class/gpio/gpio" +
                      std::to_string(this->pinNumber) + "/direction";
+    std::cout << strerror(errno);
     return -1;
   }
   if (direction) {  // input
@@ -64,9 +65,6 @@ int Gpio::begin() {
 // return -1 if error or if it's an input pin.
 // return 0 if no errors.
 int Gpio::setValue(bool value) {
-  if (this->direction) {  // don't write value if it's an input
-    return -1;
-  }
   std::string filePathString =
       "/sys/class/gpio/gpio" + std::to_string(pinNumber) + "/value";
   const char* filePath = filePathString.c_str();
@@ -101,9 +99,6 @@ int Gpio::setValue(bool value) {
 // return -1 if error or if it's an output pin
 // return 0 or 1 depending on the input pin value.
 int Gpio::getValue() {
-  if (!this->direction) {  // don't read value if it's an output
-    return -1;
-  }
   std::string filePathString =
       "/sys/class/gpio/gpio" + std::to_string(pinNumber) + "/value";
   const char* filePath = filePathString.c_str();

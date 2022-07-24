@@ -1,3 +1,6 @@
+#ifndef Gpio_H
+#define Gpio_H
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -14,3 +17,5 @@ class Gpio {
   int setValue(bool value);
   int getValue();
 };
+
+#endif

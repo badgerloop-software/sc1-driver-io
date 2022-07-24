@@ -15,7 +15,7 @@ class I2c {
   int deviceAddress;
   int openMode;
 
- protected:
+ public:
   I2c(int bus, int addr, int mode);
   ~I2c();
   int open_i2c();
