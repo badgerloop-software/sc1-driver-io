@@ -64,3 +64,16 @@ float readPin();
 ### The scale factor
 
 Since the BBB adc has a 1.8 volt maximum threshold, the voltage output from devices that exceed this range will need to be divided down by some factor. The `scale` variable represents this factor.
+
+
+## GPIO
+
+### Setting up pins
+
+Ensure rpi.gpio is installed (run "find /usr | grep -i gpio", should see many files)
+If not, install with "sudo apt install rpio.gpio-common"
+
+To give user permission to use gpio run "sudo adduser "${USER}" dialout" and then reboot
+
+To export pin run "echo "16" >> /sys/class/gpio/export". Replace 16 with your GPIO pin number
+To unexport pin run "echo "16" >> /sys/class/gpio/unexport". Replace 16 with your GPIO pin number
