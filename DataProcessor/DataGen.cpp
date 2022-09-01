@@ -4,7 +4,7 @@
 
 #include "DataGen.h"
 
-int lastSpeed=0;
+float lastSpeed=0;
 int lastT=0;
 time_t errStartTime=0;
 std::string errors="";
@@ -28,15 +28,13 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
                 addFloatToArray(data,(float)batteryFunc(timeArg));
             } else if(names[i] == "accelerator") {
                 addFloatToArray(data,std::fmod(timeArg,5)/*(float)rand()/((RAND_MAX+1u)/5)*/);
+            } else if(names[i] == "speed") {
+                addFloatToArray(data,(float)speedFunc(timeArg));
             } else {
                 addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/100));
             }
         } else if(types[i] == "uint8") {
-            if(names[i] == "speed") {
-                dataToByteArray(data,(uint8_t)speedFunc(timeArg));
-            } else {
-                dataToByteArray(data,(uint8_t)fmod(rand(),200));
-            }
+            dataToByteArray(data,(uint8_t)fmod(rand(),200));
         } else if(types[i] == "uint16") {
             dataToByteArray(data,(uint16_t)fmod(rand(),200));
         } else if(types[i] == "bool") {

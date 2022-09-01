@@ -5,7 +5,7 @@ Item {
     width: 875
     height: 802
 
-    property int displaySpeed: 0
+    property real displaySpeed: 0
     property int refreshTime: 1000
 
     function updateSpeed() {
@@ -30,7 +30,7 @@ Item {
             width: 337
             height: 168
             color: "#ffffff"
-            text: displaySpeed
+            text: displaySpeed.toFixed(0)
             font.pixelSize: 238
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -220,8 +220,8 @@ Item {
             clip: false
             fillMode: Image.PreserveAspectFit
 
-            property int prevSpeed: 0
-            property int newSpeed: 0
+            property real prevSpeed: 0
+            property real newSpeed: 0
 
             Connections {
                 target: backEnd

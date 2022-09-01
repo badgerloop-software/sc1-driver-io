@@ -20,7 +20,6 @@ class DataUnpacker : public QObject
 
     // Include only the properties that need to be displayed on the driver dashboard
     // Qml didn't want to play nice with uint8_t on the pi, so now it's int
-    Q_PROPERTY(int speed MEMBER speed NOTIFY dataChanged);
     Q_PROPERTY(int fan_speed MEMBER fan_speed NOTIFY dataChanged);
     Q_PROPERTY(int tstamp_hr MEMBER tstamp_hr NOTIFY dataChanged);
     Q_PROPERTY(int tstamp_mn MEMBER tstamp_mn NOTIFY dataChanged);
@@ -57,6 +56,7 @@ class DataUnpacker : public QObject
     // Not in the data format, but shared with controls
     Q_PROPERTY(bool restart_enable MEMBER restart_enable NOTIFY dataChanged);
 
+    Q_PROPERTY(float speed MEMBER speed NOTIFY dataChanged);
     Q_PROPERTY(float accelerator MEMBER accelerator NOTIFY dataChanged);
     Q_PROPERTY(float soc MEMBER soc NOTIFY dataChanged);
     Q_PROPERTY(float mppt_current_out MEMBER mppt_current_out NOTIFY dataChanged);
@@ -91,9 +91,9 @@ private:
     QThread dataHandlingThread;
 
     // TODO Include only the properties that need to be displayed on the driver dashboard
-    uint8_t speed, fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
+    uint8_t fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
     uint16_t tstamp_ms;
-    float accelerator, soc, mppt_current_out, pack_voltage, pack_current, pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, string1_temp, string2_temp, string3_temp;
+    float speed, accelerator, soc, mppt_current_out, pack_voltage, pack_current, pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, string1_temp, string2_temp, string3_temp;
     bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat, eng_dash_commfail=1;
     QString state;
     // Data for shutdown circuit
