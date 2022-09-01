@@ -33,6 +33,8 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool headlights MEMBER headlights NOTIFY dataChanged);
     Q_PROPERTY(bool cruise MEMBER cruise NOTIFY dataChanged);
     Q_PROPERTY(bool mainIO_heartbeat MEMBER mainIO_heartbeat NOTIFY dataChanged);
+    Q_PROPERTY(bool eng_dash_commfail MEMBER eng_dash_commfail NOTIFY dataChanged);
+
     // Shutdown circuit
     Q_PROPERTY(bool battery_eStop MEMBER battery_eStop NOTIFY dataChanged);
     Q_PROPERTY(bool driver_eStop MEMBER driver_eStop NOTIFY dataChanged);
@@ -80,6 +82,7 @@ public:
     ~DataUnpacker();
 public slots:
     void unpack();
+    void eng_dash_connection(bool state);
 signals:
     void getData();
     void dataChanged();
@@ -91,7 +94,7 @@ private:
     uint8_t speed, fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
     uint16_t tstamp_ms;
     float accelerator, soc, mppt_current_out, pack_voltage, pack_current, pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, string1_temp, string2_temp, string3_temp;
-    bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat;
+    bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat, eng_dash_commfail=1;
     QString state;
     // Data for shutdown circuit
     // TODO Check initial values (should be nominal values, except for contactors, which should be open/false during restart)

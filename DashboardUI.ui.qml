@@ -65,10 +65,10 @@ Item {
 
     Image {
         id: mainioCommsIcon
-        x: 108
-        y: 43
-        width: 175
-        height: 175
+        x: 37
+        y: 58
+        width: 115
+        height: 132
         visible: backEnd.mainIO_heartbeat
         source: "UI/Images/Main IO Comms Lost.png"
         sourceSize.height: 175
@@ -78,10 +78,10 @@ Item {
 
     Image {
         id: powerWarningIcon
-        x: 390
-        y: 46
-        width: 95
-        height: 169
+        x: 230
+        y: 61
+        width: 80
+        height: 129
         // TODO If there are no specific power warnings, maybe just use this as an alert for when any voltages/currents are within 10% of their nominal min/max
         //      In that case, maybe add an icon to do the same thing but for temperatures.
         source: "UI/Images/Power Warning.png"
@@ -114,5 +114,18 @@ Item {
         sourceSize.height: 120
         sourceSize.width: 120
         fillMode: Image.PreserveAspectFit
+    }
+
+    Image {
+        id: engDashComm
+        x: 398
+        y: 0
+        width: 126
+        height: 255
+        source: "UI/Images/comm.png"
+        visible: backEnd.eng_dash_commfail
+        sourceSize.height: 169
+        fillMode: Image.PreserveAspectFit
+        sourceSize.width: 90
     }
 }
