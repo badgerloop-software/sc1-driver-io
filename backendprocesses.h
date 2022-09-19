@@ -12,6 +12,15 @@
 #include <QMutex>
 #include "DataProcessor/DataGen.h"
 
+// TODO For the database testing. Some may be unused
+#include <QDebug>
+#include <QJsonDocument>
+#include <QNetworkRequest>
+#include <QNetworkReply>
+#include <QNetworkAccessManager>
+#include <QUrlQuery>
+
+
 struct timestampOffsets {
     int hr;
     int mn;
@@ -47,6 +56,12 @@ private:
     QMutex &mutex;
     std::vector<std::string> &names;
     std::vector<std::string> &types;
+
+    // TODO For database testing
+    int wazzup_counter = 0;
+    int prev_wazzup_counter = 0;
+    long long first_msec;
+    int sec_counter = 0;
 };
 
 #endif // BACKENDPROCESSES_H

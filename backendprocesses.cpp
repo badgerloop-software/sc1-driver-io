@@ -69,6 +69,9 @@ void BackendProcesses::startThread()
     _server.listen(QHostAddress::AnyIPv4, 4003);
     connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
 
+    // TODO For the database testing: Record the start time of the thread
+    first_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
     threadProcedure();
 }
 
@@ -106,6 +109,36 @@ void BackendProcesses::threadProcedure()
     bytes.remove(tstampOffsets.ms,2);
     bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
     bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
+
+
+    // TODO Insert data via a REST API call
+    QUrlQuery querystr;
+    querystr.addQueryItem("field1","Wazzup");
+    querystr.addQueryItem("field2",QString::fromStdString(std::to_string(wazzup_counter++)));
+
+    QUrl myurl;
+    myurl.setScheme("https");
+    myurl.setHost("g5079b74c17c11c-allrecipes.adb.us-ashburn-1.oraclecloudapps.com");
+    myurl.setPath("/ords/admin/test-select/api/add-row-1");
+    myurl.setQuery(querystr);
+
+    QNetworkRequest request;
+    request.setUrl(myurl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QNetworkAccessManager *restclient; //in class
+    restclient = new QNetworkAccessManager(); //constructor
+    QNetworkReply *reply = restclient->get(request);
+    //qDebug() << reply->readAll();
+
+
+    // Display the number of entries inserted each second
+    if(((curr_msec - first_msec) / 1000) > sec_counter) {
+        qDebug() << "Wazzups: " << (wazzup_counter - prev_wazzup_counter);
+        prev_wazzup_counter = wazzup_counter;
+        sec_counter ++;
+    }
+
 
     for (QTcpSocket* socket : _sockets) {
         //socket->write(QByteArray::fromStdString("From solar car: connected to server! " + std::to_string(time) + "\n"));
