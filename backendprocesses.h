@@ -19,6 +19,7 @@
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <QUrlQuery>
+#include <QJsonObject>
 
 
 struct timestampOffsets {

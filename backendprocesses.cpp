@@ -112,7 +112,7 @@ void BackendProcesses::threadProcedure()
 
 
     // TODO Insert data via a REST API call
-    QUrlQuery querystr;
+    /*QUrlQuery querystr;
     querystr.addQueryItem("field1","Wazzup");
     querystr.addQueryItem("field2",QString::fromStdString(std::to_string(wazzup_counter++)));
 
@@ -129,8 +129,67 @@ void BackendProcesses::threadProcedure()
     QNetworkAccessManager *restclient; //in class
     restclient = new QNetworkAccessManager(); //constructor
     QNetworkReply *reply = restclient->get(request);
-    //qDebug() << reply->readAll();
+    //qDebug() << reply->readAll();*/
 
+
+
+
+    /*QVariantMap feed;
+    feed.insert("t1","10101");
+    feed.insert("t2",QString::fromStdString(std::to_string(wazzup_counter++)));
+
+    QByteArray payload=QJsonDocument::fromVariant(feed).toJson();
+
+
+
+    qDebug() << "PAYLOAD: " << QVariant(payload).toString();
+
+    QUrl myurl2;
+    myurl2.setScheme("https");
+    myurl2.setHost("test-project-jrv-default-rtdb.firebaseio.com");
+    myurl2.setPath("/bytes/session" + QString::fromStdString(std::to_string(wazzup_counter++)) + ".json");
+
+    QNetworkRequest request2;
+    request2.setUrl(myurl2);
+    request2.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    qDebug() << "URL: " << myurl2.toString();
+
+    QNetworkAccessManager *restclient2; //in class
+    restclient2 = new QNetworkAccessManager(this); //constructor
+    QNetworkReply *reply2 = restclient2->post(request2,payload);
+    qDebug() << reply2->readAll();*/
+
+
+    QVariantMap feed;
+    feed.insert("session","sess5");
+    feed.insert("tstamp","t");
+    feed.insert("bytes","010101");
+    feed.insert("counter",wazzup_counter++);
+
+    QByteArray payload=QJsonDocument::fromVariant(feed).toJson();
+
+
+
+    qDebug() << "PAYLOAD: " << QVariant(payload).toString();
+
+    QUrl myurl2;
+    myurl2.setScheme("https");
+    myurl2.setHost("$ASTRA_DB_ID-$ASTRA_DB_REGION.apps.astra.datastax.com");
+    myurl2.setPath("/api/rest/v2/keyspaces/blooptests/table1");
+
+    QNetworkRequest request2;
+    request2.setUrl(myurl2);
+    request2.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request2.setRawHeader("x-cassandra-token", "$ASTRA_DB_APPLICATION_TOKEN"); // TODO May have to cast these to byte arrays
+    //Not a known header: request2.setHeader("x-cassandra-token", "$ASTRA_DB_APPLICATION_TOKEN");
+
+    qDebug() << "URL: " << myurl2.toString();
+
+    QNetworkAccessManager *restclient2; //in class
+    restclient2 = new QNetworkAccessManager(this); //constructor
+    QNetworkReply *reply2 = restclient2->post(request2,payload);
+    qDebug() << reply2->readAll();
 
     // Display the number of entries inserted each second
     if(((curr_msec - first_msec) / 1000) > sec_counter) {
