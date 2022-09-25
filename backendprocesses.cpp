@@ -112,7 +112,7 @@ void BackendProcesses::threadProcedure()
 
 
     // TODO Insert data via a REST API call
-    /*QUrlQuery querystr;
+    QUrlQuery querystr;
     querystr.addQueryItem("field1","Wazzup");
     querystr.addQueryItem("field2",QString::fromStdString(std::to_string(wazzup_counter++)));
 
@@ -124,12 +124,12 @@ void BackendProcesses::threadProcedure()
 
     QNetworkRequest request;
     request.setUrl(myurl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    //request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
     QNetworkAccessManager *restclient; //in class
     restclient = new QNetworkAccessManager(); //constructor
     QNetworkReply *reply = restclient->get(request);
-    //qDebug() << reply->readAll();*/
+    //qDebug() << reply->readAll();
 
 
 
@@ -161,6 +161,7 @@ void BackendProcesses::threadProcedure()
     qDebug() << reply2->readAll();*/
 
 
+    /*
     QVariantMap feed;
     feed.insert("session","sess5");
     feed.insert("tstamp","t");
@@ -189,7 +190,7 @@ void BackendProcesses::threadProcedure()
     QNetworkAccessManager *restclient2; //in class
     restclient2 = new QNetworkAccessManager(this); //constructor
     QNetworkReply *reply2 = restclient2->post(request2,payload);
-    qDebug() << reply2->readAll();
+    qDebug() << reply2->readAll();*/
 
     // Display the number of entries inserted each second
     if(((curr_msec - first_msec) / 1000) > sec_counter) {
