@@ -1,0 +1,22 @@
+# ninja log v5
+15	2127	6865423537536269	sqlite/QSQLiteDriverPlugin_autogen/timestamp	90b32a962ebe8912
+15	2127	6865423537536269	sqlite/QSQLiteDriverPlugin_autogen/mocs_compilation.cpp	90b32a962ebe8912
+15	2127	6865423537536269	C:/Users/james/badgerloop_repo/solar-car-dashboard/build-sqldrivers/sqlite/QSQLiteDriverPlugin_autogen/timestamp	90b32a962ebe8912
+15	2127	6865423537536269	C:/Users/james/badgerloop_repo/solar-car-dashboard/build-sqldrivers/sqlite/QSQLiteDriverPlugin_autogen/mocs_compilation.cpp	90b32a962ebe8912
+12	2132	6865423537516276	oci/QOCIDriverPlugin_autogen/timestamp	77d8d12cd3765a74
+12	2132	6865423537516276	oci/QOCIDriverPlugin_autogen/mocs_compilation.cpp	77d8d12cd3765a74
+12	2132	6865423537516276	C:/Users/james/badgerloop_repo/solar-car-dashboard/build-sqldrivers/oci/QOCIDriverPlugin_autogen/timestamp	77d8d12cd3765a74
+12	2132	6865423537516276	C:/Users/james/badgerloop_repo/solar-car-dashboard/build-sqldrivers/oci/QOCIDriverPlugin_autogen/mocs_compilation.cpp	77d8d12cd3765a74
+2133	2174	6865423539276262	oci/QOCIDriverPlugin_resource.rc	5481df6711026742
+2133	2174	6865423539276262	C:/Users/james/badgerloop_repo/solar-car-dashboard/build-sqldrivers/oci/QOCIDriverPlugin_resource.rc	5481df6711026742
+2128	2248	6865423539296304	sqlite/QSQLiteDriverPlugin_resource.rc	b82927a883b1d4af
+2128	2248	6865423539296304	C:/Users/james/badgerloop_repo/solar-car-dashboard/build-sqldrivers/sqlite/QSQLiteDriverPlugin_resource.rc	b82927a883b1d4af
+2180	2509	6865423542656272	oci/CMakeFiles/QOCIDriverPlugin.dir/QOCIDriverPlugin_resource.rc.obj	330042677534866b
+2266	2510	6865423542666262	sqlite/CMakeFiles/QSQLiteDriverPlugin.dir/QSQLiteDriverPlugin_resource.rc.obj	728822b9b910e977
+5	4490	6865423561129411	odbc/QODBCDriverPlugin_autogen/timestamp	4835efed1fdeec9f
+5	4490	6865423561129411	odbc/QODBCDriverPlugin_autogen/mocs_compilation.cpp	4835efed1fdeec9f
+5	4490	6865423561129411	C:/Users/james/badgerloop_repo/solar-car-dashboard/build-sqldrivers/odbc/QODBCDriverPlugin_autogen/timestamp	4835efed1fdeec9f
+5	4490	6865423561129411	C:/Users/james/badgerloop_repo/solar-car-dashboard/build-sqldrivers/odbc/QODBCDriverPlugin_autogen/mocs_compilation.cpp	4835efed1fdeec9f
+38	80	6865423719795303	odbc/QODBCDriverPlugin_resource.rc	a73b8996d08fa29f
+38	80	6865423719795303	C:/Users/james/badgerloop_repo/solar-car-dashboard/build-sqldrivers/odbc/QODBCDriverPlugin_resource.rc	a73b8996d08fa29f
+86	231	6865423721335342	odbc/CMakeFiles/QODBCDriverPlugin.dir/QODBCDriverPlugin_resource.rc.obj	891ce01bf1c07772

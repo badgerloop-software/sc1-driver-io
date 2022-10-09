@@ -1,0 +1,11 @@
+
+Qt Sql Drivers:
+  DB2 (IBM) .............................. no
+  InterBase .............................. no
+  MySql .................................. no
+  OCI (Oracle) ........................... yes
+  ODBC ................................... yes
+  PostgreSQL ............................. no
+  SQLite ................................. yes
+    Using system provided SQLite ......... no
+WARNING: Qt does not support compiling the Oracle database driver with MinGW, due to lack of such support from Oracle. Consider disabling the Oracle driver, as the current build will most likely fail.

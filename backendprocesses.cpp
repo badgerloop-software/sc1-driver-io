@@ -72,6 +72,10 @@ void BackendProcesses::startThread()
     // TODO For the database testing: Record the start time of the thread
     first_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
+
+    // TODO for database testing
+    restclient = new QNetworkAccessManager(); //constructor
+
     threadProcedure();
 }
 
@@ -111,16 +115,17 @@ void BackendProcesses::threadProcedure()
     bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
 
 
-    // TODO Insert data via a REST API call
-    QUrlQuery querystr;
-    querystr.addQueryItem("field1","Wazzup");
-    querystr.addQueryItem("field2",QString::fromStdString(std::to_string(wazzup_counter++)));
+    //QUrlQuery querystr;
+    //querystr.addQueryItem("field1","Wazzup");
+    //querystr.addQueryItem("field2",QString::fromStdString(std::to_string(wazzup_counter++)));
 
-    QUrl myurl;
-    myurl.setScheme("https");
-    myurl.setHost("g5079b74c17c11c-allrecipes.adb.us-ashburn-1.oraclecloudapps.com");
-    myurl.setPath("/ords/admin/test-select/api/add-row-1");
-    myurl.setQuery(querystr);
+    /*QUrl myurl;
+    myurl.setScheme("http");
+    myurl.setHost("recipes-instance");
+    myurl.setPort(5000);
+    myurl.setUserName("ubuntu");
+    myurl.setPath("/apis");
+    //myurl.setQuery(querystr);
 
     QNetworkRequest request;
     request.setUrl(myurl);
@@ -128,8 +133,27 @@ void BackendProcesses::threadProcedure()
 
     QNetworkAccessManager *restclient; //in class
     restclient = new QNetworkAccessManager(); //constructor
-    QNetworkReply *reply = restclient->get(request);
+    QNetworkReply *reply = restclient->get(request);*/
+
+    // TODO Insert data via a REST API call
+    querystr.addQueryItem("field1","Wazzup");
+    querystr.addQueryItem("field2",QString::fromStdString(std::to_string(wazzup_counter++)));
+
+
+    myurl.setScheme("https");
+    myurl.setHost("g5079b74c17c11c-allrecipes.adb.us-ashburn-1.oraclecloudapps.com");
+    myurl.setPath("/ords/admin/test-select/api/add-row-1");
+    myurl.setQuery(querystr);
+
+    request.setUrl(myurl);
+    //request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+
+
+    reply = restclient->get(request);
     //qDebug() << reply->readAll();
+
+    querystr.clear();
 
 
 
@@ -194,7 +218,9 @@ void BackendProcesses::threadProcedure()
 
     // Display the number of entries inserted each second
     if(((curr_msec - first_msec) / 1000) > sec_counter) {
-        qDebug() << "Wazzups: " << (wazzup_counter - prev_wazzup_counter);
+        qDebug() << "Wazzups/sec: " << (wazzup_counter - prev_wazzup_counter);
+        qDebug() << "Wazzups: " << wazzup_counter;
+
         prev_wazzup_counter = wazzup_counter;
         sec_counter ++;
     }

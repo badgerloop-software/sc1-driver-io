@@ -13,6 +13,7 @@
 #include "DataProcessor/DataGen.h"
 
 // TODO For the database testing. Some may be unused
+//#include <QtSql/QSqlDatabase>
 #include <QDebug>
 #include <QJsonDocument>
 #include <QNetworkRequest>
@@ -59,6 +60,11 @@ private:
     std::vector<std::string> &types;
 
     // TODO For database testing
+    QNetworkAccessManager *restclient; //in class
+    QNetworkReply *reply;
+    QUrlQuery querystr;
+    QNetworkRequest request;
+    QUrl myurl;
     int wazzup_counter = 0;
     int prev_wazzup_counter = 0;
     long long first_msec;
