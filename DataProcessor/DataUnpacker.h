@@ -95,14 +95,29 @@ private:
     // TODO Include only the properties that need to be displayed on the driver dashboard
     uint8_t fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
     uint16_t tstamp_ms;
-    float speed, accelerator, soc, mppt_current_out, pack_voltage, pack_current, pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, string1_temp, string2_temp, string3_temp;
-    bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat, eng_dash_commfail=1;
+    float speed, accelerator;
+    float soc;
+    float mppt_current_out;
+    float pack_voltage, pack_current;
+    float pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp;
+    float string1_temp, string2_temp, string3_temp;
+    bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat;
+    bool eng_dash_commfail=1;
     QString state;
     // Data for shutdown circuit
     // TODO Check initial values (should be nominal values, except for contactors, which should be open/false during restart)
     float bms_input_voltage;
-    bool driver_eStop=false, battery_eStop=false, external_eStop=false, crash=false, door=true, mcu_check=false, imd_status=false, bps_fault=false, bms_canbus_failure=false, voltage_failsafe=false, current_failsafe=false, supply_power_failsafe=false, memory_failsafe=false, relay_failsafe=false, mps_enable=true, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false, restart_enable=false;
+    bool driver_eStop=false, battery_eStop=false, external_eStop=false;
+    bool crash=false;
+    bool door=true;
+    bool mcu_check=false;
+    bool imd_status=false;
+    bool bps_fault=false;
+    bool bms_canbus_failure=false, voltage_failsafe=false, current_failsafe=false, supply_power_failsafe=false, memory_failsafe=false, relay_failsafe=false;
+    bool mps_enable=true, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
+    bool restart_enable=false;
     QVector<float> cell_group_voltages;
+
 
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format
 
