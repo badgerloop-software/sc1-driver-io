@@ -4,10 +4,6 @@
 
 #include "DataGen.h"
 
-float lastSpeed=0;
-int lastT=0;
-time_t errStartTime=0;
-std::string errors="";
 
 /**
  * Generates an array of test data

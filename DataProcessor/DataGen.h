@@ -6,6 +6,7 @@
 #define DATAPROCESSOR_DATAGEN_H
 
 #include <QObject>
+#include <QDebug>
 #include <ctime>
 #include <cstdint>
 #include <math.h>
@@ -30,6 +31,11 @@ private:
     func solarFunc;
     func batteryFunc;
     float efficiency;
+
+    float lastSpeed=0;
+    int lastT=0;
+    time_t errStartTime=0;
+    std::string errors="";
 };
 
 #endif //DATAGENERATOR_DATAGEN_H
