@@ -88,6 +88,8 @@ signals:
     void dataChanged();
     void enableRestart();
 private:
+    bool checkRestartEnable();
+
     QThread dataHandlingThread;
 
     // TODO Include only the properties that need to be displayed on the driver dashboard

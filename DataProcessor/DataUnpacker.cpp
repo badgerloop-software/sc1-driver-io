@@ -149,7 +149,7 @@ void DataUnpacker::unpack()
     
     mutex.unlock();
 
-    this->restart_enable = battery_eStop || driver_eStop || external_eStop || imd_status || !door || crash || mcu_check || restart_enable;
+    this->restart_enable = checkRestartEnable();
 
     // Signal data update for front end
     emit dataChanged();
@@ -159,5 +159,9 @@ void DataUnpacker::unpack()
 
 void DataUnpacker::eng_dash_connection(bool state) {
     eng_dash_commfail = !state;
+}
+
+bool DataUnpacker::checkRestartEnable() {
+    return battery_eStop || driver_eStop || external_eStop || imd_status || !door || crash || mcu_check || restart_enable;
 }
 

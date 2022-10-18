@@ -73,7 +73,7 @@ void BackendProcesses::startThread()
 
 void BackendProcesses::threadProcedure()
 {
-    usleep(250000);//50000);
+    usleep(100000);//50000);
 
     //DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
 

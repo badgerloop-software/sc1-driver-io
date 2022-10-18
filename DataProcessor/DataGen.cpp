@@ -39,7 +39,7 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
             if(names[i] == "door") {
                 // NC/preferred true shutdown circuit inputs
                 std::size_t errPos = errors.find(names[i]);
-                bool error = (rand()%200+1 >= 2) && !((errStartTime > time(NULL) - 3) && (errPos != std::string::npos));
+                bool error = (rand()%400+1 >= 2) && !((errStartTime > time(NULL) - 3) && (errPos != std::string::npos));
                 dataToByteArray(data,error);
                 if(!error && (errPos == std::string::npos)) {
                     time(&errStartTime);
@@ -51,7 +51,7 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
                       (names[i] == "imd_status") || (names[i] == "crash") || (names[i] == "mcu_check")) {
                 // NO/preferred false shutdown circuit inputs
                 std::size_t errPos = errors.find(names[i]);
-                bool error = (rand()%200+1 <= 2) || ((errStartTime > time(NULL) - 3) && (errPos != std::string::npos));
+                bool error = (rand()%400+1 <= 2) || ((errStartTime > time(NULL) - 3) && (errPos != std::string::npos));
                 dataToByteArray(data,error);
                 if(error && (errPos == std::string::npos)) {
                     time(&errStartTime);
