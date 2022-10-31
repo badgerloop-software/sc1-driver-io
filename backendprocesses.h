@@ -44,9 +44,12 @@ private:
 
     QByteArray &bytes;
 
-    QMutex &mutex;
     std::vector<std::string> &names;
     std::vector<std::string> &types;
+
+    QMutex &mutex;
+
+    DataGen data;
 };
 
 #endif // BACKENDPROCESSES_H

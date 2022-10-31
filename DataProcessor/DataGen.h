@@ -6,6 +6,7 @@
 #define DATAPROCESSOR_DATAGEN_H
 
 #include <QObject>
+#include <QDebug>
 #include <ctime>
 #include <cstdint>
 #include <math.h>
@@ -30,6 +31,18 @@ private:
     func solarFunc;
     func batteryFunc;
     float efficiency;
+
+    float lastSpeed=0;
+    int lastT=0;
+    time_t errStartTime=0;
+    std::string errors="";
+
+    // Range for random numbers generated for shutdown circuit inputs
+    const int SHUTDOWN_RANGE = 600;
+    // Upper limit to which the random number is compared for shutdown inputs (randNum < SHUTDOWN_LIMIT -> fault)
+    const int SHUTDOWN_LIMIT = 2;
+    // Time, in seconds, for which shutdown faults should persist
+    const int FAULT_TIME = 3;
 };
 
 #endif //DATAGENERATOR_DATAGEN_H

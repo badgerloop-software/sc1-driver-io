@@ -20,7 +20,6 @@ class DataUnpacker : public QObject
 
     // Include only the properties that need to be displayed on the driver dashboard
     // Qml didn't want to play nice with uint8_t on the pi, so now it's int
-    Q_PROPERTY(int speed MEMBER speed NOTIFY dataChanged);
     Q_PROPERTY(int fan_speed MEMBER fan_speed NOTIFY dataChanged);
     Q_PROPERTY(int tstamp_hr MEMBER tstamp_hr NOTIFY dataChanged);
     Q_PROPERTY(int tstamp_mn MEMBER tstamp_mn NOTIFY dataChanged);
@@ -44,6 +43,9 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool mcu_check MEMBER mcu_check NOTIFY dataChanged);
     Q_PROPERTY(bool imd_status MEMBER imd_status NOTIFY dataChanged);
     Q_PROPERTY(bool mps_enable MEMBER mps_enable NOTIFY dataChanged);
+    Q_PROPERTY(bool mppt_contactor MEMBER mppt_contactor NOTIFY dataChanged);
+    Q_PROPERTY(bool motor_controller_contactor MEMBER motor_controller_contactor NOTIFY dataChanged);
+    Q_PROPERTY(bool low_contactor MEMBER low_contactor NOTIFY dataChanged);
     Q_PROPERTY(bool bms_canbus_failure MEMBER bms_canbus_failure NOTIFY dataChanged);
     Q_PROPERTY(bool voltage_failsafe MEMBER voltage_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool current_failsafe MEMBER current_failsafe NOTIFY dataChanged);
@@ -54,6 +56,7 @@ class DataUnpacker : public QObject
     // Not in the data format, but shared with controls
     Q_PROPERTY(bool restart_enable MEMBER restart_enable NOTIFY dataChanged);
 
+    Q_PROPERTY(float speed MEMBER speed NOTIFY dataChanged);
     Q_PROPERTY(float accelerator MEMBER accelerator NOTIFY dataChanged);
     Q_PROPERTY(float soc MEMBER soc NOTIFY dataChanged);
     Q_PROPERTY(float mppt_current_out MEMBER mppt_current_out NOTIFY dataChanged);
@@ -85,17 +88,36 @@ signals:
     void dataChanged();
     void enableRestart();
 private:
+    bool checkRestartEnable();
+
     QThread dataHandlingThread;
 
-    // TOOD Include only the properties that need to be displayed on the driver dashboard
-    uint8_t speed, fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
+    // TODO Include only the properties that need to be displayed on the driver dashboard
+    uint8_t fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
     uint16_t tstamp_ms;
-    float accelerator, soc, mppt_current_out, pack_voltage, pack_current, pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, string1_temp, string2_temp, string3_temp;
+    float speed, accelerator;
+    float soc;
+    float mppt_current_out;
+    float pack_voltage, pack_current;
+    float pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp;
+    float string1_temp, string2_temp, string3_temp;
     bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat;
+    bool eng_dash_commfail=1;
     QString state;
     // Data for shutdown circuit
-    bool driver_eStop, battery_eStop, external_eStop, crash, door, mcu_check, imd_status, mps_enable, bps_fault, bms_canbus_failure, voltage_failsafe, current_failsafe, supply_power_failsafe, memory_failsafe, relay_failsafe, bms_input_voltage, restart_enable, eng_dash_commfail=1;
+    // TODO Check initial values (should be nominal values, except for contactors, which should be open/false during restart)
+    float bms_input_voltage;
+    bool driver_eStop=false, battery_eStop=false, external_eStop=false;
+    bool crash=false;
+    bool door=true;
+    bool mcu_check=false;
+    bool imd_status=false;
+    bool bps_fault=false;
+    bool bms_canbus_failure=false, voltage_failsafe=false, current_failsafe=false, supply_power_failsafe=false, memory_failsafe=false, relay_failsafe=false;
+    bool mps_enable=true, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
+    bool restart_enable=false;
     QVector<float> cell_group_voltages;
+
 
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format
 
