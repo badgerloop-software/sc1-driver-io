@@ -39,24 +39,26 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
             if(names[i] == "door") {
                 // NC/preferred true shutdown circuit inputs
                 std::size_t errPos = errors.find(names[i]);
-                bool error = (rand()%700+1 >= 2) && !((errStartTime > time(NULL) - 3) && (errPos != std::string::npos));
+                // Trigger a fault for FAULT_TIME seconds if a random number (1<=n<=SHUTDOWN_RANGE) is less than SHUTDOWN_LIMIT
+                bool error = (rand()%SHUTDOWN_RANGE+1 >= SHUTDOWN_LIMIT) && !((errStartTime > time(NULL) - FAULT_TIME) && (errPos != std::string::npos));
                 dataToByteArray(data,error);
                 if(!error && (errPos == std::string::npos)) {
                     time(&errStartTime);
                     errors += names[i];
-                } else if((errPos != std::string::npos) && (errStartTime <= time(NULL) - 3)) {
+                } else if((errPos != std::string::npos) && (errStartTime <= time(NULL) - FAULT_TIME)) {
                     errors.erase(errPos,names[i].length());
                 }
             } else if((names[i] == "battery_eStop") || (names[i] == "driver_eStop") || (names[i] == "external_eStop") ||
                       (names[i] == "imd_status") || (names[i] == "crash") || (names[i] == "mcu_check")) {
                 // NO/preferred false shutdown circuit inputs
                 std::size_t errPos = errors.find(names[i]);
-                bool error = (rand()%700+1 <= 2) || ((errStartTime > time(NULL) - 3) && (errPos != std::string::npos));
+                // Trigger a fault for FAULT_TIME seconds if a random number (1<=n<=SHUTDOWN_RANGE) is less than SHUTDOWN_LIMIT
+                bool error = (rand()%SHUTDOWN_RANGE+1 < SHUTDOWN_LIMIT) || ((errStartTime > time(NULL) - FAULT_TIME) && (errPos != std::string::npos));
                 dataToByteArray(data,error);
                 if(error && (errPos == std::string::npos)) {
                     time(&errStartTime);
                     errors += names[i];
-                } else if((errPos != std::string::npos) && (errStartTime <= time(NULL) - 3)) {
+                } else if((errPos != std::string::npos) && (errStartTime <= time(NULL) - FAULT_TIME)) {
                     errors.erase(errPos,names[i].length());
                 }
             } else {
