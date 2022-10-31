@@ -136,7 +136,7 @@ void BackendProcesses::threadProcedure()
     QNetworkReply *reply = restclient->get(request);*/
 
     // TODO Insert data via a REST API call
-    querystr.addQueryItem("field1","Wazzup");
+    /*querystr.addQueryItem("field1","Wazzup");
     querystr.addQueryItem("field2",QString::fromStdString(std::to_string(wazzup_counter++)));
 
 
@@ -153,8 +153,29 @@ void BackendProcesses::threadProcedure()
     reply = restclient->get(request);
     //qDebug() << reply->readAll();
 
-    querystr.clear();
+    querystr.clear();*/
 
+
+
+
+
+    wazzup_counter ++;
+
+
+    myurl.setScheme("http");
+    myurl.setHost("VPS PUBLIC IP ADDRESS"); // TODO
+    myurl.setPath("/route/for/request/"); // TODO
+    myurl.setPort(9999); // TODO
+
+    request.setUrl(myurl);
+    //request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+
+
+    reply = restclient->get(request);
+    //qDebug() << reply->readAll();
+
+    querystr.clear();
 
 
 
