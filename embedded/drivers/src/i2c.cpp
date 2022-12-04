@@ -28,7 +28,7 @@ int I2c::open_i2c() {
 
   if (this->is_open()) return 0;
 
-  if (!this->bus || !this->deviceAddress || !this->openMode) {
+  if (this->bus < 0 || this->deviceAddress < 0 || !this->openMode) {
     std::cerr << "Device not inited.\n";
     return -EINVAL;
   }
@@ -85,10 +85,18 @@ uint8_t I2c::read_from_reg(uint8_t reg) {
 int I2c::read_bytes_from_reg(uint8_t reg, uint8_t *buff, int nBytes) {
   int rc;
   int i;
+  int j;
+  uint8_t swp;
 
   rc = this->write_byte(reg);
   if (rc) return rc;
   rc = this->read_data(buff, nBytes);
   if (rc) return rc;
+
+  for(i = 0, j = nBytes - 1; i < nBytes / 2; i++, j--){
+    swp = buff[i];
+    buff[i] = buff[j];
+    buff[j] = swp;
+  }
   return 0;
 }

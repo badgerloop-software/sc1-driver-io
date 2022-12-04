@@ -10,7 +10,13 @@
 #define START_CONVERSION 0x08 // 0000 100x
 #define CONVERSION_VOLTAGE 244.14e-9
 
-Ads1219::Ads1219(int bus, int addr) : I2c(bus, addr, O_RDWR){}
+Ads1219::Ads1219(int bus, int addr) : I2c(bus, addr, O_RDWR){
+    for (int i = 0; i < ADS11219_NUM_CHANNELS; i++)
+    {
+        pthread_mutex_init(&(this->voltages.at(i).mutex), NULL);
+        this->voltages.at(i).setValue(0);
+    }
+}
 
 void Ads1219::loop() {
     while (this->stop_thread != true) {
@@ -29,6 +35,7 @@ void Ads1219::loop() {
         configReg = (configReg & 0x1F) | (currentChannel << 5);
         // switch the channel
         this->write_data<uint8_t>(WRITE_CONFIG_REG, configReg);
+        this->write_byte(START_CONVERSION);
         // read status register until conversion is done(it has a 1 flag)
         uint8_t statusReg = 0;
         while(statusReg == 0){
@@ -41,12 +48,12 @@ void Ads1219::loop() {
 
         this->read_bytes_from_reg(RDATA, (uint8_t *)&conversionResult, 3);
         // do math to convert it to voltage and set the mutex variable 
-        this->voltages.at(channel).setValue((float)(conversionResult >> 8) * CONVERSION_VOLTAGE);
+        this->voltages.at(channel).setValue((float)(conversionResult) * CONVERSION_VOLTAGE);
     }
 }
 
 float Ads1219::getVoltage(int chan) {
-    if(chan >= 0 || chan <= 3){
+    if(chan >= 0 && chan <= 3){
         return this->voltages.at(chan).getValue();
     }
     std::cout << "Channel number not valid.\n";
@@ -57,7 +64,8 @@ int Ads1219::begin() {
     int rc;
 
     rc = this->open_i2c();
-    if (rc) return rc;
+    if (rc)
+        return rc;
     this->write_byte(RESET);
     this->ads_thread = std::thread(&Ads1219::loop, this);
 

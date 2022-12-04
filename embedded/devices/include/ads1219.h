@@ -11,10 +11,10 @@
 template <typename T>
 struct mutexVar {
  private:
-  pthread_mutex_t mutex;
   T value = -1;
 
  public:
+  pthread_mutex_t mutex;
   /* volatile cannot be memcpy'd
    * so memcpy to a tmp var
    * then set the volatile
