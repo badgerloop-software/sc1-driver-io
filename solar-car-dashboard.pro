@@ -1,5 +1,4 @@
-QT += quick \
-      sql
+QT += quick
 
 CONFIG += c++11
 

@@ -12,16 +12,11 @@
 #include <QMutex>
 #include "DataProcessor/DataGen.h"
 
-// TODO For the database testing. Some may be unused
-//#include <QtSql/QSqlDatabase>
-#include <QScopedPointer>
+// TODO For database testing
 #include <QDebug>
-#include <QJsonDocument>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
-#include <QUrlQuery>
-#include <QJsonObject>
 
 
 struct timestampOffsets {
@@ -65,7 +60,6 @@ private:
     // TODO For database/VPS testing
     QNetworkAccessManager *restclient;
     QNetworkReply *reply;
-    QUrlQuery querystr;
     QNetworkRequest request;
     QUrl myurl;
     int message_counter = 0;
