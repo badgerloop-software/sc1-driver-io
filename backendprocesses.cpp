@@ -17,7 +17,7 @@ double batteryFunc(double t)
 
 
 
-BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent) : QObject(parent), bytes(bytes), names(names), types(types), mutex(mutex)
+BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent) : QObject(parent), bytes(bytes), names(names), types(types), mutex(mutex), data(DataGen(&speedFunc,&solarFunc,&batteryFunc,100))
 {
     //this->bytes = bytes;
     //this->names = names;
@@ -81,9 +81,9 @@ void BackendProcesses::startThread()
 
 void BackendProcesses::threadProcedure()
 {
-    usleep(50000);
+    usleep(100000);//50000);
 
-    DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
+    //DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
 
     mutex.lock();
 
