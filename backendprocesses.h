@@ -69,8 +69,8 @@ private:
     QUrlQuery querystr;
     QNetworkRequest request;
     QUrl myurl;
-    int wazzup_counter = 0;
-    int prev_wazzup_counter = 0;
+    int message_counter = 0;
+    int prev_message_counter = 0;
     long long first_msec;
     int sec_counter = 0;
 };

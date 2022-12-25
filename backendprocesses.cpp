@@ -68,7 +68,7 @@ void BackendProcesses::startThread()
     _server.listen(QHostAddress::AnyIPv4, 4003);
     connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
 
-    // TODO For the database testing: Record the start time of the thread
+    // TODO For the database testing: Record the start time for identifying the session
     first_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
     // TODO Create a QNetworkAccessManager for sending HTTP requests to the VPS
@@ -119,8 +119,8 @@ void BackendProcesses::threadProcedure()
     // Create URL for HTTP request to send byte array to the server
     QUrl myurl;
     myurl.setScheme("http");
-    myurl.setHost("hostname"); // TODO Put this (and other database info) in constants file that is ignored by Git
-    myurl.setPort(9999);
+    myurl.setHost("hostname"); // TODO
+    myurl.setPort(9999); // TODO
     myurl.setPath("/add-data");
 
     QNetworkRequest request;
@@ -132,138 +132,39 @@ void BackendProcesses::threadProcedure()
     //          2. dataset-time: (curr_msec) timestamp associated with the byte array being sent to the server
     request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(curr_msec))));
 
+    // TODO Note in case message frequency becomes an issue: Set up a message queue for HTTP requests,
+    //      and send groups of byte arrays to the server at less frequent intervals (/as soon as we can send our next message)
 
-
-    // TODO This breaks after a bit, so don't keep creating new objects. Be smart about memory
-    //QNetworkAccessManager restclient(this);
-    // TODO QNetworkAccessManager *restclient; //in class
-    //QScopedPointer<QNetworkAccessManager> restclient(new QNetworkAccessManager()); //constructor
-    // TODO restclient = new QNetworkAccessManager();
-
-    // TODO file->setParent(restclient); // Cannot delete the file now, so delete it with the restclient
-
-    // TODO connect(restclient, &QNetworkAccessManager::finished,
-    //        restclient, &QNetworkAccessManager::deleteLater);
-    //connect(reply, &QNetworkReply::finished, reply, &QNetworkReply::deleteLater);
-    //connect(restclient, &QNetworkAccessManager::finished,
-    //        restclient, &QNetworkAccessManager::deleteLater);
-
-    //QNetworkAccessManager restclient;
-    //reply = restclient.post(request, bytes);
-
-
-
-
-    // TODO A bit complicated of a method:
-    //      Connect the reply or QNetworkAccessmanager finished() method to the QNetworkAccessManager deleteLater() method
-    //      Then, accumulate bytes and timestamps to an array that is sent en masse to the server after the current restclient is finished, deleted, and recreated
-
-    //TODO this->restclient->moveToThread(this->thread());
-
-    qDebug() << this->thread() << "\t\t" << restclient->thread() << "\t\t" << sec_counter;
+    // TODO Remove: qDebug() << this->thread() << "\t\t" << restclient->thread() << "\t\t" << sec_counter;
 
     // TODO Allows HTTP pipelining so that the request doesn't wait for a response from the server before allowing a new message to be sent
     //      This should help to avoid stalling while waiting for a response from the server
+    //      NOTE - The number of messages sent before a response from the first message is received might still be limited
     request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
 
-    // TODO Post the byte array, along with the corresponding timestamp, to the server
+    // TODO Send the byte array, along with the corresponding timestamp, to the server
     reply = this->restclient->post(request, bytes);
 
-    //qDebug() << "\n------------------------------------------------------------------\nSENT POST REQUEST";
-    //qDebug() << request.attribute(QNetworkRequest::HttpPipeliningAllowedAttribute);
-    //qDebug() << request.attribute(QNetworkRequest::HttpPipeliningWasUsedAttribute);
-    //qDebug() << "------------------------------------------------------------------\n";
+    // TODO Call readReply() whenever the reply is ready to be read (on readyRead emitted)
+    // connect(this->reply, &QNetworkReply::readyRead, this, &BackendProcesses::readReply);
 
-    //connect(reply, &QNetworkReply::finished, reply, &QNetworkReply::deleteLater);
-    //connect(reply, &QNetworkReply::finished, restclient, &QNetworkAccessManager::deleteLater);
+    // TODO Deletion of replies should be taken care of in startThread() (setting AutoDeleteReplies to true). Keeping this here until that's tested:
+    // connect(reply, &QNetworkReply::finished, reply, &QNetworkReply::deleteLater);
 
-    //connect(restclient, &QNetworkAccessManager::finished,
-    //        reply, &QNetworkReply::deleteLater);
+    // TODO
+    // qDebug() << "\n------------------------------------------------------------------\nSENT POST REQUEST";
+    // qDebug() << request.attribute(QNetworkRequest::HttpPipeliningAllowedAttribute);
+    // qDebug() << request.attribute(QNetworkRequest::HttpPipeliningWasUsedAttribute);
+    // qDebug() << "------------------------------------------------------------------\n";
 
+    message_counter ++;
 
-    //restclient->deleteLater(); // TODO
-
-
-
-    /* TODO
-    // Call readReply() whenever the reply is ready to be read (on readyRead emitted)
-    // TODO connect(this->reply, &QNetworkReply::readyRead, this, &BackendProcesses::readReply);
-
-    // TODO usleep(245000); // Wait for readyRead to be emitted
-
-    // Guessing waitForReadyRead() doesn't work because this is in a different thread than the one backendProcesses was initialized in
-    //reply->waitForReadyRead(-1);
-
-    //qDebug() << reply->readAll();
-
-
-
-    /*QVariantMap feed;
-    feed.insert("t1","10101");
-    feed.insert("t2",QString::fromStdString(std::to_string(wazzup_counter++)));
-
-    QByteArray payload=QJsonDocument::fromVariant(feed).toJson();
-
-
-
-    qDebug() << "PAYLOAD: " << QVariant(payload).toString();
-
-    QUrl myurl2;
-    myurl2.setScheme("https");
-    myurl2.setHost("test-project-jrv-default-rtdb.firebaseio.com");
-    myurl2.setPath("/bytes/session" + QString::fromStdString(std::to_string(wazzup_counter++)) + ".json");
-
-    QNetworkRequest request2;
-    request2.setUrl(myurl2);
-    request2.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    qDebug() << "URL: " << myurl2.toString();
-
-    QNetworkAccessManager *restclient2; //in class
-    restclient2 = new QNetworkAccessManager(this); //constructor
-    QNetworkReply *reply2 = restclient2->post(request2,payload);
-    qDebug() << reply2->readAll();*/
-
-
-    /*
-    QVariantMap feed;
-    feed.insert("session","sess5");
-    feed.insert("tstamp","t");
-    feed.insert("bytes","010101");
-    feed.insert("counter",wazzup_counter++);
-
-    QByteArray payload=QJsonDocument::fromVariant(feed).toJson();
-
-
-
-    qDebug() << "PAYLOAD: " << QVariant(payload).toString();
-
-    QUrl myurl2;
-    myurl2.setScheme("https");
-    myurl2.setHost("$ASTRA_DB_ID-$ASTRA_DB_REGION.apps.astra.datastax.com");
-    myurl2.setPath("/api/rest/v2/keyspaces/blooptests/table1");
-
-    QNetworkRequest request2;
-    request2.setUrl(myurl2);
-    request2.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    request2.setRawHeader("x-cassandra-token", "$ASTRA_DB_APPLICATION_TOKEN"); // TODO May have to cast these to byte arrays
-    //Not a known header: request2.setHeader("x-cassandra-token", "$ASTRA_DB_APPLICATION_TOKEN");
-
-    qDebug() << "URL: " << myurl2.toString();
-
-    QNetworkAccessManager *restclient2; //in class
-    restclient2 = new QNetworkAccessManager(this); //constructor
-    QNetworkReply *reply2 = restclient2->post(request2,payload);
-    qDebug() << reply2->readAll();*/
-
-    wazzup_counter ++;
-
-    // TODO Display the number of entries inserted each second
+    // TODO Display the number of messages sent each second
     if(((curr_msec - first_msec) / 1000) > sec_counter) {
-        qDebug() << "Wazzups/sec: " << (wazzup_counter - prev_wazzup_counter);
-        qDebug() << "Wazzups: " << wazzup_counter;
+        qDebug() << "Messages/sec: " << (message_counter - prev_message_counter);
+        qDebug() << "Messages: " << message_counter;
 
-        prev_wazzup_counter = wazzup_counter;
+        prev_message_counter = message_counter;
         sec_counter ++;
     }
 
