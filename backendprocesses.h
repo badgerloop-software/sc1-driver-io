@@ -14,6 +14,7 @@
 
 // TODO For the database testing. Some may be unused
 //#include <QtSql/QSqlDatabase>
+#include <QScopedPointer>
 #include <QDebug>
 #include <QJsonDocument>
 #include <QNetworkRequest>
@@ -44,6 +45,9 @@ public slots:
 
     void threadProcedure();
     void startThread();
+
+    // TODO Read reply from server (CURRENTLY UNUSED)
+    void readReply();
 signals:
     void dataReady();
     void eng_dash_connection(bool state);
@@ -59,8 +63,8 @@ private:
     std::vector<std::string> &names;
     std::vector<std::string> &types;
 
-    // TODO For database testing
-    QNetworkAccessManager *restclient; //in class
+    // TODO For database/VPS testing
+    QNetworkAccessManager *restclient;
     QNetworkReply *reply;
     QUrlQuery querystr;
     QNetworkRequest request;

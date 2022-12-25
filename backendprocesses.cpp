@@ -19,7 +19,6 @@ double batteryFunc(double t)
 
 BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent) : QObject(parent), bytes(bytes), names(names), types(types), mutex(mutex)
 {
-
     //this->bytes = bytes;
     //this->names = names;
     //this->types = types;
@@ -72,9 +71,10 @@ void BackendProcesses::startThread()
     // TODO For the database testing: Record the start time of the thread
     first_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-
-    // TODO for database testing
-    restclient = new QNetworkAccessManager(); //constructor
+    // TODO Create a QNetworkAccessManager for sending HTTP requests to the VPS
+    this->restclient = new QNetworkAccessManager();
+    // TODO Automatically delete server response since it isn't used
+    this->restclient->setAutoDeleteReplies(true);
 
     threadProcedure();
 }
@@ -91,6 +91,8 @@ void BackendProcesses::threadProcedure()
 
     // Get time data is received (then written to byte array right after byte array is updated/data is received)
     auto curr_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+    qDebug() << curr_msec;
     //time_t now = time(NULL);
 
     uint8_t hour_time = (curr_msec/3600000 + 18) % 24;
@@ -114,68 +116,85 @@ void BackendProcesses::threadProcedure()
     bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
     bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
 
-
-    //QUrlQuery querystr;
-    //querystr.addQueryItem("field1","Wazzup");
-    //querystr.addQueryItem("field2",QString::fromStdString(std::to_string(wazzup_counter++)));
-
-    /*QUrl myurl;
+    // Create URL for HTTP request to send byte array to the server
+    QUrl myurl;
     myurl.setScheme("http");
-    myurl.setHost("recipes-instance");
-    myurl.setPort(5000);
-    myurl.setUserName("ubuntu");
-    myurl.setPath("/apis");
-    //myurl.setQuery(querystr);
+    myurl.setHost("hostname"); // TODO Put this (and other database info) in constants file that is ignored by Git
+    myurl.setPort(9999);
+    myurl.setPath("/add-data");
 
     QNetworkRequest request;
     request.setUrl(myurl);
-    //request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer")); // TODO Try "blob" for content type as well
 
-    QNetworkAccessManager *restclient; //in class
-    restclient = new QNetworkAccessManager(); //constructor
-    QNetworkReply *reply = restclient->get(request);*/
-
-    // TODO Insert data via a REST API call
-    /*querystr.addQueryItem("field1","Wazzup");
-    querystr.addQueryItem("field2",QString::fromStdString(std::to_string(wazzup_counter++)));
-
-
-    myurl.setScheme("https");
-    myurl.setHost("g5079b74c17c11c-allrecipes.adb.us-ashburn-1.oraclecloudapps.com");
-    myurl.setPath("/ords/admin/test-select/api/add-row-1");
-    myurl.setQuery(querystr);
-
-    request.setUrl(myurl);
-    //request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    // TODO SPLIT THIS UP INTO TWO PARTS:
+    //          1. session-time: (first_msec) start time of the session (used to identify which table the data should be inserted into)
+    //          2. dataset-time: (curr_msec) timestamp associated with the byte array being sent to the server
+    request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(curr_msec))));
 
 
 
-    reply = restclient->get(request);
+    // TODO This breaks after a bit, so don't keep creating new objects. Be smart about memory
+    //QNetworkAccessManager restclient(this);
+    // TODO QNetworkAccessManager *restclient; //in class
+    //QScopedPointer<QNetworkAccessManager> restclient(new QNetworkAccessManager()); //constructor
+    // TODO restclient = new QNetworkAccessManager();
+
+    // TODO file->setParent(restclient); // Cannot delete the file now, so delete it with the restclient
+
+    // TODO connect(restclient, &QNetworkAccessManager::finished,
+    //        restclient, &QNetworkAccessManager::deleteLater);
+    //connect(reply, &QNetworkReply::finished, reply, &QNetworkReply::deleteLater);
+    //connect(restclient, &QNetworkAccessManager::finished,
+    //        restclient, &QNetworkAccessManager::deleteLater);
+
+    //QNetworkAccessManager restclient;
+    //reply = restclient.post(request, bytes);
+
+
+
+
+    // TODO A bit complicated of a method:
+    //      Connect the reply or QNetworkAccessmanager finished() method to the QNetworkAccessManager deleteLater() method
+    //      Then, accumulate bytes and timestamps to an array that is sent en masse to the server after the current restclient is finished, deleted, and recreated
+
+    //TODO this->restclient->moveToThread(this->thread());
+
+    qDebug() << this->thread() << "\t\t" << restclient->thread() << "\t\t" << sec_counter;
+
+    // TODO Allows HTTP pipelining so that the request doesn't wait for a response from the server before allowing a new message to be sent
+    //      This should help to avoid stalling while waiting for a response from the server
+    request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
+
+    // TODO Post the byte array, along with the corresponding timestamp, to the server
+    reply = this->restclient->post(request, bytes);
+
+    //qDebug() << "\n------------------------------------------------------------------\nSENT POST REQUEST";
+    //qDebug() << request.attribute(QNetworkRequest::HttpPipeliningAllowedAttribute);
+    //qDebug() << request.attribute(QNetworkRequest::HttpPipeliningWasUsedAttribute);
+    //qDebug() << "------------------------------------------------------------------\n";
+
+    //connect(reply, &QNetworkReply::finished, reply, &QNetworkReply::deleteLater);
+    //connect(reply, &QNetworkReply::finished, restclient, &QNetworkAccessManager::deleteLater);
+
+    //connect(restclient, &QNetworkAccessManager::finished,
+    //        reply, &QNetworkReply::deleteLater);
+
+
+    //restclient->deleteLater(); // TODO
+
+
+
+    /* TODO
+    // Call readReply() whenever the reply is ready to be read (on readyRead emitted)
+    // TODO connect(this->reply, &QNetworkReply::readyRead, this, &BackendProcesses::readReply);
+
+    // TODO usleep(245000); // Wait for readyRead to be emitted
+
+    // Guessing waitForReadyRead() doesn't work because this is in a different thread than the one backendProcesses was initialized in
+    //reply->waitForReadyRead(-1);
+
     //qDebug() << reply->readAll();
-
-    querystr.clear();*/
-
-
-
-
-
-    wazzup_counter ++;
-
-
-    myurl.setScheme("http");
-    myurl.setHost("VPS PUBLIC IP ADDRESS"); // TODO
-    myurl.setPath("/route/for/request/"); // TODO
-    myurl.setPort(9999); // TODO
-
-    request.setUrl(myurl);
-    //request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-
-
-    reply = restclient->get(request);
-    //qDebug() << reply->readAll();
-
-    querystr.clear();
 
 
 
@@ -237,7 +256,9 @@ void BackendProcesses::threadProcedure()
     QNetworkReply *reply2 = restclient2->post(request2,payload);
     qDebug() << reply2->readAll();*/
 
-    // Display the number of entries inserted each second
+    wazzup_counter ++;
+
+    // TODO Display the number of entries inserted each second
     if(((curr_msec - first_msec) / 1000) > sec_counter) {
         qDebug() << "Wazzups/sec: " << (wazzup_counter - prev_wazzup_counter);
         qDebug() << "Wazzups: " << wazzup_counter;
@@ -254,4 +275,10 @@ void BackendProcesses::threadProcedure()
     }
     mutex.unlock();
     emit dataReady();
+}
+
+// TODO Read reply from server
+void BackendProcesses::readReply() {
+    qDebug() << "HTTP response: " << reply->readAll();
+
 }
