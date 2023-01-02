@@ -74,7 +74,7 @@ void BackendProcesses::startThread()
     // TODO Create a QNetworkAccessManager for sending HTTP requests to the VPS
     this->restclient = new QNetworkAccessManager();
     // TODO Automatically delete server response since it isn't used
-    this->restclient->setAutoDeleteReplies(true);
+    //this->restclient->setAutoDeleteReplies(true); // TODO Remove
 
 
 
@@ -89,7 +89,7 @@ void BackendProcesses::startThread()
     QNetworkRequest request;
     request.setUrl(myurl);
 
-    this->restclient->setAutoDeleteReplies(false); // TODO
+    //this->restclient->setAutoDeleteReplies(false); // TODO Remove when setAutoDeleteReplies() call above is removed
 
     reply = this->restclient->get(request);
 
@@ -137,24 +137,35 @@ void BackendProcesses::threadProcedure()
     bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
     bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
 
+
+
+    // TODO Need to:
+    //          1. Check if tableName is null/empty before inserting new data (indicates if response was received from table creation)
+    //          2. Store payloads until table has been created and response was received (once tableName is not null/empty)
+    //              - NOTE: Setting tableName before a response is received from the server (and then sending requests to add data right away) is probably not a good idea.
+    //                      I believe there is a limit to the number of messages that can be queued/sent before a response is received, so this could possibly cause issues with some requests not getting through
+
+
     // Create URL for HTTP request to send byte array to the server
     QUrl myurl;
     myurl.setScheme("http");
     myurl.setHost("hostname"); // TODO
     myurl.setPort(9999); // TODO
     myurl.setPath("/exp-add-data"); // TODO
+    myurl.setQuery("table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(curr_msec)));
 
     QNetworkRequest request;
     request.setUrl(myurl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer")); // TODO Try "blob" for content type as well
 
     // TODO SPLIT THIS UP INTO TWO PARTS:
-    //        X 1. session-time: (first_msec) start time of the session (used to identify which table the data should be inserted into)
+    //        X 1. table-name: ("_" + first_msec, which is equivalent to the response from the "/add-table/*" request) table name created from the start time of the session
     //        X 2. dataset-time: (curr_msec) timestamp associated with the byte array being sent to the server
     // TODO request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(first_msec))));
 
 
-    request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(first_msec)) + ",dataset-time=" + QString::fromStdString(std::to_string(curr_msec))));
+    //request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; table-name=" + tableName + ",dataset-time=" + QString::fromStdString(std::to_string(curr_msec))));
+    // TODO request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(first_msec)) + ",dataset-time=" + QString::fromStdString(std::to_string(curr_msec))));
     // TODO request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=_quickTest,dataset-time=" + QString::fromStdString(std::to_string(curr_msec))));
     // TODO request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(curr_msec))));
 
@@ -170,7 +181,7 @@ void BackendProcesses::threadProcedure()
 
     // TODO Send the byte array, along with the corresponding timestamp, to the server
     // TODO reply = this->restclient->post(request, bytes);
-    //this->restclient->post(request, bytes);
+    this->restclient->post(request, bytes);
 
     // TODO Call readReply() whenever the reply is ready to be read (on readyRead emitted)
     // connect(this->reply, &QNetworkReply::readyRead, this, &BackendProcesses::readReply);
@@ -215,5 +226,8 @@ void BackendProcesses::readReply() {
     } else {
         tableName = json.take("response").toString();
         qDebug() << "HTTP response (table name): " << tableName;
+
+        // TODO Automatically delete server responses since they aren't used after reading the table name
+        this->restclient->setAutoDeleteReplies(true);
     }
 }
