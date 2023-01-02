@@ -76,6 +76,27 @@ void BackendProcesses::startThread()
     // TODO Automatically delete server response since it isn't used
     this->restclient->setAutoDeleteReplies(true);
 
+
+
+
+    // TODO
+    QUrl myurl;
+    myurl.setScheme("http");
+    myurl.setHost("hostname"); // TODO
+    myurl.setPort(9999); // TODO
+    myurl.setPath("/add-table/" + QString::fromStdString(std::to_string(first_msec))); // TODO
+
+    QNetworkRequest request;
+    request.setUrl(myurl);
+
+    this->restclient->setAutoDeleteReplies(false); // TODO
+
+    reply = this->restclient->get(request);
+
+    connect(reply, &QNetworkReply::readyRead, this, &BackendProcesses::readReply);
+
+
+
     threadProcedure();
 }
 
@@ -121,16 +142,21 @@ void BackendProcesses::threadProcedure()
     myurl.setScheme("http");
     myurl.setHost("hostname"); // TODO
     myurl.setPort(9999); // TODO
-    myurl.setPath("/add-data");
+    myurl.setPath("/exp-add-data"); // TODO
 
     QNetworkRequest request;
     request.setUrl(myurl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer")); // TODO Try "blob" for content type as well
 
     // TODO SPLIT THIS UP INTO TWO PARTS:
-    //          1. session-time: (first_msec) start time of the session (used to identify which table the data should be inserted into)
-    //          2. dataset-time: (curr_msec) timestamp associated with the byte array being sent to the server
-    request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(curr_msec))));
+    //        X 1. session-time: (first_msec) start time of the session (used to identify which table the data should be inserted into)
+    //        X 2. dataset-time: (curr_msec) timestamp associated with the byte array being sent to the server
+    // TODO request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(first_msec))));
+
+
+    request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(first_msec)) + ",dataset-time=" + QString::fromStdString(std::to_string(curr_msec))));
+    // TODO request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=_quickTest,dataset-time=" + QString::fromStdString(std::to_string(curr_msec))));
+    // TODO request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(curr_msec))));
 
     // TODO Note in case message frequency becomes an issue: Set up a message queue for HTTP requests,
     //      and send groups of byte arrays to the server at less frequent intervals (/as soon as we can send our next message)
@@ -143,7 +169,8 @@ void BackendProcesses::threadProcedure()
     request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
 
     // TODO Send the byte array, along with the corresponding timestamp, to the server
-    reply = this->restclient->post(request, bytes);
+    // TODO reply = this->restclient->post(request, bytes);
+    //this->restclient->post(request, bytes);
 
     // TODO Call readReply() whenever the reply is ready to be read (on readyRead emitted)
     // connect(this->reply, &QNetworkReply::readyRead, this, &BackendProcesses::readReply);
@@ -180,6 +207,13 @@ void BackendProcesses::threadProcedure()
 
 // TODO Read reply from server
 void BackendProcesses::readReply() {
-    qDebug() << "HTTP response: " << reply->readAll();
+    QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
+    //QJsonObject json = QJsonDocument::fromJson(QByteArray::fromStdString("JSON Derulo")).object();
 
+    if(json.isEmpty()) {
+        qDebug() << "EMPTY JSON";
+    } else {
+        tableName = json.take("response").toString();
+        qDebug() << "HTTP response (table name): " << tableName;
+    }
 }

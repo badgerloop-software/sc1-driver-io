@@ -17,6 +17,8 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 
 struct timestampOffsets {
@@ -62,6 +64,7 @@ private:
     QNetworkReply *reply;
     QNetworkRequest request;
     QUrl myurl;
+    QString tableName;
     int message_counter = 0;
     int prev_message_counter = 0;
     long long first_msec;
