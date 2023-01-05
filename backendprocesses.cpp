@@ -151,7 +151,7 @@ void BackendProcesses::threadProcedure()
     myurl.setScheme("http");
     myurl.setHost("hostname"); // TODO
     myurl.setPort(9999); // TODO
-    myurl.setPath("/exp-add-data"); // TODO
+    myurl.setPath("/add-data"); // TODO
     myurl.setQuery("table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(curr_msec)));
 
     QNetworkRequest request;
