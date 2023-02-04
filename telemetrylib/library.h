@@ -2,33 +2,36 @@
 #define TELEMETRYLIB_LIBRARY_H
 #include <QtCore>
 #include <QtNetwork>
+#include <iostream>
+#include <QTcpServer>
+#include <vector>
+#include "DTI.h"
+#include <QDebug>
 
 /**
- * A library built for handling data telemetry that allows automatic switch between communication methods
+ * A library built for handling data telemetry that allows automatic switch between communication methods with modular
+ * design for future extension
  */
 
-class telemetry : public QObject{
+class Telemetry : public QObject{
     Q_OBJECT
 public:
     /**
-     * Initialize the system with following parameter
-     * @param url An array of url to connect to, should be in order of preference
-     * @param protocol Connection protocol for each url
+     *
+     * @param com Data telemetry object ranked by priority
      * @param size
      */
-    telemetry(char ** url, char ** protocol, int size);
-    int send(unsigned char * bytes);
+    Telemetry();
+    Telemetry(std::vector<DTI*> comm);
+    void sendData(const char * data);
+    const char* receiveData();
+    void helloworld();
 signals:
     void eng_dash_connection(bool state);
-};
-
-class Connection : public QObject{
-    Q_OBJECT
-public:
-    QObject* connection;
-    char * type{};
-    bool connectionStatus;
 public slots:
-    void onStatusChange(QAbstractSocket::SocketState socketState){connectionStatus = 1};
+    void comChannelChanged();
+private:
+    int commChannel = -1;
+    std::vector <DTI*> comm;
 };
 #endif //TELEMETRYLIB_LIBRARY_H

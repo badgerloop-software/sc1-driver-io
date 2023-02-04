@@ -17,7 +17,9 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
-
+#include "telemetrylib/library.h"
+#include "telemetrylib/DTI.h"
+#include "telemetrylib/TCP.cpp"
 
 struct timestampOffsets {
     int hr;
@@ -43,6 +45,7 @@ public slots:
 
     // TODO Read reply from server (CURRENTLY UNUSED)
     void readReply();
+    void comm_status(bool s);
 signals:
     void dataReady();
     void eng_dash_connection(bool state);
@@ -70,6 +73,11 @@ private:
     QMutex &mutex;
 
     DataGen data;
+
+    Telemetry* tel;
+
+    //TCP tcp(QHostAddress::AnyIPv4, 4003);
+    //TCP tcp1(QHostAddress::AnyIPv4, 4002);
 };
 
 #endif // BACKENDPROCESSES_H

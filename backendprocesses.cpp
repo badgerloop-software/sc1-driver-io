@@ -1,4 +1,6 @@
+
 #include "backendprocesses.h"
+
 
 double speedFunc(double t)
 {
@@ -32,15 +34,17 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
 
 void BackendProcesses::onNewConnection()
 {
+    /*
    QTcpSocket *clientSocket = _server.nextPendingConnection();
    //connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
    connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));
 
     _sockets.push_back(clientSocket);
-    emit eng_dash_connection(1);
+    emit 1_connection(1);
     /*for (QTcpSocket* socket : _sockets) {
         socket->write(QByteArray::fromStdString("From solar car: " + clientSocket->peerAddress().toString().toStdString() + " connected to server !\n"));
     }*/
+
 }
 
 void BackendProcesses::onSocketStateChanged(QAbstractSocket::SocketState socketState)
@@ -63,8 +67,12 @@ void BackendProcesses::onSocketStateChanged(QAbstractSocket::SocketState socketS
     }
 }*/
 
-void BackendProcesses::startThread()
-{
+void BackendProcesses::comm_status(bool s) {
+    emit eng_dash_connection(s);
+}
+
+void BackendProcesses::startThread() {
+    /*
     _server.listen(QHostAddress::AnyIPv4, 4003);
     connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
 
@@ -75,7 +83,18 @@ void BackendProcesses::startThread()
     this->restclient = new QNetworkAccessManager();
     // TODO Automatically delete server response since it isn't used
     this->restclient->setAutoDeleteReplies(true);
-
+    */
+    TCP tcp(QHostAddress::AnyIPv4, 4003);
+    TCP tcp1(QHostAddress::AnyIPv4, 4002);
+    std::vector<DTI*> obj(2);
+    obj[0] = &tcp;
+    obj[1] = &tcp1;
+    for(int i = 0; i < 100 ; i ++) {
+        qDebug()<<"size"<<obj.size();
+    }
+    Telemetry tel(obj);
+    this->tel = &tel;
+    connect(&tel, &Telemetry::eng_dash_connection, this, &BackendProcesses::comm_status);
     threadProcedure();
 }
 
@@ -117,7 +136,7 @@ void BackendProcesses::threadProcedure()
     bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
 
     // Create URL for HTTP request to send byte array to the server
-    QUrl myurl;
+    /*QUrl myurl;
     myurl.setScheme("http");
     myurl.setHost("hostname"); // TODO
     myurl.setPort(9999); // TODO
@@ -174,6 +193,8 @@ void BackendProcesses::threadProcedure()
         //socket->write(QByteArray::fromStdString("Speed: " + std::to_string(speed) + "; Size: " + std::to_string(sizeof(bytes)) + "\n"));
         socket->write(bytes);
     }
+    */
+    tel->sendData(bytes.data());
     mutex.unlock();
     emit dataReady();
 }
