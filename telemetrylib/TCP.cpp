@@ -4,7 +4,7 @@
 
 class TCP : public DTI {
 public:
-    void sendData(const char* bytes) override {
+    void sendData(QByteArray bytes) override {
         for (QTcpSocket* socket : _sockets) {
             socket->write(bytes);
         }
@@ -22,7 +22,6 @@ public:
     }
 
     TCP(const QHostAddress& addr, int port) {
-
         connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
         _server.listen(addr, port);
     }
@@ -30,16 +29,20 @@ public:
     ~TCP() {
     }
 
+    void connectSocket(QTcpSocket* clientSocket) {
+        connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));
+    }
 public slots:
     void onNewConnection() override{
         QTcpSocket *clientSocket = _server.nextPendingConnection();
-        connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));
+        connectSocket(clientSocket);
         _sockets.push_back(clientSocket);
         connected = true;
         emit connectionStatusChanged();
     };
 
-    void onSocketStatChanged(QAbstractSocket::SocketState state) override{
+    void onSocketStateChanged(QAbstractSocket::SocketState state) override{
+        qDebug()<<"invoked";
         if (state == QAbstractSocket::UnconnectedState)
         {
             QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());

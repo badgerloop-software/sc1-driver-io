@@ -19,7 +19,10 @@ double batteryFunc(double t)
 
 
 
-BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent) : QObject(parent), bytes(bytes), names(names), types(types), mutex(mutex), data(DataGen(&speedFunc,&solarFunc,&batteryFunc,100))
+BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent) :
+    QObject(parent), bytes(bytes), names(names), types(types), mutex(mutex),
+    data(DataGen(&speedFunc,&solarFunc,&batteryFunc,100)),
+    tcp(QHostAddress::AnyIPv4,4003),tcp1(QHostAddress::AnyIPv4, 4004)
 {
     //this->bytes = bytes;
     //this->names = names;
@@ -28,6 +31,12 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     this->tstampOffsets.mn = timeDataOffsets.mn;
     this->tstampOffsets.sc = timeDataOffsets.sc;
     this->tstampOffsets.ms = timeDataOffsets.ms;
+    std::vector<DTI*> obj(2);
+    obj[0]=&tcp;
+    obj[1]=&tcp1;
+    this->tel = new Telemetry(obj);
+    connect(this->tel, &Telemetry::eng_dash_connection, this, &BackendProcesses::comm_status);
+    tel->sendData(nullptr);
 }
 
 /*BackendProcesses::~BackendProcesses(){}*/
@@ -84,17 +93,8 @@ void BackendProcesses::startThread() {
     // TODO Automatically delete server response since it isn't used
     this->restclient->setAutoDeleteReplies(true);
     */
-    TCP tcp(QHostAddress::AnyIPv4, 4003);
-    TCP tcp1(QHostAddress::AnyIPv4, 4002);
-    std::vector<DTI*> obj(2);
-    obj[0] = &tcp;
-    obj[1] = &tcp1;
-    for(int i = 0; i < 100 ; i ++) {
-        qDebug()<<"size"<<obj.size();
-    }
-    Telemetry tel(obj);
-    this->tel = &tel;
-    connect(&tel, &Telemetry::eng_dash_connection, this, &BackendProcesses::comm_status);
+
+
     threadProcedure();
 }
 
@@ -194,7 +194,7 @@ void BackendProcesses::threadProcedure()
         socket->write(bytes);
     }
     */
-    tel->sendData(bytes.data());
+    tel->sendData(bytes);
     mutex.unlock();
     emit dataReady();
 }

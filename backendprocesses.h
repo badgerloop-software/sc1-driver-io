@@ -76,8 +76,8 @@ private:
 
     Telemetry* tel;
 
-    //TCP tcp(QHostAddress::AnyIPv4, 4003);
-    //TCP tcp1(QHostAddress::AnyIPv4, 4002);
+    TCP tcp;
+    TCP tcp1;
 };
 
 #endif // BACKENDPROCESSES_H
