@@ -2,21 +2,10 @@
 #define BACKENDPROCESSES_H
 
 #include <QObject>
-#include <QTcpServer>
-#include <QTcpSocket>
-#include <chrono>
-#include <sys/time.h>
-#include <ctime>
 #include <vector>
-#include <unistd.h>
 #include <QMutex>
 #include "DataProcessor/DataGen.h"
 
-// TODO For database testing
-#include <QDebug>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QNetworkAccessManager>
 #include "telemetrylib/library.h"
 #include "telemetrylib/DTI.h"
 #include "telemetrylib/TCP.cpp"
@@ -39,8 +28,6 @@ public:
 public slots:
     void threadProcedure();
     void startThread();
-
-    // TODO Read reply from server (CURRENTLY UNUSED)
     void comm_status(bool s);
 signals:
     void dataReady();
