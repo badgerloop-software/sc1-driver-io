@@ -37,22 +37,15 @@ public:
     explicit BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent = nullptr);
     //~BackendProcesses();
 public slots:
-    void onNewConnection();
-    void onSocketStateChanged(QAbstractSocket::SocketState socketState);
-    //void onReadyRead();
-
     void threadProcedure();
     void startThread();
 
     // TODO Read reply from server (CURRENTLY UNUSED)
-    void readReply();
     void comm_status(bool s);
 signals:
     void dataReady();
     void eng_dash_connection(bool state);
 private:
-    QTcpServer _server;
-    QList<QTcpSocket*> _sockets;
 
     timestampOffsets tstampOffsets;
 
@@ -60,16 +53,6 @@ private:
 
     std::vector<std::string> &names;
     std::vector<std::string> &types;
-
-    // TODO For database/VPS testing
-    QNetworkAccessManager *restclient;
-    QNetworkReply *reply;
-    QNetworkRequest request;
-    QUrl myurl;
-    int message_counter = 0;
-    int prev_message_counter = 0;
-    long long first_msec;
-    int sec_counter = 0;
 
     QMutex &mutex;
 

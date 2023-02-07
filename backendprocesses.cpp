@@ -32,43 +32,6 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     this->tstampOffsets.ms = timeDataOffsets.ms;
 }
 
-/*BackendProcesses::~BackendProcesses(){}*/
-
-void BackendProcesses::onNewConnection()
-{
-    /*
-   QTcpSocket *clientSocket = _server.nextPendingConnection();
-   //connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
-   connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));
-
-    _sockets.push_back(clientSocket);
-    emit 1_connection(1);
-    /*for (QTcpSocket* socket : _sockets) {
-        socket->write(QByteArray::fromStdString("From solar car: " + clientSocket->peerAddress().toString().toStdString() + " connected to server !\n"));
-    }*/
-
-}
-
-void BackendProcesses::onSocketStateChanged(QAbstractSocket::SocketState socketState)
-{
-    if (socketState == QAbstractSocket::UnconnectedState)
-    {
-        QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
-        _sockets.removeOne(sender);
-        emit eng_dash_connection(0);
-    }
-}
-
-/*void BackendProcesses::onReadyRead()
-{
-    QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
-    QByteArray datas = sender->readAll();
-    for (QTcpSocket* socket : _sockets) {
-        if (socket != sender)
-            socket->write(QByteArray::fromStdString(sender->peerAddress().toString().toStdString() + ": " + datas.toStdString()));
-    }
-}*/
-
 void BackendProcesses::comm_status(bool s) {
     emit eng_dash_connection(s);
 }
@@ -195,10 +158,4 @@ void BackendProcesses::threadProcedure()
     tel->sendData(bytes);
     mutex.unlock();
     emit dataReady();
-}
-
-// TODO Read reply from server
-void BackendProcesses::readReply() {
-    qDebug() << "HTTP response: " << reply->readAll();
-
 }
