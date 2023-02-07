@@ -5,6 +5,7 @@
 class TCP : public DTI {
 public:
     void sendData(QByteArray bytes) override {
+        qDebug()<<"sending via TCP";
         for (QTcpSocket* socket : _sockets) {
             socket->write(bytes);
         }
@@ -36,14 +37,13 @@ public:
 public slots:
     void onNewConnection() override{
         QTcpSocket *clientSocket = _server.nextPendingConnection();
-        connectSocket(clientSocket);
+        connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));
         _sockets.push_back(clientSocket);
         connected = true;
         emit connectionStatusChanged();
     };
 
     void onSocketStateChanged(QAbstractSocket::SocketState state) override{
-        qDebug()<<"invoked";
         if (state == QAbstractSocket::UnconnectedState)
         {
             QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());

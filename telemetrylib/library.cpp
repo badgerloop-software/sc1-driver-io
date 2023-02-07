@@ -9,10 +9,9 @@ Telemetry::Telemetry(std::vector<DTI*> commChannels) {
     qDebug() << "comm channel initialized: "<<comm.size();
 }
 
-void Telemetry::sendData(const char *bytes) {
-    qDebug() << "send data live comm channel: "<<commChannel;
+void Telemetry::sendData(QByteArray bytes) {
+    qDebug() << "send data current comm channel: "<<commChannel;
     if(commChannel != -1) {
-        qDebug()<<"sending\n";
         comm[commChannel]->sendData(bytes);
     }
 }

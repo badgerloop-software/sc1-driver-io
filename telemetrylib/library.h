@@ -23,7 +23,7 @@ public:
      */
     Telemetry();
     Telemetry(std::vector<DTI*> comm);
-    void sendData(const char * data);
+    void sendData(QByteArray data);
     const char* receiveData();
     void helloworld();
 signals:

@@ -22,6 +22,7 @@ public:
     }
 
     void sendData(QByteArray bytes) override {
+        qDebug()<<"sending via SQL";
         if(restclient == NULL)
             this->restclient = new QNetworkAccessManager();
         this->restclient->post(request, bytes);
