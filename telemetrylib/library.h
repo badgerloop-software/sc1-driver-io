@@ -31,7 +31,7 @@ signals:
 public slots:
     void comChannelChanged();
 private:
-    int commChannel = -1;
+    std::atomic<int> commChannel = -1;
     std::vector <DTI*> comm;
 };
 #endif //TELEMETRYLIB_LIBRARY_H

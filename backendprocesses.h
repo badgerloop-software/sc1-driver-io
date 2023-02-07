@@ -20,6 +20,7 @@
 #include "telemetrylib/library.h"
 #include "telemetrylib/DTI.h"
 #include "telemetrylib/TCP.cpp"
+#include "telemetrylib/SQL.cpp"
 
 struct timestampOffsets {
     int hr;
@@ -75,9 +76,6 @@ private:
     DataGen data;
 
     Telemetry* tel;
-
-    TCP tcp;
-    TCP tcp1;
 };
 
 #endif // BACKENDPROCESSES_H

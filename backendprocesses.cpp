@@ -21,8 +21,7 @@ double batteryFunc(double t)
 
 BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent) :
     QObject(parent), bytes(bytes), names(names), types(types), mutex(mutex),
-    data(DataGen(&speedFunc,&solarFunc,&batteryFunc,100)),
-    tcp(QHostAddress::AnyIPv4,4003),tcp1(QHostAddress::AnyIPv4, 4004)
+    data(DataGen(&speedFunc,&solarFunc,&batteryFunc,100))
 {
     //this->bytes = bytes;
     //this->names = names;
@@ -32,8 +31,9 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     this->tstampOffsets.sc = timeDataOffsets.sc;
     this->tstampOffsets.ms = timeDataOffsets.ms;
     std::vector<DTI*> obj(2);
-    obj[0]=&tcp;
-    obj[1]=&tcp1;
+    QUrl myurl("150.136.104.125:3000");
+    obj[0]=new SQL(myurl);
+    obj[1]=new TCP(QHostAddress::AnyIPv4, 4003);
     this->tel = new Telemetry(obj);
     connect(this->tel, &Telemetry::eng_dash_connection, this, &BackendProcesses::comm_status);
     tel->sendData(nullptr);

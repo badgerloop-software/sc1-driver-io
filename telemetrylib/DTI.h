@@ -7,7 +7,6 @@
 
 #include <QtCore>
 #include <QtNetwork>
-#include <cstdarg>
 
 class DTI : public QObject{
     Q_OBJECT
@@ -19,10 +18,9 @@ public:
     virtual void sendData(QByteArray bytes) = 0;
     /**
      * Receive bytes via channel to be implemented
-     * @param max Maximum bytes to be received
      * @return bytes received
      */
-    virtual const char* receiveData(int max) = 0;
+    virtual const char* receiveData() = 0;
     /**
      * @return connection status
      */
@@ -31,9 +29,10 @@ public:
 signals:
     void connectionStatusChanged() ;
 
+    //if inheritance instance needs slots, add them here as a VIRTUAL function, otherwise there will be a stupid vtable error
 public slots:
-    virtual void onNewConnection() = 0;
-    virtual void onSocketStateChanged(QAbstractSocket::SocketState state) = 0;
+    virtual void onNewConnection() {};
+    virtual void onSocketStateChanged(QAbstractSocket::SocketState state) {};
 };
 
 #endif //TELEMETRY
