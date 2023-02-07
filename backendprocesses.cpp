@@ -87,7 +87,7 @@ void BackendProcesses::startThread() {
     this->restclient->setAutoDeleteReplies(true);
     */
     std::vector<DTI*> obj(2);
-    QUrl myurl("150.136.104.125:3000");
+    QUrl myurl("IP:PORT");
     obj[0]=new SQL(myurl);
     obj[1]=new TCP(QHostAddress::AnyIPv4, 4003);
     this->tel = new Telemetry(obj);
