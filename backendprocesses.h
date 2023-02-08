@@ -24,6 +24,7 @@ class BackendProcesses : public QObject
 
 public:
     explicit BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent = nullptr);
+    ~BackendProcesses();
     //~BackendProcesses();
 public slots:
     void threadProcedure();
@@ -38,6 +39,7 @@ private:
 
     QByteArray &bytes;
 
+    std::atomic<bool> stop =false;
     std::vector<std::string> &names;
     std::vector<std::string> &types;
 

@@ -33,6 +33,7 @@ signals:
 public slots:
     virtual void onNewConnection() {};
     virtual void onSocketStateChanged(QAbstractSocket::SocketState state) {};
+    virtual void readReply() {};
 };
 
 #endif //TELEMETRY

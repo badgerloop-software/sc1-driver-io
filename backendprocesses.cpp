@@ -50,7 +50,14 @@ void BackendProcesses::startThread() {
     this->restclient->setAutoDeleteReplies(true);
     */
     std::vector<DTI*> obj(2);
-    QUrl myurl("IP:PORT");
+    long long first_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+    QUrl myurl;
+    myurl.setScheme("http");
+    myurl.setHost("150.136.104.125"); // TODO
+    myurl.setPort(3000); // TODO
+    myurl.setPath("/add-table/" + QString::fromStdString(std::to_string(first_msec))); // TODO
+
     obj[0]=new SQL(myurl);
     obj[1]=new TCP(QHostAddress::AnyIPv4, 4003);
     this->tel = new Telemetry(obj);
@@ -59,8 +66,16 @@ void BackendProcesses::startThread() {
     threadProcedure();
 }
 
+BackendProcesses::~BackendProcesses() {
+    stop=true;
+}
+
 void BackendProcesses::threadProcedure()
 {
+    if(stop) {
+        return;
+    }
+
     usleep(100000);//50000);
 
     //DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
