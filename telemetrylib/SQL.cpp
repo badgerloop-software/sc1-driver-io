@@ -107,7 +107,7 @@ private:
     void checkConnection() {
         QTcpSocket sock;
             while(!finish) {
-            sock.connectToHost("www.pornhub.com", 80);
+            sock.connectToHost("www.google.com", 80);
             bool connected = sock.waitForConnected(500);
             if (!connected && connection) {
                 sock.abort();
