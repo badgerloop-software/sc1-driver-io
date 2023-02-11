@@ -8,14 +8,11 @@
 
 class SQL : public DTI {
 public:
-    SQL(QUrl myUrl) {
-        restclient = new QNetworkAccessManager();
-        request.setUrl(myUrl);
-        reply = this->restclient->get(request);
+    SQL(QString tableToCreate) {
+        this->tableToCreate = tableToCreate;
 
-        connect(reply, &QNetworkReply::readyRead, this, &SQL::readReply);
-        request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));
-        request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
+        restclient = new QNetworkAccessManager();
+
         t = new std::thread(&SQL::checkConnection, this);
         t->detach();
     }
@@ -27,6 +24,7 @@ public:
 
     void sendData(QByteArray bytes) override {
         auto curr_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
         QUrl myurl;
         myurl.setScheme("http");
         myurl.setHost("150.136.104.125"); // TODO
@@ -34,9 +32,10 @@ public:
         myurl.setPath("/add-data"); // TODO
         myurl.setQuery("table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(curr_msec)));
 
-        QNetworkRequest request;
+        //QNetworkRequest request;
         request.setUrl(myurl);
         request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer")); // TODO Try "blob" for content type as well
+        request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
 
         // TODO SPLIT THIS UP INTO TWO PARTS:
         //        X 1. table-name: ("_" + first_msec, which is equivalent to the response from the "/add-table/*" request) table name created from the start time of the session
@@ -79,6 +78,24 @@ public:
     }
 
     bool getConnectionStatus() override{
+        // Send request to create a new table when connection to server is first established
+        if(tableName.isNull() && connection) {
+            qDebug() << "Requested a new table: " << tableToCreate;
+
+            QUrl myurl;
+            myurl.setScheme("http");
+            myurl.setHost("150.136.104.125"); // TODO
+            myurl.setPort(3000); // TODO
+            myurl.setPath("/add-table/" + tableToCreate);
+
+            request.setUrl(myurl);
+            reply = restclient->get(request);
+
+            connect(reply, &QNetworkReply::readyRead, this, &SQL::readReply);
+            request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));
+            request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
+        }
+
         return connection;
     }
 
@@ -106,7 +123,7 @@ private:
      */
     void checkConnection() {
         QTcpSocket sock;
-            while(!finish) {
+        while(!finish) {
             sock.connectToHost("www.google.com", 80);
             bool connected = sock.waitForConnected(500);
             if (!connected && connection) {
@@ -128,6 +145,7 @@ private:
     QNetworkAccessManager *restclient = NULL;
     QNetworkReply *reply;
     QString tableName;
+    QString tableToCreate;
     std::thread *t;
     std::atomic<bool> finish=false;
 };
