@@ -6,7 +6,7 @@ Telemetry::Telemetry(std::vector<DTI*> commChannels) {
         this->comm.push_back(commChannels[i]);
         connect(comm[i], SIGNAL(connectionStatusChanged()), this, SLOT(comChannelChanged()));
     }
-    qDebug() << "comm channel initialized: "<<comm.size();
+    qDebug() << "comm channels initialized: "<<comm.size();
 }
 
 void Telemetry::sendData(QByteArray bytes) {
@@ -16,8 +16,11 @@ void Telemetry::sendData(QByteArray bytes) {
     }
 }
 
-const char *Telemetry::receiveData() {
-    return nullptr;
+std::string Telemetry::receiveData() {
+    if (commChannel != -1) {
+        return comm[commChannel]->receiveData();
+    }
+    return "nada";
 }
 
 void Telemetry::comChannelChanged() {

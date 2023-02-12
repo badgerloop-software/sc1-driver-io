@@ -61,17 +61,17 @@ public:
         this->restclient->post(request, bytes);
     }
 
-    const char* receiveData() override{
+    std::string receiveData() override{
         QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
         //QJsonObject json = QJsonDocument::fromJson(QByteArray::fromStdString("JSON Derulo")).object();
 
         if (json.isEmpty()) {
             qDebug() << "EMPTY JSON";
-            return nullptr;
+            return "nada";
         } else {
             tableName = json.take("response").toString();
             qDebug() << "HTTP response (table name): " << tableName;
-            return tableName.toStdString().c_str();
+            return tableName.toStdString();
             // TODO Automatically delete server responses since they aren't used after reading the table name
             this->restclient->setAutoDeleteReplies(true);
         }

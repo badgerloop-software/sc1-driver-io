@@ -24,7 +24,7 @@ public:
     Telemetry();
     Telemetry(std::vector<DTI*> comm);
     void sendData(QByteArray data);
-    const char* receiveData();
+    std::string receiveData();
     void helloworld();
 signals:
     void eng_dash_connection(bool state);

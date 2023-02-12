@@ -11,12 +11,12 @@ public:
         }
     }
 
-    const char* receiveData() override {
+    std::string receiveData() override {
         if(_sockets.size() == 1) {
             //change the read parameter if there's trouble with reading the data
             return _sockets[0]->read(1000).data();
         }
-        return nullptr;
+        return "nada";
     }
 
     bool getConnectionStatus() override {

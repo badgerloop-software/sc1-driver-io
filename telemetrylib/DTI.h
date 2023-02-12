@@ -20,7 +20,7 @@ public:
      * Receive bytes via channel to be implemented
      * @return bytes received
      */
-    virtual const char* receiveData() = 0;
+    virtual std::string receiveData() = 0;
     /**
      * @return connection status
      */
