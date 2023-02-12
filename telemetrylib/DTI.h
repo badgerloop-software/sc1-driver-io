@@ -27,10 +27,13 @@ public:
     virtual bool getConnectionStatus() = 0;
 
 signals:
+    /**
+     * for notifying telemetry class to redo polling.
+     */
     void connectionStatusChanged() ;
 
-    //if inheritance instance needs slots, add them here as a VIRTUAL function, otherwise there will be a stupid vtable error
 public slots:
+    //if inheritance instance needs slots, add them here as a VIRTUAL function, otherwise there will be a stupid vtable error
     virtual void onNewConnection() {};
     virtual void onSocketStateChanged(QAbstractSocket::SocketState state) {};
     virtual void readReply() {};

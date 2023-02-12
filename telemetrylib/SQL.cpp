@@ -27,7 +27,7 @@ public:
 
         QUrl myurl;
         myurl.setScheme("http");
-        myurl.setHost("150.136.104.125"); // TODO
+        myurl.setHost("host"); // TODO
         myurl.setPort(3000); // TODO
         myurl.setPath("/add-data"); // TODO
         myurl.setQuery("table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(curr_msec)));
