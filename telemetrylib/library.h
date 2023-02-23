@@ -7,6 +7,7 @@
 #include <vector>
 #include "DTI.h"
 #include <QDebug>
+#include "DataResend.h"
 
 /**
  * A library built for handling data telemetry that allows automatic switching
@@ -41,7 +42,8 @@ signals:
 public slots:
     void comChannelChanged();
 private:
-    //std::stack<QByteArray> dataCache;
+    Dataresend resendQueue;
+    std::vector<QByteArray> dataCache;
     std::atomic<int> commChannel = -1;
     std::vector <DTI*> comm;
 };

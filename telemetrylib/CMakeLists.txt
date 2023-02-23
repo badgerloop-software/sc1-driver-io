@@ -7,6 +7,6 @@ set(CMAKE_CXX_STANDARD 11)
 
 find_package(Qt6 REQUIRED COMPONENTS Network)
 
-add_library(telemetrylib SHARED library.cpp DTI.h TCP.cpp SQL.cpp Dataresend.cpp Dataresend.h)
+add_library(telemetrylib SHARED library.cpp DTI.h TCP.cpp SQL.cpp DataResend.cpp DataResend.h)
 
 target_link_libraries(telemetrylib PRIVATE Qt6::Network)

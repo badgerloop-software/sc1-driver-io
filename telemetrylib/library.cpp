@@ -11,8 +11,10 @@ Telemetry::Telemetry(std::vector<DTI*> commChannels) {
 
 void Telemetry::sendData(QByteArray bytes) {
     qDebug() << "send data current comm channel: "<<commChannel;
-    if(commChannel != -1) {
+    if(commChannel != -1 && !resendQueue.isBusy()) {
         comm[commChannel]->sendData(bytes);
+    } else {
+       resendQueue.addToQueue(bytes);
     }
 }
 
@@ -32,10 +34,13 @@ void Telemetry::comChannelChanged() {
         if(status) {
             commChannel = i;
             emit eng_dash_connection(true);
+            resendQueue.setChannel(comm[i]);
+            resendQueue.comStatus(true);
             return;
         }
     }
     commChannel = -1;
+    resendQueue.comStatus(false);
     emit eng_dash_connection(false);
 }
 

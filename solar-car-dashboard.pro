@@ -14,7 +14,8 @@ SOURCES += \
         DataProcessor/DataUnpacker.cpp \
         telemetrylib/TCP.cpp \
         telemetrylib/library.cpp \
-        telemetrylib/SQL.cpp
+        telemetrylib/SQL.cpp \
+        telemetrylib/DataResend.cpp
 
 RESOURCES += qml.qrc \
     UI/Images/images.qrc \
@@ -61,4 +62,5 @@ HEADERS += \
     DataProcessor/DataGen.h \
     backendprocesses.h \
     telemetrylib/library.h \
-    telemetrylib/DTI.h
+    telemetrylib/DTI.h \
+    telemetrylib/DataResend.h

@@ -21,6 +21,8 @@ public:
     bool isBusy(){return busy;}
 protected:
     void resend();
+signals:
+    void send(QByteArray arr);
 private:
     DTI *channel;
     QQueue<QByteArray> q;
