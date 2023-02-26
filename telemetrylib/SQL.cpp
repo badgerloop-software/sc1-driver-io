@@ -117,12 +117,12 @@ private:
         }
     }
 
-    std::atomic<bool> connection = false;
+    std::atomic<bool> connection = false; //connection status to the internet
     QNetworkRequest request;
     QNetworkAccessManager *restclient = NULL;
     QNetworkReply *reply;
-    QString tableName;
-    QString tableToCreate;
-    std::thread *t;
-    std::atomic<bool> finish=false;
+    QString tableName; // James added this
+    QString tableToCreate; 
+    std::thread *t; // thread to check connection by pinging a website in the background
+    std::atomic<bool> finish=false; //for soft quiting the thread
 };
