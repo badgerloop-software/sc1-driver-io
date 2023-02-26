@@ -237,7 +237,7 @@ Item {
             y: 62
             width: 268
             height: 81
-            color: threshold(packVoltage.text, 69, 108)
+            color: threshold(packVoltage.text, minimum.pack_voltage, maximum.pack_voltage)
             rotation: 0
             z: 0
         }
@@ -248,7 +248,7 @@ Item {
             y: 144
             width: 268
             height: 81
-            color: threshold(packCurrent.text, 0, 100)
+            color: threshold(packCurrent.text, minimum.pack_current, maximum.pack_current)
             z: 0
         }
 
@@ -258,7 +258,7 @@ Item {
             y: 62
             width: 315
             height: 163
-            color: threshold(packPower.text, 0, 10800)
+            color: threshold(packPower.text, minimum.pack_power, maximum.pack_power)
             z: 0
         }
 
@@ -268,7 +268,7 @@ Item {
             y: 227
             width: 292
             height: 148
-            color: threshold(packTemp.text, 0, 60)
+            color: threshold(packTemp.text, minimum.pack_temp, maximum.pack_temp)
             z: 0
         }
 
@@ -413,7 +413,7 @@ Item {
             y: 62
             width: 268
             height: 81
-            color: threshold(solarVoltage.text, 69, 108)
+            color: threshold(solarVoltage.text, minimum.pack_voltage, maximum.pack_voltage)
             rotation: 0
             z: 0
         }
@@ -424,7 +424,7 @@ Item {
             y: 142
             width: 268
             height: 81
-            color: threshold(solarCurrent.text, 0, 7)
+            color: threshold(solarCurrent.text, minimum.mppt_current_out, maximum.mppt_current_out)
             z: 0
         }
 
@@ -434,7 +434,7 @@ Item {
             y: 62
             width: 315
             height: 162
-            color: threshold(solarPower.text, 0, 756)
+            color: threshold(solarPower.text, minimum.mppt_current_out*minimum.pack_voltage, maximum.mppt_current_out*maximum.pack_voltage)
             z: 0
         }
     }
