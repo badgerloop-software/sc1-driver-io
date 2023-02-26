@@ -8,7 +8,7 @@
 
 #include <QObject>
 #include "DTI.h"
-class Dataresend : QObject{
+class DataResend : QObject{
     Q_OBJECT
 public:
     void setChannel(DTI *channel);
