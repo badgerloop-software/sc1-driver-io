@@ -258,7 +258,7 @@ Item {
             y: 62
             width: 315
             height: 163
-            color: threshold(packPower.text, minimum.pack_power, maximum.pack_power)
+            color: threshold(packPower.text, minimum.pack_current*minimum.pack_voltage, maximum.pack_current*maximum.pack_voltage)
             z: 0
         }
 
