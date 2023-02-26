@@ -39,7 +39,7 @@ private:
 
     QByteArray &bytes;
 
-    std::atomic<bool> stop =false;
+    std::atomic<bool> stop = false;
     std::vector<std::string> &names;
     std::vector<std::string> &types;
 
