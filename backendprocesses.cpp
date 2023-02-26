@@ -37,25 +37,13 @@ void BackendProcesses::comm_status(bool s) {
 }
 
 void BackendProcesses::startThread() {
-    /*
-    _server.listen(QHostAddress::AnyIPv4, 4003);
-    connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
-
-    // TODO For the database testing: Record the start time for identifying the session
-    first_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-
-    // TODO Create a QNetworkAccessManager for sending HTTP requests to the VPS
-    this->restclient = new QNetworkAccessManager();
-    // TODO Automatically delete server response since it isn't used
-    this->restclient->setAutoDeleteReplies(true);
-    */
-    std::vector<DTI*> obj(2);
+    std::vector<DTI*> obj(2); //create a bunch of DTI instances and add them into this array in order of priority to be sent to telemetrylib
     long long first_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-    obj[0]=new SQL(QString::fromStdString(std::to_string(first_msec)));
-    obj[1]=new TCP(QHostAddress::AnyIPv4, 4003);
+    obj[0]=new SQL(QString::fromStdString(std::to_string(first_msec))); //This sends data to the cloud server
+    obj[1]=new TCP(QHostAddress::AnyIPv4, 4003); //this sends data thru TCP sockets
     this->tel = new Telemetry(obj);
-    connect(this->tel, &Telemetry::eng_dash_connection, this, &BackendProcesses::comm_status);
+    connect(this->tel, &Telemetry::eng_dash_connection, this, &BackendProcesses::comm_status); //for notifing the system connection status
 
     threadProcedure();
 }
@@ -105,65 +93,7 @@ void BackendProcesses::threadProcedure()
     bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
     bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
 
-    // Create URL for HTTP request to send byte array to the server
-    /*QUrl myurl;
-    myurl.setScheme("http");
-    myurl.setHost("hostname"); // TODO
-    myurl.setPort(9999); // TODO
-    myurl.setPath("/add-data");
-
-    QNetworkRequest request;
-    request.setUrl(myurl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer")); // TODO Try "blob" for content type as well
-
-    // TODO SPLIT THIS UP INTO TWO PARTS:
-    //          1. session-time: (first_msec) start time of the session (used to identify which table the data should be inserted into)
-    //          2. dataset-time: (curr_msec) timestamp associated with the byte array being sent to the server
-    request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(curr_msec))));
-
-    // TODO Note in case message frequency becomes an issue: Set up a message queue for HTTP requests,
-    //      and send groups of byte arrays to the server at less frequent intervals (/as soon as we can send our next message)
-
-    // TODO Remove: qDebug() << this->thread() << "\t\t" << restclient->thread() << "\t\t" << sec_counter;
-
-    // TODO Allows HTTP pipelining so that the request doesn't wait for a response from the server before allowing a new message to be sent
-    //      This should help to avoid stalling while waiting for a response from the server
-    //      NOTE - The number of messages sent before a response from the first message is received might still be limited
-    request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
-
-    // TODO Send the byte array, along with the corresponding timestamp, to the server
-    reply = this->restclient->post(request, bytes);
-
-    // TODO Call readReply() whenever the reply is ready to be read (on readyRead emitted)
-    // connect(this->reply, &QNetworkReply::readyRead, this, &BackendProcesses::readReply);
-
-    // TODO Deletion of replies should be taken care of in startThread() (setting AutoDeleteReplies to true). Keeping this here until that's tested:
-    // connect(reply, &QNetworkReply::finished, reply, &QNetworkReply::deleteLater);
-
-    // TODO
-    // qDebug() << "\n------------------------------------------------------------------\nSENT POST REQUEST";
-    // qDebug() << request.attribute(QNetworkRequest::HttpPipeliningAllowedAttribute);
-    // qDebug() << request.attribute(QNetworkRequest::HttpPipeliningWasUsedAttribute);
-    // qDebug() << "------------------------------------------------------------------\n";
-
-    message_counter ++;
-
-    // TODO Display the number of messages sent each second
-    if(((curr_msec - first_msec) / 1000) > sec_counter) {
-        qDebug() << "Messages/sec: " << (message_counter - prev_message_counter);
-        qDebug() << "Messages: " << message_counter;
-
-        prev_message_counter = message_counter;
-        sec_counter ++;
-    }
-
-
-    for (QTcpSocket* socket : _sockets) {
-        //socket->write(QByteArray::fromStdString("From solar car: connected to server! " + std::to_string(time) + "\n"));
-        //socket->write(QByteArray::fromStdString("Speed: " + std::to_string(speed) + "; Size: " + std::to_string(sizeof(bytes)) + "\n"));
-        socket->write(bytes);
-    }
-    */
+    // 60 lines of comments were removed here.
     tel->sendData(bytes);
     mutex.unlock();
     emit dataReady();
