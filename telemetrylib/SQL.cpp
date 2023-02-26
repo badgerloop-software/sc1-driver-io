@@ -82,7 +82,6 @@ public slots:
     void readReply() override{
         qDebug()<<"read reply invoked";
         QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
-        //QJsonObject json = QJsonDocument::fromJson(QByteArray::fromStdString("JSON Derulo")).object();
 
         if(json.isEmpty()) {
             qDebug() << "EMPTY JSON";
