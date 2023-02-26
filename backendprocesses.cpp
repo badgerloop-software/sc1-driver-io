@@ -94,7 +94,7 @@ void BackendProcesses::threadProcedure()
     bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
 
     // 60 lines of comments were removed here.
-    tel->sendData(bytes);
+    tel->sendData(bytes); //this passes the data to the telemetrylib to be sent to the chase car
     mutex.unlock();
     emit dataReady();
 }
