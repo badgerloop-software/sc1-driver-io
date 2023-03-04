@@ -60,12 +60,11 @@ private:
     QTcpServer _server;
     QList<QTcpSocket*> _sockets;
     std::atomic<bool> connection = false;
-    //
     std::thread *t;
     std::atomic<bool> isConnected=false;
 
     /**
-     * creates a thread that ping a server to check connection
+     * creates a thread that pings the Chase car's static IP to check connection
      */
     void checkConnection() {
         QTcpSocket sock;

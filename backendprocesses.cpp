@@ -49,11 +49,11 @@ void BackendProcesses::startThread() {
     // TODO Automatically delete server response since it isn't used
     this->restclient->setAutoDeleteReplies(true);
     */
-    std::vector<DTI*> obj(2);
+    std::vector<DTI*> obj(1);
     long long first_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-    obj[0]=new SQL(QString::fromStdString(std::to_string(first_msec)));
-    obj[1]=new TCP(QHostAddress::AnyIPv4, 4003);
+//    obj[0]=new SQL(QString::fromStdString(std::to_string(first_msec)));
+    obj[0]=new TCP(QHostAddress::AnyIPv4, 4003);
     this->tel = new Telemetry(obj);
     connect(this->tel, &Telemetry::eng_dash_connection, this, &BackendProcesses::comm_status);
 
