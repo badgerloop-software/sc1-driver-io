@@ -4,7 +4,6 @@
 
 #include "DTI.h"
 #include <thread>
-#include <unistd.h>
 
 class SQL : public DTI {
 public:

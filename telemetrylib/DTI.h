@@ -7,6 +7,7 @@
 
 #include <QtCore>
 #include <QtNetwork>
+#include <unistd.h>
 
 class DTI : public QObject{
     Q_OBJECT

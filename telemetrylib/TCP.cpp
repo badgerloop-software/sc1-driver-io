@@ -4,6 +4,7 @@
 //
 #include "DTI.h"
 
+
 class TCP : public DTI {
 public:
     void sendData(QByteArray bytes, long long timestamp) override {
@@ -24,15 +25,20 @@ public:
     */
 
     bool getConnectionStatus() override {
-        return connected;
+        return connection;
     }
 
     TCP(const QHostAddress& addr, int port) {
         connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
         _server.listen(addr, port);
+
+        t = new std::thread(&TCP::checkConnection, this);
+        t->detach();
     }
 
     ~TCP() {
+        finish = true;
+        t->join();
     }
 
     void connectSocket(QTcpSocket* clientSocket) {
@@ -48,7 +54,7 @@ public slots:
         QTcpSocket *clientSocket = _server.nextPendingConnection();
         connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));
         _sockets.push_back(clientSocket);
-        connected = true;
+        connection = true;
         emit connectionStatusChanged();
     };
 
@@ -62,14 +68,40 @@ public slots:
         {
             QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
             _sockets.removeOne(sender);
-            connected = false;
+            connection = false;
             emit connectionStatusChanged();
         }
     }
 private:
-    QTcpServer _server;     //the TCP socket
-    QList<QTcpSocket*> _sockets;    //The list of TCP socket
-    bool connected = false;     //This is used when getConnectionStatus() is called
+    QTcpServer _server;
+    QList<QTcpSocket*> _sockets;
+    std::atomic<bool> connection = false; // This is used when getConnectionStatus() is called
+    std::thread *t;
+    std::atomic<bool> finish = false; // For soft quiting the thread
+
+    /**
+     * Creates a thread that pings the engineering server's static IP to check connection
+     */
+    void checkConnection() {
+        QTcpSocket sock;
+        while (!finish) {
+            sock.connectToHost("192.168.1.16", 4005);
+            bool connected = sock.waitForConnected(4000);
+            if (connected) {
+                sock.close();
+                if (!connection) {
+                    connection = true;
+                    emit connectionStatusChanged();
+                }
+            } else {
+                sock.abort();
+                if (connection) {
+                    connection = false;
+                    emit connectionStatusChanged();
+                }
+            }
+            usleep(50000);
+        }
+    }
 };
-//
 
