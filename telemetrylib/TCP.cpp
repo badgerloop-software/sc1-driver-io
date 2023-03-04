@@ -2,6 +2,7 @@
 // Created by Mingcan Li on 1/22/23.
 #include "DTI.h"
 
+
 class TCP : public DTI {
 public:
     void sendData(QByteArray bytes) override {
@@ -20,12 +21,15 @@ public:
     }
 
     bool getConnectionStatus() override {
-        return connected;
+        return connection;
     }
 
     TCP(const QHostAddress& addr, int port) {
         connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
         _server.listen(addr, port);
+
+        t = new std::thread(&TCP::checkConnection, this);
+        t->detach();
     }
 
     ~TCP() {
@@ -39,7 +43,7 @@ public slots:
         QTcpSocket *clientSocket = _server.nextPendingConnection();
         connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));
         _sockets.push_back(clientSocket);
-        connected = true;
+        connection = true;
         emit connectionStatusChanged();
     };
 
@@ -48,14 +52,39 @@ public slots:
         {
             QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
             _sockets.removeOne(sender);
-            connected = false;
+            connection = false;
             emit connectionStatusChanged();
         }
     }
 private:
     QTcpServer _server;
     QList<QTcpSocket*> _sockets;
-    bool connected = false;
+    std::atomic<bool> connection = false;
+    //
+    std::thread *t;
+    std::atomic<bool> isConnected=false;
+
+    /**
+     * creates a thread that ping a server to check connection
+     */
+    void checkConnection() {
+        QTcpSocket sock;
+        while(!isConnected) {
+            sock.connectToHost("196.186.1.16", 80);
+            bool connected = sock.waitForConnected(500);
+            if (!connected && connection) {
+                sock.abort();
+                connection = false;
+                emit connectionStatusChanged();
+            } else if(connected && !connection) {
+                sock.close();
+                connection = true;
+                emit connectionStatusChanged();
+            }
+            usleep(50000);
+            sock.abort();
+        }
+    }
 };
 //
 
