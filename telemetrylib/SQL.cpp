@@ -62,8 +62,8 @@ public:
 
             QUrl myurl;
             myurl.setScheme("http");
-            myurl.setHost("150.136.104.125"); // TODO
-            myurl.setPort(3000); // TODO
+            myurl.setHost("150.136.104.125"); 
+            myurl.setPort(3000);
             myurl.setPath("/add-table/" + tableToCreate);
 
             request.setUrl(myurl);
