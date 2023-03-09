@@ -49,7 +49,7 @@ void BackendProcesses::startThread() {
 }
 
 BackendProcesses::~BackendProcesses() {
-    stop=true;
+    stop=true; //tells the thread to stop
 }
 
 void BackendProcesses::threadProcedure()
