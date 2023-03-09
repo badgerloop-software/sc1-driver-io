@@ -77,6 +77,7 @@ public:
 
 
 public slots:
+    /* Not doing this for now
     void readReply() override{
         qDebug()<<"read reply invoked";
         QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
@@ -91,7 +92,7 @@ public slots:
             this->restclient->setAutoDeleteReplies(true);
         }
     }
-
+    */
 private:
     /**
      * creates a thread that ping a website to check connection

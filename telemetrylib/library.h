@@ -27,11 +27,14 @@ public:
      * @param data
      */
     void sendData(QByteArray data);
+    /* NVM
     /**
      * receive data from telemetry
      * @return data
      */
+    /*
     std::string receiveData();
+    */
 signals:
     void eng_dash_connection(bool state);
 public slots:

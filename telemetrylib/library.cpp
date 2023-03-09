@@ -32,6 +32,7 @@ void Telemetry::sendData(QByteArray bytes) {
     }
 }
 
+/*not doing this for now
 // Receive data from the current communication channel
 std::string Telemetry::receiveData() {
     // Check if there is a current communication channel
@@ -42,7 +43,7 @@ std::string Telemetry::receiveData() {
     // Return "nada" if there is no current communication channel
     return "nada";
 }
-
+*/
 // Slot to handle communication channel changes
 void Telemetry::comChannelChanged() {
     qDebug() << "comChanged!";

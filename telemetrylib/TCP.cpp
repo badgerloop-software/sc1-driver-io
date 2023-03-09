@@ -13,6 +13,7 @@ public:
         }
     }
 
+    /*Nope
     std::string receiveData() override {
         if(_sockets.size() == 1) {
             //change the read parameter if there's trouble with reading the data
@@ -20,6 +21,7 @@ public:
         }
         return "nada";
     }
+    */
 
     bool getConnectionStatus() override {
         return connected;
