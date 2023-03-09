@@ -27,7 +27,7 @@ public:
 
         QUrl myurl;
         myurl.setScheme("http");
-        myurl.setHost("host"); // TODO
+        myurl.setHost("150.136.104.125"); // TODO
         myurl.setPort(3000); // TODO
         myurl.setPath("/add-data"); // TODO
         myurl.setQuery("table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(curr_msec)));
@@ -41,8 +41,6 @@ public:
 
     std::string receiveData() override{
         QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
-        //QJsonObject json = QJsonDocument::fromJson(QByteArray::fromStdString("JSON Derulo")).object();
-
         if (json.isEmpty()) {
             qDebug() << "EMPTY JSON";
             return "nada";
@@ -101,8 +99,8 @@ private:
     void checkConnection() {
         QTcpSocket sock;
         while(!finish) {
-            sock.connectToHost("www.google.com", 80);
-            bool connected = sock.waitForConnected(500);
+            sock.connectToHost("www.google.com", 80);   //create a socket to connect google
+            bool connected = sock.waitForConnected(500);    //if connected in 500ms then we say it's connected
             if (!connected && connection) {
                 sock.abort();
                 connection = false;
