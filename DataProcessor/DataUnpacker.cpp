@@ -105,6 +105,8 @@ DataUnpacker::~DataUnpacker()
 {
     dataHandlingThread.quit();
     dataHandlingThread.wait();
+    //Quit tells the thread to stop, but thread could still be running, 
+    //so use wait to make sure the thread fully stopped before main thread terminates.
 }
 
 void DataUnpacker::unpack()
