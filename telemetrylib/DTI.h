@@ -11,11 +11,12 @@
 class DTI : public QObject{
     Q_OBJECT
 public:
+    /* nope
     /**
      * Receive bytes via channel to be implemented
      * @return bytes received
      */
-    virtual std::string receiveData() = 0;
+    //virtual std::string receiveData() = 0;
     /**
      * @return connection status
      */

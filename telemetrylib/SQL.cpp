@@ -39,7 +39,8 @@ public:
         this->restclient->post(request, bytes);
     }
 
-    std::string receiveData() override{
+    /*
+     std::string receiveData() override{
         QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
         if (json.isEmpty()) {
             qDebug() << "EMPTY JSON";
@@ -52,6 +53,7 @@ public:
             this->restclient->setAutoDeleteReplies(true);
         }
     }
+    */
 
     bool getConnectionStatus() override{
         // Send request to create a new table when connection to server is first established

@@ -12,7 +12,7 @@ SOURCES += \
         DataProcessor/DataGen.cpp \
         DataProcessor/DataUnpacker.cpp \
         telemetrylib/TCP.cpp \
-        telemetrylib/library.cpp \
+        telemetrylib/Telemetry.cpp \
         telemetrylib/SQL.cpp \
         telemetrylib/DataResend.cpp
 
@@ -60,6 +60,6 @@ HEADERS += \
     DataProcessor/DataUnpacker.h \
     DataProcessor/DataGen.h \
     backendprocesses.h \
-    telemetrylib/library.h \
+    telemetrylib/Telemetry.h \
     telemetrylib/DTI.h \
     telemetrylib/DataResend.h

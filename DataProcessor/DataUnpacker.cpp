@@ -105,14 +105,12 @@ DataUnpacker::~DataUnpacker()
 {
     dataHandlingThread.quit();
     dataHandlingThread.wait();
-    //Quit tells the thread to stop, but thread could still be running, 
-    //so use wait to make sure the thread fully stopped before main thread terminates.
 }
 
 void DataUnpacker::unpack()
 {
     int currByte = 0;
-    
+
     mutex.lock();
 
     for(uint i=0; i < names.size(); i++) {
@@ -150,7 +148,7 @@ void DataUnpacker::unpack()
 
         currByte += byteNums[i];
     }
-    
+
     mutex.unlock();
 
     this->restart_enable = checkRestartEnable();
