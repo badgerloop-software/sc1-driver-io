@@ -10,7 +10,14 @@ SOURCES += \
         backendprocesses.cpp \
         main.cpp \
         DataProcessor/DataGen.cpp \
-        DataProcessor/DataUnpacker.cpp
+        DataProcessor/DataUnpacker.cpp \
+        embedded/drivers/src/i2c.cpp \
+        embedded/drivers/src/serial.cpp \
+        embedded/drivers/src/gpio.cpp \
+        embedded/devices/src/ads1219.cpp \
+        embedded/devices/src/ina3221.cpp \
+        embedded/devices/src/tca6416.cpp \
+        embedded/controlsWrapper.cpp
 
 RESOURCES += qml.qrc \
     UI/Images/images.qrc \
@@ -55,4 +62,12 @@ contains(ANDROID_TARGET_ARCH,arm64-v8a) {
 HEADERS += \
     DataProcessor/DataUnpacker.h \
     DataProcessor/DataGen.h \
-    backendprocesses.h
+    backendprocesses.h \
+    embedded/drivers/include/i2c.h \
+    embedded/drivers/include/i2c-dev.h \
+    embedded/drivers/include/serial.h \
+    embedded/drivers/include/gpio.h \
+    embedded/devices/include/ads1219.h \
+    embedded/devices/include/ina3221.h \
+    embedded/devices/include/tca6416.h \
+    embedded/controlsWrapper.h

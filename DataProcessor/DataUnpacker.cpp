@@ -38,7 +38,7 @@ E bytesToGeneralData(QByteArray data, int startPos, int endPos, E typeZero)
 
 DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 {
-    FILE* fp = fopen("../sc1-driver-io/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+    FILE* fp = fopen("../uart-app/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     if(fp == 0) {
         fp = fopen("../solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     }
@@ -60,6 +60,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
         const Value& arr = itr->value.GetArray();
 
         names.push_back(name);
+        qDebug() << QString::fromStdString(name);
         byteNums.push_back(arr[0].GetInt());
         types.push_back(arr[1].GetString());
 
@@ -86,6 +87,8 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
     fclose(fp);
 
+    connect(this, &DataUnpacker::sendRestartSignal, this, &DataUnpacker::sendRestart);
+
     BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff,mutex);
 
     retriever->moveToThread(&dataHandlingThread);
@@ -98,11 +101,25 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
 
     dataHandlingThread.start();
+    
+    controlsWrapper* loop = new controlsWrapper(bytes, mutex);
+    loop->moveToThread(&controlsThread);
+    connect(&controlsThread, &QThread::started, loop, &controlsWrapper::startThread);
+    connect(this, SIGNAL(enableRestart()), loop, SLOT(sendEnableRestart()));
+    connect(&controlsThread, &QThread::finished, loop, &QObject::deleteLater);
+    connect(&controlsThread, &QThread::finished, &controlsThread, &QThread::deleteLater);
+    controlsThread.start();
 }
 
 DataUnpacker::~DataUnpacker()
 {
     dataHandlingThread.quit();
+    controlsThread.quit();
+}
+
+void DataUnpacker::sendRestart() {
+    qDebug() << "sendRestart() ran\n";
+    emit enableRestart();
 }
 
 void DataUnpacker::unpack()

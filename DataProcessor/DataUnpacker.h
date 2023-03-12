@@ -11,6 +11,7 @@
 #include "backendprocesses.h"
 #include "3rdparty/rapidjson/document.h"
 #include "3rdparty/rapidjson/filereadstream.h"
+#include "embedded/controlsWrapper.h"
 
 using namespace rapidjson;
 
@@ -81,16 +82,19 @@ public:
     explicit DataUnpacker(QObject *parent = nullptr);
     ~DataUnpacker();
 public slots:
+    void sendRestart();
     void unpack();
     void eng_dash_connection(bool state);
 signals:
     void getData();
     void dataChanged();
     void enableRestart();
+    void sendRestartSignal();
 private:
     bool checkRestartEnable();
 
     QThread dataHandlingThread;
+    QThread controlsThread;
 
     // TODO Include only the properties that need to be displayed on the driver dashboard
     uint8_t fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;

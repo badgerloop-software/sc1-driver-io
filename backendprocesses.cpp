@@ -1,5 +1,5 @@
 #include "backendprocesses.h"
-
+#include <iostream>
 double speedFunc(double t)
 {
     return t*t;
@@ -22,6 +22,14 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     //this->bytes = bytes;
     //this->names = names;
     //this->types = types;
+    for (auto i: names) {
+        std::cout << i << "|";
+    }
+    printf("\n");
+    for (auto i: types) {
+        std::cout << i << "|";
+    }
+    printf("\n");
     this->tstampOffsets.hr = timeDataOffsets.hr;
     this->tstampOffsets.mn = timeDataOffsets.mn;
     this->tstampOffsets.sc = timeDataOffsets.sc;
@@ -79,8 +87,8 @@ void BackendProcesses::threadProcedure()
 
     mutex.lock();
 
-    bytes.clear();
-
+    //bytes.clear(); // COMMENT THIS OUT
+    //qDebug()<<"bytes: "<<bytes;
     // Get time data is received (then written to byte array right after byte array is updated/data is received)
     auto curr_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     //time_t now = time(NULL);
@@ -93,7 +101,7 @@ void BackendProcesses::threadProcedure()
     //uint8_t sec_time = gmtime(&now)->tm_sec;
     uint16_t msec_time = curr_msec % 1000;
 
-    data.getData(bytes, names, types, sec_time%7+msec_time/1000.0);
+    //data.getData(bytes, names, types, sec_time%7+msec_time/1000.0); // COMMENT THIS OUT
 
     // Update timestamp in byte array
     bytes.remove(tstampOffsets.hr,1);
@@ -105,7 +113,7 @@ void BackendProcesses::threadProcedure()
     bytes.remove(tstampOffsets.ms,2);
     bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
     bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
-
+    
     for (QTcpSocket* socket : _sockets) {
         //socket->write(QByteArray::fromStdString("From solar car: connected to server! " + std::to_string(time) + "\n"));
         //socket->write(QByteArray::fromStdString("Speed: " + std::to_string(speed) + "; Size: " + std::to_string(sizeof(bytes)) + "\n"));

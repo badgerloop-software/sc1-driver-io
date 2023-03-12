@@ -4,6 +4,7 @@
 #include <QCursor>
 #include <DataProcessor/DataUnpacker.h>
 #include <vector>
+#include <QMutex>
 
 
 int main(int argc, char *argv[])
@@ -18,10 +19,14 @@ int main(int argc, char *argv[])
     argv[2] = (char*)"android:dpiawareness=0";*/
     QGuiApplication app(argc, argv);
     DataUnpacker unpacker;
+    QMutex m;
+    QByteArray qb;
+    controlsWrapper controlsSerial(qb, m);
 
     QQmlApplicationEngine engine;
     QQmlContext * rootContext = engine.rootContext();
     rootContext->setContextProperty("backEnd", &unpacker);
+    rootContext->setContextProperty("controls", &controlsSerial);
 
     // Hide mouse cursor
     app.setOverrideCursor(QCursor(Qt::BlankCursor));

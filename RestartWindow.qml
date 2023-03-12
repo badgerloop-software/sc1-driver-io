@@ -28,8 +28,13 @@ Popup {
     Overlay.onPressed: {
         if(can_close) {
             backEnd.restart_enable = false;
-            backEnd.enableRestart(); // Signal user has enabled restart
+            //backEnd.sendRestart(); // Signal user has enabled restart
+            //backEnd.enableRestart();
+            backEnd.sendRestartSignal();
+            
+            //controls.sendEnableRestart();
 
+            console.log("hey");
             // Reset opacities of fault texts to hidden_opacity so that they aren't shown as being triggered when restartPopup opens again
             var ids = { battery_eStop_text, driver_eStop_text, external_eStop_text, imd_status_text, door_text, crash_text, bps_fault_text, mcu_check_text,
                         mps_enable_text, mppt_contactor_text, low_contactor_text, motor_controller_contactor_text, over_voltage_text, under_voltage_text,
