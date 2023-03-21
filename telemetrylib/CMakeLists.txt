@@ -3,7 +3,7 @@ set(CMAKE_AUTOMOC ON)
 cmake_minimum_required(VERSION 3.20)
 project(telemetrylib)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 
 find_package(Qt6 REQUIRED COMPONENTS Network)
 find_package(ZLIB REQUIRED)
