@@ -87,7 +87,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
     fclose(fp);
 
-    connect(this, &DataUnpacker::sendRestartSignal, this, &DataUnpacker::sendRestart);
+    //connect(this, &DataUnpacker::sendRestartSignal, this, &DataUnpacker::sendRestart);
 
     BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff,mutex);
 
@@ -102,10 +102,9 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
     dataHandlingThread.start();
     
-    controlsWrapper* loop = new controlsWrapper(bytes, mutex);
+    controlsWrapper* loop = new controlsWrapper(bytes, mutex, restart_enable);
     loop->moveToThread(&controlsThread);
     connect(&controlsThread, &QThread::started, loop, &controlsWrapper::startThread);
-    connect(this, SIGNAL(enableRestart()), loop, SLOT(sendEnableRestart()));
     connect(&controlsThread, &QThread::finished, loop, &QObject::deleteLater);
     connect(&controlsThread, &QThread::finished, &controlsThread, &QThread::deleteLater);
     controlsThread.start();
@@ -115,11 +114,6 @@ DataUnpacker::~DataUnpacker()
 {
     dataHandlingThread.quit();
     controlsThread.quit();
-}
-
-void DataUnpacker::sendRestart() {
-    qDebug() << "sendRestart() ran\n";
-    emit enableRestart();
 }
 
 void DataUnpacker::unpack()

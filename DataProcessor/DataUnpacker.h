@@ -82,14 +82,11 @@ public:
     explicit DataUnpacker(QObject *parent = nullptr);
     ~DataUnpacker();
 public slots:
-    void sendRestart();
     void unpack();
     void eng_dash_connection(bool state);
 signals:
     void getData();
     void dataChanged();
-    void enableRestart();
-    void sendRestartSignal();
 private:
     bool checkRestartEnable();
 
