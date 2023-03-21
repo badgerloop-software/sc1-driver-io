@@ -104,7 +104,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 DataUnpacker::~DataUnpacker()
 {
     dataHandlingThread.quit();
-    dataHandlingThread.wait();
+    dataHandlingThread.wait();  //wait until the thread fully stops to avoid error message
 }
 
 void DataUnpacker::unpack()
