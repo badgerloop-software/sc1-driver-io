@@ -79,8 +79,11 @@ public:
 
 
 public slots:
-    /* Not doing this for now
-    void readReply() override{
+    /**
+     * Read response from the server. Specifically, reads the response to the request to
+     * add a new table on the server and sets tableName to the response.
+     */
+    void readReply() override {
         qDebug()<<"read reply invoked";
         QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
 
@@ -94,7 +97,6 @@ public slots:
             this->restclient->setAutoDeleteReplies(true);
         }
     }
-    */
 private:
     /**
      * creates a thread that ping a website to check connection
