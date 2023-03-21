@@ -12,7 +12,6 @@ class DTI : public QObject{
     Q_OBJECT
 public:
     /* nope
-    /**
      * Receive bytes via channel to be implemented
      * @return bytes received
      */

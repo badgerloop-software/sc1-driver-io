@@ -23,6 +23,7 @@ public:
     }
 
     void sendData(QByteArray bytes) override {
+        qDebug()<<"sending Via SQL";
         auto curr_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
         QUrl myurl;

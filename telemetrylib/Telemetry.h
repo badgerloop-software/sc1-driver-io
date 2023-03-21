@@ -28,7 +28,6 @@ public:
      */
     void sendData(QByteArray data);
     /* NVM
-    /**
      * receive data from telemetry
      * @return data
      */

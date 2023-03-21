@@ -5,9 +5,25 @@
 #ifndef TELEMETRYLIB_DATARESEND_H
 #define TELEMETRYLIB_DATARESEND_H
 
-
 #include <QObject>
 #include "DTI.h"
+
+/*
+ * DataResend is used to store data during connection lost and resending data after
+ * connection is regained.
+ */
+
+/*
+ * Some more details:
+ * Telemetry class detects the network disconnect and sets the DataResend into store
+ * data mode by calling comStatus(False), then Telemetry class directs the data into
+ * the Queue of this class. after connection is regained, the Telemetry class notifies
+ * this class to resented using comStatus(True), a thread is created to resend the Data
+ * and isBusy() returns true, which stops Telemetry from sending data and instead add
+ * new data into resend Queue.
+ *
+ */
+
 class DataResend : QObject{
     Q_OBJECT
 public:
