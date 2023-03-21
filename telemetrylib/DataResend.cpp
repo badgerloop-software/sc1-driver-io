@@ -26,7 +26,7 @@ void DataResend::comStatus(bool state) {
 }
 
 void DataResend::resend() {
-    busy = true; //if dataresend is currently busy, telemetrylib would not send data directly thru channel, and indead send it thru this class
+    busy = true; //if DataResend is currently busy, Telemetry would not send data directly thru channel, and instead send it thru this class
     mutex.lock(); //use a mutex to stop queue access during resend
     qDebug()<<"sending";
     while (!q.empty()){
