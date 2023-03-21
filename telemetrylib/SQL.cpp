@@ -27,14 +27,14 @@ public:
 
         QUrl myurl;
         myurl.setScheme("http");
-        myurl.setHost("150.136.104.125"); // TODO
-        myurl.setPort(3000); // TODO
-        myurl.setPath("/add-data"); // TODO
+        myurl.setHost("150.136.104.125");
+        myurl.setPort(3000);
+        myurl.setPath("/add-data");
         myurl.setQuery("table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(curr_msec)));
 
         //QNetworkRequest request;
         request.setUrl(myurl);
-        request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer")); // TODO Try "blob" for content type as well
+        request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));
         request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
         this->restclient->post(request, bytes);
     }
