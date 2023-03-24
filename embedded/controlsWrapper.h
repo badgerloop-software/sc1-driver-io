@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QByteArray>
 #include <QMutex>
-#include <atomic>
 
 class controlsWrapper : public QObject
 {

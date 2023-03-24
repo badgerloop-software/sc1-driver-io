@@ -8,7 +8,6 @@
 #include <QObject>
 #include <QThread>
 #include <QMutex>
-#include <atomic>
 #include "backendprocesses.h"
 #include "3rdparty/rapidjson/document.h"
 #include "3rdparty/rapidjson/filereadstream.h"
@@ -117,7 +116,7 @@ private:
     bool bps_fault=false;
     bool bms_canbus_failure=false, voltage_failsafe=false, current_failsafe=false, supply_power_failsafe=false, memory_failsafe=false, relay_failsafe=false;
     bool mps_enable=true, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
-    std::atomic<bool> restart_enable=false;
+    std::atomic<bool> restart_enable(false);
     QVector<float> cell_group_voltages;
 
 
