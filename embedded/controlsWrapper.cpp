@@ -15,7 +15,7 @@ Serial serial;
 QMutex uartMutex;
 
 #define TOTALBYTES 297
-controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, bool &restart_enable, QObject *parent) : QObject(parent), bytes(bytes), mutex(mutex), restart_enable(restart_enable) {
+controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<bool> &restart_enable, QObject *parent) : QObject(parent), bytes(bytes), mutex(mutex), restart_enable(restart_enable) {
     //this->bytes = bytes;
     serial = Serial();
     serial.openDevice(0, 115200);
