@@ -10,11 +10,13 @@
 #include <embedded/devices/src/ads1219.cpp>
 #include <embedded/drivers/include/serial.h>
 #include <embedded/drivers/src/serial.cpp>
+#define T_MESSAGE_US 70000  // around 1/15 of a second
+#define HEARTBEAT 2         // error state if this # messages that aren't read
 
 Serial serial;
 QMutex uartMutex;
 
-#define TOTALBYTES 297
+#define TOTAL_BYTES 399
 controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<bool> &restart_enable, QObject *parent) : QObject(parent), bytes(bytes), mutex(mutex), restart_enable(restart_enable) {
     //this->bytes = bytes;
     serial = Serial();
@@ -24,12 +26,19 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
 // This is the firmware main loop. It's called in a separate thread in DataUnpacker.cpp
 // Put your testing code here!
 void controlsWrapper::startThread() {
-    // loop goes here
+    int messages_not_received = 0;
     while(true) {
-        char buffTemp[TOTALBYTES];
+        char buffTemp[TOTAL_BYTES];
         // read
         uartMutex.lock();
-        serial.readBytes(buffTemp, TOTALBYTES, 1000, 0);
+        // check if we actually read a message 
+        if (serial.readBytes(buffTemp, TOTAL_BYTES, T_MESSAGE_US, 0) == 0) {
+            if (++messages_not_received == HEARTBEAT) {
+                restart_enable = 1;
+            }
+        } else {
+            messages_not_received = 0;
+        }
         uartMutex.unlock();
 
         // write restart_enable signal
@@ -41,7 +50,7 @@ void controlsWrapper::startThread() {
         // copy data in char array to QByteArray
         mutex.lock();
         bytes.clear();
-        bytes = QByteArray::fromRawData(buffTemp, TOTALBYTES);
+        bytes = QByteArray::fromRawData(buffTemp, TOTAL_BYTES);
         mutex.unlock();
         //usleep(1000000);
         /*std::cout << "speed: " << dfread.speed << std::endl;
@@ -52,32 +61,5 @@ void controlsWrapper::startThread() {
         //std::cout << "==========================================" << std::endl;
         sleep(1);
     }
-
-    /*
-        std::string checkMessage = "";
-        // write a random number of bytes (1-9) to the BBB
-        unsigned int numWriteBytes = rand() % 9 + 1;
-        char nwb = char(numWriteBytes + 48); // convert number of bytes to char
-        serial.writeString(&nwb); // write number of bytes
-        for(int i = 0; i < numWriteBytes; i++) { // write message using for loop
-            serial.writeString(&message[i]);
-            checkMessage = checkMessage + message[i];
-        }
-        std::cout << "write: " << nwb << checkMessage << std::endl;
-        usleep(1000000);
-
-        // read the number of bytes of incoming data
-        char readBytesIn[1];
-        serial.readString(readBytesIn, 1);
-        unsigned int numReadBytes = (int)readBytesIn[0] - 48;
-        std::cout << "nrb: " << numReadBytes << " char: " << readBytesIn << std::endl;
-
-        // read that number of bytes to get the data
-        char readResult[numReadBytes];
-        serial.readString(readResult, numReadBytes);
-        std::cout << "read: " << readResult << std::endl;
-        usleep(1000000);
-        serial.flushReceiver();
-        */
 }
 
