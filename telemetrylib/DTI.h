@@ -32,8 +32,9 @@ public slots:
      * Send bytes via channel to be implemented, do not record data in this function.
      * @param bytes literally.
      */
-    virtual void sendData(QByteArray bytes) = 0;
+
     //if inheritance instance needs slots, add them here as a VIRTUAL function, otherwise there will be a stupid vtable error
+    virtual void sendData(QByteArray bytes, long long time = 0) = 0;
     virtual void onNewConnection() {};
     virtual void onSocketStateChanged(QAbstractSocket::SocketState state) {};
     virtual void readReply() {};

@@ -26,6 +26,10 @@
 
 class DataResend : QObject{
     Q_OBJECT
+    struct data {
+        QByteArray d;
+        long long t;
+    };
 public:
     //Pass the channel to send data
     void setChannel(DTI *channel);
@@ -43,10 +47,10 @@ protected:
     void resend();
 signals:
     //Use signal to trigger send data in DTI class
-    void send(QByteArray arr);
+    void send(QByteArray arr, long long time);
 private:
     DTI *channel;
-    QQueue<QByteArray> q;
+    QQueue<data> q;
     QMutex mutex;
     std::thread* t;
     std::atomic<bool> comstate, busy;
