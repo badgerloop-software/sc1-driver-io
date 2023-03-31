@@ -17,7 +17,7 @@ Serial serial;
 QMutex uartMutex;
 
 #define TOTAL_BYTES 399
-controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<bool> &restart_enable, QObject *parent) : QObject(parent), bytes(bytes), mutex(mutex), restart_enable(restart_enable) {
+controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<bool> &restart_enable, QObject *parent, int mainIO_heartbeat_offset, int mcu_check_offset) : QObject(parent), bytes(bytes), mutex(mutex), restart_enable(restart_enable), mainIO_heartbeat_offset(mainIO_heartbeat_offset), mcu_check_offset(mcu_check_offset) {
     //this->bytes = bytes;
     serial = Serial();
     serial.openDevice(0, 115200);
@@ -35,6 +35,10 @@ void controlsWrapper::startThread() {
         if (serial.readBytes(buffTemp, TOTAL_BYTES, T_MESSAGE_US, 0) == 0) {
             if (++messages_not_received == HEARTBEAT) {
                 restart_enable = 1;
+                mutex.lock();
+                bytes[mainIO_heartbeat_offset] = 0;
+                bytes[mcu_check_offset] = 1;
+                mutex.lock();
             }
         } else {
             messages_not_received = 0;

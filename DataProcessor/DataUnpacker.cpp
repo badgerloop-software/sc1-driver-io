@@ -54,6 +54,8 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     int dataCount = 0;
     cell_group_voltages_begin = -1;
     cell_group_voltages_end = -1;
+    mainIO_heartbeat_offset = -1;
+    mcu_check_offset = -1;
 
     for(Value::ConstMemberIterator itr = d.MemberBegin(); itr != d.MemberEnd(); ++itr) {
         std::string name = itr->name.GetString();
@@ -72,6 +74,10 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
             tstampOff.sc = arrayOffset;
         } else if(name == "tstamp_ms") {
             tstampOff.ms = arrayOffset;
+        } else if(name = "mainIO_heartbeat") {
+            mainIO_heartbeat_offset = arrayOffset;
+        } else if(name = "mcu_check") {
+            mcu_check_offset = arrayOffset;
         } else if(name.substr(0, 10) == "cell_group") {
             if(cell_group_voltages_begin == -1) {
                 cell_group_voltages_begin = dataCount;
@@ -102,7 +108,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
     dataHandlingThread.start();
     
-    controlsWrapper* loop = new controlsWrapper(bytes, mutex, restart_enable);
+    controlsWrapper* loop = new controlsWrapper(bytes, mutex, restart_enable, mainIO_heartbeat_offset, mcu_check_offset);
     loop->moveToThread(&controlsThread);
     connect(&controlsThread, &QThread::started, loop, &controlsWrapper::startThread);
     connect(&controlsThread, &QThread::finished, loop, &QObject::deleteLater);
