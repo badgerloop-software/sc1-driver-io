@@ -34,7 +34,7 @@ public slots:
      */
 
     //if inheritance instance needs slots, add them here as a VIRTUAL function, otherwise there will be a stupid vtable error
-    virtual void sendData(QByteArray bytes, long long time = 0) = 0;
+    virtual void sendData(QByteArray bytes, long long timestamp) = 0;
     virtual void onNewConnection() {};
     virtual void onSocketStateChanged(QAbstractSocket::SocketState state) {};
     virtual void readReply() {};

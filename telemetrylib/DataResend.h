@@ -34,7 +34,7 @@ public:
     //Pass the channel to send data
     void setChannel(DTI *channel);
     //Add bytearray into the queue
-    void addToQueue(QByteArray arr);
+    void addToQueue(QByteArray arr, long long timestamp);
     /*
      * IMPORTANT, tell the class if the telemetry class is connected/disconnected
      * before giving this class the data

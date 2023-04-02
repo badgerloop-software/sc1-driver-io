@@ -9,11 +9,10 @@ void DataResend::setChannel(DTI *channel) {
     this->channel = channel;
 }
 
-void DataResend::addToQueue(QByteArray arr) {
+void DataResend::addToQueue(QByteArray arr, long long timestamp) {
     qDebug() << "Queued msg: "<<q.size()+1<<"\n";
     mutex.lock();
-    long long curr_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    q.enqueue({arr, curr_msec});
+    q.enqueue({arr, timestamp});
     mutex.unlock();
 }
 

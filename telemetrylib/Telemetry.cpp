@@ -20,16 +20,16 @@ Telemetry::Telemetry(std::vector<DTI *> commChannels) {
 }
 
 // Send data through the current communication channel
-void Telemetry::sendData(QByteArray bytes) {
+void Telemetry::sendData(QByteArray bytes, long long timestamp) {
     qDebug() << "send data current comm channel: " << commChannel;
     // Check if there is a current communication channel and if the resend queue is not busy
     if (commChannel != -1 && !resendQueue.isBusy()) {
         // Send data through the current communication channel
-        comm[commChannel]->sendData(bytes);
+        comm[commChannel]->sendData(bytes, timestamp);
     } else {
         qDebug()<<"adding to queue from telemetry";
         // Add data to the resend queue if there is no current communication channel or the resend queue is busy
-        resendQueue.addToQueue(bytes);
+        resendQueue.addToQueue(bytes, timestamp);
     }
 }
 

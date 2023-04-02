@@ -25,8 +25,9 @@ public:
     /**
      * to send data, as simple as it gets
      * @param data
+     * @param timestamp the time which the byte array is created
      */
-    void sendData(QByteArray data);
+    void sendData(QByteArray data, long long timestamp);
     /* NVM
      * receive data from telemetry
      * @return data

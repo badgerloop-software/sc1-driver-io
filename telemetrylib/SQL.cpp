@@ -22,7 +22,7 @@ public:
         t->join();
     }
 
-    void sendData(QByteArray bytes, long long time) override {
+    void sendData(QByteArray bytes, long long timestamp) override {
         qDebug()<<"sending Via SQL";
 
         QUrl myurl;
@@ -30,17 +30,7 @@ public:
         myurl.setHost("150.136.104.125");
         myurl.setPort(3000);
         myurl.setPath("/add-data");
-        if(time == 0) {
-            qDebug()<<"adding time stamp";
-            auto curr_msec = std::chrono::duration_cast<std::chrono::milliseconds>(
-                    std::chrono::system_clock::now().time_since_epoch()).count();
-            myurl.setQuery(
-                    "table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(curr_msec)));
-        } else {
-            qDebug()<<"custom time stamp t="<<time;
-            myurl.setQuery(
-                    "table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(time)));
-        }
+        myurl.setQuery("table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(timestamp)));
         //QNetworkRequest request;
         request.setUrl(myurl);
         request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));

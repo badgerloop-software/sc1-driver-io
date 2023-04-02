@@ -6,7 +6,7 @@
 
 class TCP : public DTI {
 public:
-    void sendData(QByteArray bytes, long long time) override {
+    void sendData(QByteArray bytes, long long timestamp) override {
         qDebug()<<"sending via TCP";
         for (QTcpSocket* socket : _sockets) {
             socket->write(bytes);
