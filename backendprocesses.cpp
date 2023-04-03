@@ -69,7 +69,6 @@ void BackendProcesses::threadProcedure()
     // Get time data is received (then written to byte array right after byte array is updated/data is received)
     auto curr_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-    qDebug() << curr_msec;
     //time_t now = time(NULL);
 
     uint8_t hour_time = (curr_msec/3600000 + 18) % 24;
@@ -94,7 +93,7 @@ void BackendProcesses::threadProcedure()
     bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
 
     // 60 lines of comments were removed here.
-    tel->sendData(bytes); //this passes the data to the telemetrylib to be sent to the chase car
+    tel->sendData(bytes, curr_msec); //this passes the data to the telemetrylib to be sent to the chase car
     mutex.unlock();
     emit dataReady();
 }

@@ -27,7 +27,7 @@ void Telemetry::sendData(QByteArray bytes, long long timestamp) {
         // Send data through the current communication channel
         comm[commChannel]->sendData(bytes, timestamp);
     } else {
-        qDebug()<<"adding to queue from telemetry";
+        qDebug() << "adding to queue from telemetry: " << timestamp;
         // Add data to the resend queue if there is no current communication channel or the resend queue is busy
         resendQueue.addToQueue(bytes, timestamp);
     }

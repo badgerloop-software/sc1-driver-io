@@ -30,14 +30,15 @@ void DataResend::resend() {
     mutex.lock(); //use a mutex to stop queue access during resend
     qDebug()<<"sending "<<q.size()<<" packets";
     while (!q.empty()){
-        qDebug()<<".";
         if (!comstate){
             disconnect(this, SIGNAL(send(QByteArray, long long)), 0, 0);
             break;
         }
         mutex.unlock(); //additional data can be added during this temporary unlock
+        usleep(10000);
         mutex.lock();
         data cur = q.dequeue();
+        qDebug()<<cur.t;
         emit(send(cur.d, cur.t));
     }
     mutex.unlock(); //exit the loop data can be added

@@ -23,7 +23,7 @@ public:
     }
 
     void sendData(QByteArray bytes, long long timestamp) override {
-        qDebug()<<"sending Via SQL";
+        qDebug()<<"sending Via SQL: "<<timestamp;
 
         QUrl myurl;
         myurl.setScheme("http");
