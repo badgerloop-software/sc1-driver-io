@@ -1,6 +1,6 @@
 QT += quick
 
-CONFIG += c++11
+CONFIG += c++20
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -10,7 +10,11 @@ SOURCES += \
         backendprocesses.cpp \
         main.cpp \
         DataProcessor/DataGen.cpp \
-        DataProcessor/DataUnpacker.cpp
+        DataProcessor/DataUnpacker.cpp \
+        telemetrylib/TCP.cpp \
+        telemetrylib/Telemetry.cpp \
+        telemetrylib/SQL.cpp \
+        telemetrylib/DataResend.cpp
 
 RESOURCES += qml.qrc \
     UI/Images/images.qrc \
@@ -55,4 +59,7 @@ contains(ANDROID_TARGET_ARCH,arm64-v8a) {
 HEADERS += \
     DataProcessor/DataUnpacker.h \
     DataProcessor/DataGen.h \
-    backendprocesses.h
+    backendprocesses.h \
+    telemetrylib/Telemetry.h \
+    telemetrylib/DTI.h \
+    telemetrylib/DataResend.h
