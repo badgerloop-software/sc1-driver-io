@@ -95,18 +95,16 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
     fclose(fp);
 
-    //connect(this, &DataUnpacker::sendRestartSignal, this, &DataUnpacker::sendRestart);
-
-    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff,mutex);
+    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff, mutex);
 
     retriever->moveToThread(&dataHandlingThread);
+
     connect(&dataHandlingThread, &QThread::started, retriever, &BackendProcesses::startThread);
     connect(this, &DataUnpacker::getData, retriever, &BackendProcesses::threadProcedure);
     connect(retriever, &BackendProcesses::dataReady, this, &DataUnpacker::unpack);
     connect(retriever, &BackendProcesses::eng_dash_connection, this, &DataUnpacker::eng_dash_connection);
     connect(&dataHandlingThread, &QThread::finished, retriever, &QObject::deleteLater);
     connect(&dataHandlingThread, &QThread::finished, &dataHandlingThread, &QThread::deleteLater);
-
 
     dataHandlingThread.start();
     
@@ -121,13 +119,14 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 DataUnpacker::~DataUnpacker()
 {
     dataHandlingThread.quit();
+    dataHandlingThread.wait();  //wait until the thread fully stops to avoid error message
     controlsThread.quit();
 }
 
 void DataUnpacker::unpack()
 {
     int currByte = 0;
-    
+
     mutex.lock();
 
     for(uint i=0; i < names.size(); i++) {
@@ -165,7 +164,7 @@ void DataUnpacker::unpack()
 
         currByte += byteNums[i];
     }
-    
+
     mutex.unlock();
 
     this->restart_enable = checkRestartEnable();

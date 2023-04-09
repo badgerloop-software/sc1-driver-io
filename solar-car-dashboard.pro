@@ -17,7 +17,11 @@ SOURCES += \
         embedded/devices/src/ads1219.cpp \
         embedded/devices/src/ina3221.cpp \
         embedded/devices/src/tca6416.cpp \
-        embedded/controlsWrapper.cpp
+        embedded/controlsWrapper.cpp \
+        telemetrylib/TCP.cpp \
+        telemetrylib/Telemetry.cpp \
+        telemetrylib/SQL.cpp \
+        telemetrylib/DataResend.cpp
 
 RESOURCES += qml.qrc \
     UI/Images/images.qrc \
@@ -70,4 +74,7 @@ HEADERS += \
     embedded/devices/include/ads1219.h \
     embedded/devices/include/ina3221.h \
     embedded/devices/include/tca6416.h \
-    embedded/controlsWrapper.h
+    embedded/controlsWrapper.h \
+    telemetrylib/Telemetry.h \
+    telemetrylib/DTI.h \
+    telemetrylib/DataResend.h

@@ -1,5 +1,7 @@
+
 #include "backendprocesses.h"
 #include <iostream>
+
 double speedFunc(double t)
 {
     return t*t;
@@ -17,7 +19,9 @@ double batteryFunc(double t)
 
 
 
-BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent) : QObject(parent), bytes(bytes), names(names), types(types), mutex(mutex), data(DataGen(&speedFunc,&solarFunc,&batteryFunc,100))
+BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent) :
+    QObject(parent), bytes(bytes), names(names), types(types), mutex(mutex),
+    data(DataGen(&speedFunc,&solarFunc,&batteryFunc,100))
 {
     //this->bytes = bytes;
     //this->names = names;
@@ -36,51 +40,32 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     this->tstampOffsets.ms = timeDataOffsets.ms;
 }
 
-/*BackendProcesses::~BackendProcesses(){}*/
-
-void BackendProcesses::onNewConnection()
-{
-   QTcpSocket *clientSocket = _server.nextPendingConnection();
-   //connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
-   connect(clientSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onSocketStateChanged(QAbstractSocket::SocketState)));
-
-    _sockets.push_back(clientSocket);
-    emit eng_dash_connection(1);
-    /*for (QTcpSocket* socket : _sockets) {
-        socket->write(QByteArray::fromStdString("From solar car: " + clientSocket->peerAddress().toString().toStdString() + " connected to server !\n"));
-    }*/
+void BackendProcesses::comm_status(bool s) {
+    emit eng_dash_connection(s);
 }
 
-void BackendProcesses::onSocketStateChanged(QAbstractSocket::SocketState socketState)
-{
-    if (socketState == QAbstractSocket::UnconnectedState)
-    {
-        QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
-        _sockets.removeOne(sender);
-        emit eng_dash_connection(0);
-    }
-}
+void BackendProcesses::startThread() {
+    std::vector<DTI*> obj(2); //create a bunch of DTI instances and add them into this array in order of priority to be sent to telemetrylib
+    long long first_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
-/*void BackendProcesses::onReadyRead()
-{
-    QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
-    QByteArray datas = sender->readAll();
-    for (QTcpSocket* socket : _sockets) {
-        if (socket != sender)
-            socket->write(QByteArray::fromStdString(sender->peerAddress().toString().toStdString() + ": " + datas.toStdString()));
-    }
-}*/
-
-void BackendProcesses::startThread()
-{
-    _server.listen(QHostAddress::AnyIPv4, 4003);
-    connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
+    obj[0]=new SQL(QString::fromStdString(std::to_string(first_msec))); //This sends data to the cloud server
+    obj[1]=new TCP(QHostAddress::AnyIPv4, 4003); //this sends data thru TCP sockets
+    this->tel = new Telemetry(obj);
+    connect(this->tel, &Telemetry::eng_dash_connection, this, &BackendProcesses::comm_status); //for notifing the system connection status
 
     threadProcedure();
 }
 
+BackendProcesses::~BackendProcesses() {
+    stop=true; //tells the thread to stop
+}
+
 void BackendProcesses::threadProcedure()
 {
+    if(stop) {
+        return;
+    }
+
     usleep(100000);//50000);
 
     //DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
@@ -91,6 +76,7 @@ void BackendProcesses::threadProcedure()
     //qDebug()<<"bytes: "<<bytes;
     // Get time data is received (then written to byte array right after byte array is updated/data is received)
     auto curr_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
     //time_t now = time(NULL);
 
     uint8_t hour_time = (curr_msec/3600000 + 18) % 24;
@@ -113,12 +99,10 @@ void BackendProcesses::threadProcedure()
     bytes.remove(tstampOffsets.ms,2);
     bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
     bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
-    
-    for (QTcpSocket* socket : _sockets) {
-        //socket->write(QByteArray::fromStdString("From solar car: connected to server! " + std::to_string(time) + "\n"));
-        //socket->write(QByteArray::fromStdString("Speed: " + std::to_string(speed) + "; Size: " + std::to_string(sizeof(bytes)) + "\n"));
-        socket->write(bytes);
-    }
+
+    // 60 lines of comments were removed here.
+    tel->sendData(bytes, curr_msec); //this passes the data to the telemetrylib to be sent to the chase car
+
     mutex.unlock();
     emit dataReady();
 }
