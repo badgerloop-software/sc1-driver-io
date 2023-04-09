@@ -1,6 +1,5 @@
 
 #include "backendprocesses.h"
-#include <iostream>
 
 double speedFunc(double t)
 {
@@ -27,11 +26,11 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     //this->names = names;
     //this->types = types;
     for (auto i: names) {
-        std::cout << i << "|";
+        qDebug() << i << "|";
     }
     printf("\n");
     for (auto i: types) {
-        std::cout << i << "|";
+        qDebug() << i << "|";
     }
     printf("\n");
     this->tstampOffsets.hr = timeDataOffsets.hr;
