@@ -26,11 +26,11 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     //this->names = names;
     //this->types = types;
     for (auto i: names) {
-        qDebug() << i << "|";
+        qDebug() << QString::fromStdString(i); 
     }
     printf("\n");
     for (auto i: types) {
-        qDebug() << i << "|";
+        qDebug() << QString::fromStdString(i); 
     }
     printf("\n");
     this->tstampOffsets.hr = timeDataOffsets.hr;
