@@ -304,6 +304,7 @@ Popup {
                     columnSpacing: 0
                     rowSpacing: 0
 
+
                     Rectangle {
                         color: 'black'
                         border.color: grid_item_border_color
@@ -316,18 +317,18 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
-                            id: cell_balancing_active_text
+                            id: bms_can_heartbeat_text
 
-                            property bool cell_balancing_active_fault: !backEnd.cell_balancing_active && backEnd.restart_enable
-                            onCell_balancing_active_faultChanged: {
-                                if(cell_balancing_active_fault) {
+                            property bool bms_can_heartbeat_fault: backEnd.bms_can_heartbeat && backEnd.restart_enable
+                            onBms_can_heartbeat_faultChanged: {
+                                if(bms_can_heartbeat_fault) {
                                     this.opacity = 1;
                                 }
                             }
 
                             anchors.centerIn: parent
-                            text: "Cell Balancing Active"
-                            color: cell_balancing_active_fault ? "red" : "white"
+                            text: "BMS CAN Heartbeat"
+                            color: bms_can_heartbeat_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
@@ -596,6 +597,8 @@ Popup {
                         }
                     }
 
+
+
                     Rectangle {
                         color: 'black'
                         border.color: grid_item_border_color
@@ -608,18 +611,18 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
-                            id: bms_can_heartbeat_text
+                            id: cell_balancing_active_text
 
-                            property bool bms_can_heartbeat_fault: backEnd.bms_can_heartbeat && backEnd.restart_enable
-                            onBms_can_heartbeat_faultChanged: {
-                                if(bms_can_heartbeat_fault) {
+                            property bool cell_balancing_active_fault: !backEnd.cell_balancing_active && backEnd.restart_enable
+                            onCell_balancing_active_faultChanged: {
+                                if(cell_balancing_active_fault) {
                                     this.opacity = 1;
                                 }
                             }
 
                             anchors.centerIn: parent
-                            text: "BMS CAN Heartbeat"
-                            color: bms_can_heartbeat_fault ? "red" : "white"
+                            text: "Cell Balancing Active"
+                            color: cell_balancing_active_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
