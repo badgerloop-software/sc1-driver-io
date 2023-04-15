@@ -28,7 +28,7 @@ int I2c::open_i2c() {
 
   if (this->is_open()) return 0;
 
-  if (!this->bus || !this->deviceAddress || !this->openMode) {
+  if ((this->bus < 0)  || !this->deviceAddress || !this->openMode) {
     std::cerr << "Device not inited.\n";
     return -EINVAL;
   }

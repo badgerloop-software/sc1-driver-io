@@ -32,7 +32,7 @@ void controlsWrapper::startThread() {
     Tca6416 tca = Tca6416(0, 0x20);
     // set enable signals P05, P06, P14, P15, P16 to write (0)
     uint8_t directions[16]= {1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1};
-    device.begin(directions);
+    tca.begin(directions);
     // initialize vars for input toggle signals
     uint8_t lblnk_toggle = 0;
     uint8_t rblnk_toggle = 0;
