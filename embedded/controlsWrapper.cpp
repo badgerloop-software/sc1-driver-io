@@ -30,8 +30,8 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
 void controlsWrapper::startThread() {
     // initialize tca
     Tca6416 tca = Tca6416(0, 0x20);
-    // set enable signals P05, P06, P14, P15, P16 to write (0)
-    uint8_t directions[16]= {1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1};
+    // set enable signals P00, P04, P10, P16, P17 to write (0)
+    uint8_t directions[16]= {0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0};
     tca.begin(directions);
     // initialize vars for input toggle signals
     uint8_t lblnk_toggle = 0;
@@ -42,12 +42,12 @@ void controlsWrapper::startThread() {
     while(true) {
         // TCA code
         // read input signals
-        lblnk_toggle = tca.get_state(0, 0);
-        rblnk_toggle = tca.get_state(0, 1);
-        hl_toggle = tca.get_state(0, 4);
+        lblnk_toggle = tca.get_state(0, 7);
+        rblnk_toggle = tca.get_state(0, 6);
+        hl_toggle = tca.get_state(0, 5);
         // write to enable signals
-        tca.set_state(1, 4, lblnk_toggle); // FL_TS_LED_EN
-        tca.set_state(1, 5, rblnk_toggle); // FR_TS_LED_EN
+        tca.set_state(1, 0, lblnk_toggle); // FL_TS_LED_EN
+        tca.set_state(1, 7, rblnk_toggle); // FR_TS_LED_EN
         tca.set_state(1, 6, hl_toggle); // F_HL_LED_EN
 
 
