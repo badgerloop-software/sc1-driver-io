@@ -22,19 +22,20 @@ Popup {
     property double hidden_opacity: 0.25
     property string grid_item_border_color: "#20ffffff"
     property int grid_item_border_width: 2
-    property bool can_close: !battery_eStop_text.battery_eStop_fault && !driver_eStop_text.driver_eStop_fault && !external_eStop_text.external_eStop_fault
+    property bool can_close: !discharge_enable_text.discharge_enable_fault && !driver_eStop_text.driver_eStop_fault && !external_eStop_text.external_eStop_fault
                              && !imd_status_text.imd_status_fault && !door_text.door_fault && !crash_text.crash_fault && !mcu_check_text.mcu_check_fault
 
     Overlay.onPressed: {
+        console.log(can_close)
         if(can_close) {
             backEnd.restart_enable = false;
             backEnd.enableRestart(); // Signal user has enabled restart
 
             // Reset opacities of fault texts to hidden_opacity so that they aren't shown as being triggered when restartPopup opens again
-            var ids = { battery_eStop_text, driver_eStop_text, external_eStop_text, imd_status_text, door_text, crash_text, bps_fault_text, mcu_check_text,
-                        mps_enable_text, mppt_contactor_text, low_contactor_text, motor_controller_contactor_text, over_voltage_text, under_voltage_text,
-                        over_current_text, under_current_text, bms_input_voltage_high_text, bms_input_voltage_low_text, over_temp_text, bms_canbus_failure_text,
-                        voltage_failsafe_text, current_failsafe_text, supply_power_failsafe_text, memory_failsafe_text, relay_failsafe_text, cell_group_voltages_text };
+            var ids = { driver_eStop_text, external_eStop_text, imd_status_text, door_text, crash_text, bps_fault_text, mcu_check_text,
+                        cell_balancing_active_text, mcu_hv_en_text, low_contactor_text, motor_controller_contactor_text, thermistor_b_value_table_invalid_text, under_voltage_text,
+                        over_current_text, bms_input_voltage_high_text, dcdc_valid_text, mcu_stat_fdbk_text, bms_can_heartbeat_text,
+                        voltage_failsafe_text, current_failsafe_text, input_power_supply_failsafe_text, mc_status_text, relay_failsafe_text, cell_group_voltages_text };
 
             for(const idx in ids) {
                 ids[idx].opacity = hidden_opacity;
@@ -77,7 +78,7 @@ Popup {
                 // Trigger BPS fault whenever the external power cut off switch is pressed (and consequently when the MPS is opened)
                 // See ASC regulations 8.6.B-8.6.C for more info on BPS fault dash indication:
                 //      https://www.americansolarchallenge.org/ASC/wp-content/uploads/2022/03/ASC2022-Regs-EXTERNAL-RELEASE-B.pdf
-                property bool bps_fault: (backEnd.bps_fault || backEnd.external_eStop || !backEnd.mps_enable) && backEnd.restart_enable
+                property bool bps_fault: backEnd.bps_fault && backEnd.restart_enable
                 onBps_faultChanged: {
                     if(bps_fault) {
                         this.opacity = 1;
@@ -115,17 +116,17 @@ Popup {
                 Layout.preferredHeight: shutdown_input_pref_height
 
                 Text {
-                    id: battery_eStop_text
-                    property bool battery_eStop_fault: backEnd.battery_eStop && backEnd.restart_enable
-                    onBattery_eStop_faultChanged: {
-                        if(battery_eStop_fault) {
+                    id: discharge_enable_text
+                    property bool discharge_enable_fault: backEnd.discharge_enable && backEnd.restart_enable
+                    onDischarge_enable_faultChanged: {
+                        if(discharge_enable_fault) {
                             this.opacity = 1;
                         }
                     }
 
                     anchors.centerIn: parent
-                    text: qsTr("Battery Pack Switch")
-                    color: battery_eStop_fault ? "red" : "white"
+                    text: qsTr("Main IO Heartbeat")
+                    color: discharge_enable_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size
                     opacity: hidden_opacity
                 }
@@ -315,18 +316,18 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
-                            id: mps_enable_text
+                            id: cell_balancing_active_text
 
-                            property bool mps_enable_fault: !backEnd.mps_enable && backEnd.restart_enable
-                            onMps_enable_faultChanged: {
-                                if(mps_enable_fault) {
+                            property bool cell_balancing_active_fault: !backEnd.cell_balancing_active && backEnd.restart_enable
+                            onCell_balancing_active_faultChanged: {
+                                if(cell_balancing_active_fault) {
                                     this.opacity = 1;
                                 }
                             }
 
                             anchors.centerIn: parent
-                            text: "MPS Enable"
-                            color: mps_enable_fault ? "red" : "white"
+                            text: "Cell Balancing Active"
+                            color: cell_balancing_active_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
@@ -344,18 +345,18 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
-                            id: mppt_contactor_text
+                            id: mcu_hv_en_text
 
-                            property bool mppt_contactor_fault: backEnd.mppt_contactor && backEnd.restart_enable
-                            onMppt_contactor_faultChanged: {
-                                if(mppt_contactor_fault) {
+                            property bool mcu_hv_en_fault: backEnd.mcu_hv_en && backEnd.restart_enable
+                            onMcu_hv_en_faultChanged: {
+                                if(mcu_hv_en_fault) {
                                     this.opacity = 1;
                                 }
                             }
 
                             anchors.centerIn: parent
-                            text: "MPPT Contactor"
-                            color: mppt_contactor_fault ? "red" : "white"
+                            text: "MCU HighVoltage Enable"
+                            color: mcu_hv_en_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
@@ -375,7 +376,7 @@ Popup {
                         Text {
                             id: low_contactor_text
 
-                            property bool low_contactor_fault: backEnd.low_contactor && backEnd.restart_enable
+                            property bool low_contactor_fault: !backEnd.low_contactor && backEnd.restart_enable
                             onLow_contactor_faultChanged: {
                                 if(low_contactor_fault) {
                                     this.opacity = 1;
@@ -431,11 +432,11 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height * 1.6
 
                         Text {
-                            id: over_voltage_text
+                            id: thermistor_b_value_table_invalid_text
 
-                            property bool over_voltage_fault: (backEnd.pack_voltage > 108) && backEnd.restart_enable
-                            onOver_voltage_faultChanged: {
-                                if(over_voltage_fault) {
+                            property bool under_voltage_fault: (backEnd.pack_voltage > 108) && backEnd.restart_enable
+                            onUnder_voltage_faultChanged: {
+                                if(under_voltage_fault) {
                                     this.opacity = 1;
                                 }
                             }
@@ -443,7 +444,7 @@ Popup {
                             anchors.top: parent.top
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: "Battery overvoltage"
-                            color: over_voltage_fault ? "red" : "white"
+                            color: under_voltage_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
@@ -578,18 +579,18 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height * 1.6
 
                         Text {
-                            id: over_temp_text
+                            id: mcu_stat_fdbk_text
 
-                            property bool over_temp_fault: (backEnd.pack_temp > 60) && backEnd.restart_enable
-                            onOver_temp_faultChanged: {
-                                if(over_temp_fault) {
+                            property bool mcu_stat_fdbk_fault: backEnd.mcu_stat_fdbk && backEnd.restart_enable
+                            onMcu_stat_fdbk_faultChanged: {
+                                if(mcu_stat_fdbk_fault) {
                                     this.opacity = 1;
                                 }
                             }
 
                             anchors.centerIn: parent
-                            text: "Battery overtemperature"
-                            color: over_temp_fault ? "red" : "white"
+                            text: "MCU stat fdbk"
+                            color: mcu_stat_fdbk_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
@@ -607,18 +608,18 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
-                            id: bms_canbus_failure_text
+                            id: bms_can_heartbeat_text
 
-                            property bool bms_canbus_failure_fault: backEnd.bms_canbus_failure && backEnd.restart_enable
-                            onBms_canbus_failure_faultChanged: {
-                                if(bms_canbus_failure_fault) {
+                            property bool bms_can_heartbeat_fault: backEnd.bms_can_heartbeat && backEnd.restart_enable
+                            onBms_can_heartbeat_faultChanged: {
+                                if(bms_can_heartbeat_fault) {
                                     this.opacity = 1;
                                 }
                             }
 
                             anchors.centerIn: parent
-                            text: "BMS CANBUS failure"
-                            color: bms_canbus_failure_fault ? "red" : "white"
+                            text: "BMS CAN Heartbeat"
+                            color: bms_can_heartbeat_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
@@ -694,23 +695,53 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
-                            id: supply_power_failsafe_text
+                            id: input_power_supply_failsafe_text
 
-                            property bool supply_power_failsafe_fault: backEnd.supply_power_failsafe && backEnd.restart_enable
-                            onSupply_power_failsafe_faultChanged: {
-                                if(supply_power_failsafe_fault) {
+                            property bool input_power_supply_failsafe_fault: backEnd.input_power_supply_failsafe && backEnd.restart_enable
+                            onInput_power_supply_failsafe_faultChanged: {
+                                if(input_power_supply_failsafe_fault) {
                                     this.opacity = 1;
                                 }
                             }
 
                             anchors.centerIn: parent
-                            text: "BMS supply power failsafe"
-                            color: supply_power_failsafe_fault ? "red" : "white"
+                            text: "BMS input power supply failsafe"
+                            color: input_power_supply_failsafe_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
 
                     }
+
+                    Rectangle {
+                        color: 'black'
+                        border.color: grid_item_border_color
+                        border.width: grid_item_border_width
+                        Layout.row: 3
+                        Layout.column: 0
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+
+                        Text {
+                            id: dcdc_valid_text
+
+                            property bool dcdc_valid_fault: backEnd.dcdc_valid && backEnd.restart_enable
+                            onDcdc_valid_faultChanged: {
+                                if(dcdc_valid_fault) {
+                                    this.opacity = 1;
+                                }
+                            }
+
+                            anchors.centerIn: parent
+                            text: "dcdc valid"
+                            color: dcdc_valid_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                            opacity: hidden_opacity
+                        }
+                    }
+
 
                     Rectangle {
                         color: 'black'
@@ -724,18 +755,18 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
-                            id: memory_failsafe_text
+                            id: mc_status_text
 
-                            property bool memory_failsafe_fault: backEnd.memory_failsafe && backEnd.restart_enable
-                            onMemory_failsafe_faultChanged: {
-                                if(memory_failsafe_fault) {
+                            property bool mc_status_fault: backEnd.mc_status && backEnd.restart_enable
+                            onMc_status_faultChanged: {
+                                if(mc_status_fault) {
                                     this.opacity = 1;
                                 }
                             }
 
                             anchors.centerIn: parent
-                            text: "BMS memory failsafe"
-                            color: memory_failsafe_fault ? "red" : "white"
+                            text: "MC Status"
+                            color: mc_status_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
@@ -771,9 +802,67 @@ Popup {
                     }
 
                     Rectangle {
+                        color: 'black'
+                        border.color: grid_item_border_color
+                        border.width: grid_item_border_width
+                        Layout.row: 3
+                        Layout.column: 3
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+
+                        Text {
+                            id: supplemental_valid_text
+
+                            property bool supplemental_valid_fault: backEnd.supplemental_valid && backEnd.restart_enable
+                            onSupplemental_valid_faultChanged: {
+                                if(supplemental_valid_fault) {
+                                    this.opacity = 1;
+                                }
+                            }
+
+                            anchors.centerIn: parent
+                            text: "Supplemental valid"
+                            color: supplemental_valid_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                            opacity: hidden_opacity
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        border.color: grid_item_border_color
+                        border.width: grid_item_border_width
+                        Layout.row: 4
+                        Layout.column: 0
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+
+                        Text {
+                            id: charge_enable_text
+
+                            property bool charge_enable_fault: backEnd.charge_enable && backEnd.restart_enable
+                            onCharge_enable_faultChanged: {
+                                if(charge_enable_fault) {
+                                    this.opacity = 1;
+                                }
+                            }
+
+                            anchors.centerIn: parent
+                            text: "Charge enable"
+                            color: charge_enable_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                            opacity: hidden_opacity
+                        }
+                    }
+
+                    Rectangle {
                         id: cell_group_fault_rect
                         color: 'black'
-                        Layout.row: 4
+                        Layout.row: 5
                         Layout.columnSpan: 4
                         Layout.fillWidth: true
                         Layout.preferredWidth: contentItem.width

@@ -42,17 +42,25 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool door MEMBER door NOTIFY dataChanged);
     Q_PROPERTY(bool mcu_check MEMBER mcu_check NOTIFY dataChanged);
     Q_PROPERTY(bool imd_status MEMBER imd_status NOTIFY dataChanged);
-    Q_PROPERTY(bool mps_enable MEMBER mps_enable NOTIFY dataChanged);
+    Q_PROPERTY(bool discharge_enable MEMBER discharge_enable NOTIFY dataChanged);
     Q_PROPERTY(bool mppt_contactor MEMBER mppt_contactor NOTIFY dataChanged);
     Q_PROPERTY(bool motor_controller_contactor MEMBER motor_controller_contactor NOTIFY dataChanged);
     Q_PROPERTY(bool low_contactor MEMBER low_contactor NOTIFY dataChanged);
-    Q_PROPERTY(bool bms_canbus_failure MEMBER bms_canbus_failure NOTIFY dataChanged);
+    Q_PROPERTY(bool bms_can_heartbeat MEMBER bms_can_heartbeat NOTIFY dataChanged);
     Q_PROPERTY(bool voltage_failsafe MEMBER voltage_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool current_failsafe MEMBER current_failsafe NOTIFY dataChanged);
-    Q_PROPERTY(bool supply_power_failsafe MEMBER supply_power_failsafe NOTIFY dataChanged);
-    Q_PROPERTY(bool memory_failsafe MEMBER memory_failsafe NOTIFY dataChanged);
+    Q_PROPERTY(bool input_power_supply_failsafe MEMBER input_power_supply_failsafe NOTIFY dataChanged);
+    Q_PROPERTY(bool mc_status MEMBER mc_status NOTIFY dataChanged);
     Q_PROPERTY(bool relay_failsafe MEMBER relay_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool bps_fault MEMBER bps_fault NOTIFY dataChanged);
+    Q_PROPERTY(bool cell_balancing_active MEMBER cell_balancing_active NOTIFY dataChanged);
+    Q_PROPERTY(bool mcu_hv_en MEMBER mcu_hv_en NOTIFY dataChanged);
+    Q_PROPERTY(bool charge_interlock_failsafe MEMBER charge_interlock_failsafe NOTIFY dataChanged);
+    Q_PROPERTY(bool thermistor_b_value_table_invalid MEMBER thermistor_b_value_table_invalid NOTIFY dataChanged);
+    Q_PROPERTY(bool mcu_stat_fdbk MEMBER mcu_stat_fdbk NOTIFY dataChanged);
+    Q_PROPERTY(bool dcdc_valid MEMBER dcdc_valid NOTIFY dataChanged);
+    Q_PROPERTY(bool supplemental_valid MEMBER supplemental_valid NOTIFY dataChanged);
+    Q_PROPERTY(bool charge_enable MEMBER charge_enable NOTIFY dataChanged);
     // Not in the data format, but shared with controls
     Q_PROPERTY(bool restart_enable MEMBER restart_enable NOTIFY dataChanged);
 
@@ -113,10 +121,12 @@ private:
     bool mcu_check=false;
     bool imd_status=false;
     bool bps_fault=false;
-    bool bms_canbus_failure=false, voltage_failsafe=false, current_failsafe=false, supply_power_failsafe=false, memory_failsafe=false, relay_failsafe=false;
-    bool mps_enable=true, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
+    bool bms_can_heartbeat=false, voltage_failsafe=false, current_failsafe=false, input_power_supply_failsafe=false, mc_status=false, relay_failsafe=false;
+    bool discharge_enable=true, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
     bool restart_enable=false;
     QVector<float> cell_group_voltages;
+    bool cell_balancing_active = false, mcu_hv_en = false, charge_interlock_failsafe = false, thermistor_b_value_table_invalid = false;
+    bool mcu_stat_fdbk = false, dcdc_valid = false, supplemental_valid=false, charge_enable = false;
 
 
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format
