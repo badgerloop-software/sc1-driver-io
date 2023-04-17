@@ -770,7 +770,6 @@ Popup {
                         }
                     }
 
-
                     Rectangle {
                         color: 'black'
                         border.color: grid_item_border_color
@@ -783,28 +782,24 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
-                            id: mc_status_text
-                            property int mc_status_fault: backEnd.mc_status
-                            property var err: ["None", "Over current", "Unused", "Hall sensor fault", "Motor locked", "Sensor fault1", "Sensor fault2", "Sensor fault2", "Unused",
-                                            "High battery voltage", "Controller over heat"]
-                            onMc_status_faultChanged: {
-                                if(mc_status_fault > 0 && backEnd.restart_enable) {
-                                    if(mc_status_fault == 9  && backEnd.motor_controller_temp < 105) {
-                                        mc_status_fault = false;
-                                    } else {
-                                        this.opacity = 1;
-                                    }
-                                    console.log("mc_stat: " + mc_status_fault +err[mc_status_fault])
+                            id: charge_interlock_failsafe_text
+
+                            property bool charge_interlock_failsafe_fault: backEnd.charge_interlock_failsafe && backEnd.restart_enable
+                            onCharge_interlock_failsafe_faultChanged: {
+                                if(charge_interlock_failsafe_fault) {
+                                    this.opacity = 1;
                                 }
                             }
 
                             anchors.centerIn: parent
-                            text: "MC Status: " + err[mc_status_fault]
-                            color: mc_status_fault ? "red" : "white"
+                            text: "Charge interlock failsafe"
+                            color: charge_interlock_failsafe_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
                     }
+
+
                     Rectangle {
                         color: 'black'
                         border.color: grid_item_border_color
@@ -894,7 +889,6 @@ Popup {
                             opacity: hidden_opacity
                         }
                     }
-
                     Rectangle {
                         color: 'black'
                         border.color: grid_item_border_color
@@ -907,18 +901,24 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
-                            id: charge_interlock_failsafe_text
-
-                            property bool charge_interlock_failsafe_fault: backEnd.charge_interlock_failsafe && backEnd.restart_enable
-                            onCharge_interlock_failsafe_faultChanged: {
-                                if(charge_interlock_failsafe_fault) {
-                                    this.opacity = 1;
+                            id: mc_status_text
+                            property int mc_status_fault: backEnd.mc_status
+                            property var err: ["None", "Over current", "Unused", "Hall sensor fault", "Motor locked", "Sensor fault1", "Sensor fault2", "Sensor fault2", "Unused",
+                                            "High battery voltage", "Controller over heat"]
+                            onMc_status_faultChanged: {
+                                if(mc_status_fault > 0 && backEnd.restart_enable) {
+                                    if(mc_status_fault == 9  && backEnd.motor_controller_temp < 105) {
+                                        mc_status_fault = false;
+                                    } else {
+                                        this.opacity = 1;
+                                    }
+                                    console.log("mc_stat: " + mc_status_fault +err[mc_status_fault])
                                 }
                             }
 
                             anchors.centerIn: parent
-                            text: "Charge interlock failsafe"
-                            color: charge_interlock_failsafe_fault ? "red" : "white"
+                            text: "MC Status: " + err[mc_status_fault]
+                            color: mc_status_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
