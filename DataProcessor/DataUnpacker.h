@@ -50,7 +50,7 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool voltage_failsafe MEMBER voltage_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool current_failsafe MEMBER current_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool input_power_supply_failsafe MEMBER input_power_supply_failsafe NOTIFY dataChanged);
-    Q_PROPERTY(bool mc_status MEMBER mc_status NOTIFY dataChanged);
+    Q_PROPERTY(int mc_status MEMBER mc_status NOTIFY dataChanged);
     Q_PROPERTY(bool relay_failsafe MEMBER relay_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool bps_fault MEMBER bps_fault NOTIFY dataChanged);
     Q_PROPERTY(bool cell_balancing_active MEMBER cell_balancing_active NOTIFY dataChanged);
@@ -121,12 +121,13 @@ private:
     bool mcu_check=false;
     bool imd_status=false;
     bool bps_fault=false;
-    bool bms_can_heartbeat=false, voltage_failsafe=false, current_failsafe=false, input_power_supply_failsafe=false, mc_status=false, relay_failsafe=false;
+    bool bms_can_heartbeat=false, voltage_failsafe=false, current_failsafe=false, input_power_supply_failsafe=false, relay_failsafe=false;
     bool discharge_enable=true, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
     bool restart_enable=false;
     QVector<float> cell_group_voltages;
     bool cell_balancing_active = false, mcu_hv_en = false, charge_interlock_failsafe = false, thermistor_b_value_table_invalid = false;
     bool mcu_stat_fdbk = false, dcdc_valid = false, supplemental_valid=false, charge_enable = false;
+    int mc_status = 0;
 
 
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format

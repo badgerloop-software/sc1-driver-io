@@ -33,7 +33,7 @@ Popup {
 
             // Reset opacities of fault texts to hidden_opacity so that they aren't shown as being triggered when restartPopup opens again
             var ids = { driver_eStop_text, external_eStop_text, imd_status_text, door_text, crash_text, bps_fault_text, mcu_check_text,
-                        cell_balancing_active_text, mcu_hv_en_text, low_contactor_text, motor_controller_contactor_text, thermistor_b_value_table_invalid_text, under_voltage_text,
+                        cell_balancing_active_text, mcu_hv_en_text, low_contactor_text, mainIO_heartbeat_text, thermistor_b_value_table_invalid_text, under_voltage_text,
                         over_current_text, bms_input_voltage_high_text, dcdc_valid_text, mcu_stat_fdbk_text, bms_can_heartbeat_text,
                         voltage_failsafe_text, current_failsafe_text, input_power_supply_failsafe_text, mc_status_text, relay_failsafe_text, cell_group_voltages_text };
 
@@ -125,7 +125,7 @@ Popup {
                     }
 
                     anchors.centerIn: parent
-                    text: qsTr("Main IO Heartbeat")
+                    text: qsTr("Discharge Enable")
                     color: discharge_enable_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size
                     opacity: hidden_opacity
@@ -356,7 +356,7 @@ Popup {
                             }
 
                             anchors.centerIn: parent
-                            text: "MCU HighVoltage Enable"
+                            text: "MCU High Voltage Enable"
                             color: mcu_hv_en_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
@@ -375,22 +375,24 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
-                            id: low_contactor_text
+                            id: mcu_stat_fdbk_text
 
-                            property bool low_contactor_fault: !backEnd.low_contactor && backEnd.restart_enable
-                            onLow_contactor_faultChanged: {
-                                if(low_contactor_fault) {
+                            property bool mcu_stat_fdbk_fault: backEnd.mcu_stat_fdbk && backEnd.restart_enable
+                            onMcu_stat_fdbk_faultChanged: {
+                                if(mcu_stat_fdbk_fault) {
                                     this.opacity = 1;
                                 }
                             }
 
                             anchors.centerIn: parent
-                            text: "Low Contactor"
-                            color: low_contactor_fault ? "red" : "white"
+                            text: "MCU Status Feedback"
+                            color: mcu_stat_fdbk_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
                     }
+
+
 
                     Rectangle {
                         color: 'black'
@@ -404,18 +406,18 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
-                            id: motor_controller_contactor_text
+                            id: mainIO_heartbeat_text
 
-                            property bool motor_controller_contactor_fault: backEnd.motor_controller_contactor && backEnd.restart_enable
-                            onMotor_controller_contactor_faultChanged: {
-                                if(motor_controller_contactor_fault) {
+                            property bool mainIO_heartbeat_fault: backEnd.mainIO_heartbeat && backEnd.restart_enable
+                            onMainIO_heartbeat_faultChanged: {
+                                if(mainIO_heartbeat_fault) {
                                     this.opacity = 1;
                                 }
                             }
 
                             anchors.centerIn: parent
-                            text: "Motor Controller Contactor"
-                            color: motor_controller_contactor_fault ? "red" : "white"
+                            text: "MainIO heartbeat"
+                            color: mainIO_heartbeat_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
@@ -433,7 +435,7 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height * 1.6
 
                         Text {
-                            id: thermistor_b_value_table_invalid_text
+                            id: over_voltage_text
 
                             property bool under_voltage_fault: (backEnd.pack_voltage > 108) && backEnd.restart_enable
                             onUnder_voltage_faultChanged: {
@@ -579,24 +581,44 @@ Popup {
                         Layout.preferredWidth: mcu_check.width / 4
                         Layout.preferredHeight: mcu_check_pref_height * 1.6
 
-                        Text {
-                            id: mcu_stat_fdbk_text
 
-                            property bool mcu_stat_fdbk_fault: backEnd.mcu_stat_fdbk && backEnd.restart_enable
-                            onMcu_stat_fdbk_faultChanged: {
-                                if(mcu_stat_fdbk_fault) {
+                        Text {
+                            id: dcdc_valid_text
+
+                            property bool dcdc_valid_fault: !backEnd.dcdc_valid && backEnd.restart_enable
+                            onDcdc_valid_faultChanged: {
+                                if(dcdc_valid_fault) {
                                     this.opacity = 1;
                                 }
                             }
 
-                            anchors.centerIn: parent
-                            text: "MCU stat fdbk"
-                            color: mcu_stat_fdbk_fault ? "red" : "white"
+                            anchors.top: parent.top
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: "dcdc valid"
+                            color: dcdc_valid_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                            opacity: hidden_opacity
+                        }
+
+                        Text {
+                            id: supplemental_valid_text
+
+                            property bool supplemental_valid_fault: backEnd.supplemental_valid && backEnd.restart_enable
+                            onSupplemental_valid_faultChanged: {
+                                if(supplemental_valid_fault) {
+                                    this.opacity = 1;
+                                }
+                            }
+
+                            anchors.bottom: parent.bottom
+                            anchors.bottomMargin: 5
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: "Supplemental valid"
+                            color: supplemental_valid_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
                     }
-
 
 
                     Rectangle {
@@ -621,7 +643,7 @@ Popup {
                             }
 
                             anchors.centerIn: parent
-                            text: "Cell Balancing Active"
+                            text: "Cell Balancing Inactive"
                             color: cell_balancing_active_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
@@ -716,71 +738,15 @@ Popup {
 
                     }
 
+
+
+
                     Rectangle {
                         color: 'black'
                         border.color: grid_item_border_color
                         border.width: grid_item_border_width
                         Layout.row: 3
                         Layout.column: 0
-                        Layout.fillWidth: true
-                        Layout.minimumWidth: (mcu_check.width / 4) - 1
-                        Layout.preferredWidth: mcu_check.width / 4
-                        Layout.preferredHeight: mcu_check_pref_height
-
-                        Text {
-                            id: dcdc_valid_text
-
-                            property bool dcdc_valid_fault: backEnd.dcdc_valid && backEnd.restart_enable
-                            onDcdc_valid_faultChanged: {
-                                if(dcdc_valid_fault) {
-                                    this.opacity = 1;
-                                }
-                            }
-
-                            anchors.centerIn: parent
-                            text: "dcdc valid"
-                            color: dcdc_valid_fault ? "red" : "white"
-                            font.pointSize: mcu_check_point_size
-                            opacity: hidden_opacity
-                        }
-                    }
-
-
-                    Rectangle {
-                        color: 'black'
-                        border.color: grid_item_border_color
-                        border.width: grid_item_border_width
-                        Layout.row: 3
-                        Layout.column: 1
-                        Layout.fillWidth: true
-                        Layout.minimumWidth: (mcu_check.width / 4) - 1
-                        Layout.preferredWidth: mcu_check.width / 4
-                        Layout.preferredHeight: mcu_check_pref_height
-
-                        Text {
-                            id: mc_status_text
-
-                            property bool mc_status_fault: backEnd.mc_status && backEnd.restart_enable
-                            onMc_status_faultChanged: {
-                                if(mc_status_fault) {
-                                    this.opacity = 1;
-                                }
-                            }
-
-                            anchors.centerIn: parent
-                            text: "MC Status"
-                            color: mc_status_fault ? "red" : "white"
-                            font.pointSize: mcu_check_point_size
-                            opacity: hidden_opacity
-                        }
-                    }
-
-                    Rectangle {
-                        color: 'black'
-                        border.color: grid_item_border_color
-                        border.width: grid_item_border_width
-                        Layout.row: 3
-                        Layout.column: 2
                         Layout.fillWidth: true
                         Layout.minimumWidth: (mcu_check.width / 4) - 1
                         Layout.preferredWidth: mcu_check.width / 4
@@ -804,6 +770,73 @@ Popup {
                         }
                     }
 
+
+                    Rectangle {
+                        color: 'black'
+                        border.color: grid_item_border_color
+                        border.width: grid_item_border_width
+                        Layout.row: 3
+                        Layout.column: 1
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+
+                        Text {
+                            id: mc_status_text
+                            property int mc_status_fault: backEnd.mc_status
+                            property var err: ["None", "Over current", "Unused", "Hall sensor fault", "Motor locked", "Sensor fault1", "Sensor fault2", "Sensor fault2", "Unused",
+                                            "High battery voltage", "Controller over heat"]
+                            onMc_status_faultChanged: {
+                                if(mc_status_fault > 0 && backEnd.restart_enable) {
+                                    if(mc_status_fault == 9  && backEnd.motor_controller_temp < 105) {
+                                        mc_status_fault = false;
+                                    } else {
+                                        this.opacity = 1;
+                                    }
+                                    console.log("mc_stat: " + mc_status_fault +err[mc_status_fault])
+                                }
+                            }
+
+                            anchors.centerIn: parent
+                            text: "MC Status: " + err[mc_status_fault]
+                            color: mc_status_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                            opacity: hidden_opacity
+                        }
+                    }
+                    Rectangle {
+                        color: 'black'
+                        border.color: grid_item_border_color
+                        border.width: grid_item_border_width
+                        Layout.row: 3
+                        Layout.column: 2
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+
+                        Text {
+                            id: thermistor_b_value_table_invalid_text
+
+                            property bool thermistor_b_value_table_invalid_fault: backEnd.thermistor_b_value_table_invalid && backEnd.restart_enable
+                            onThermistor_b_value_table_invalid_faultChanged: {
+                                if(thermistor_b_value_table_invalid_fault) {
+                                    this.opacity = 1;
+                                }
+                            }
+
+                            anchors.centerIn: parent
+                            text: "Thermister B value"
+                            color: thermistor_b_value_table_invalid_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                            opacity: hidden_opacity
+                        }
+                    }
+
+
+
+
                     Rectangle {
                         color: 'black'
                         border.color: grid_item_border_color
@@ -816,18 +849,18 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height
 
                         Text {
-                            id: supplemental_valid_text
+                            id: low_contactor_text
 
-                            property bool supplemental_valid_fault: backEnd.supplemental_valid && backEnd.restart_enable
-                            onSupplemental_valid_faultChanged: {
-                                if(supplemental_valid_fault) {
+                            property bool low_contactor_fault: !backEnd.low_contactor && backEnd.restart_enable
+                            onLow_contactor_faultChanged: {
+                                if(low_contactor_fault) {
                                     this.opacity = 1;
                                 }
                             }
 
                             anchors.centerIn: parent
-                            text: "Supplemental valid"
-                            color: supplemental_valid_fault ? "red" : "white"
+                            text: "Low Contactor"
+                            color: low_contactor_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
@@ -857,6 +890,35 @@ Popup {
                             anchors.centerIn: parent
                             text: "Charge enable"
                             color: charge_enable_fault ? "red" : "white"
+                            font.pointSize: mcu_check_point_size
+                            opacity: hidden_opacity
+                        }
+                    }
+
+                    Rectangle {
+                        color: 'black'
+                        border.color: grid_item_border_color
+                        border.width: grid_item_border_width
+                        Layout.row: 4
+                        Layout.column: 1
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: (mcu_check.width / 4) - 1
+                        Layout.preferredWidth: mcu_check.width / 4
+                        Layout.preferredHeight: mcu_check_pref_height
+
+                        Text {
+                            id: charge_interlock_failsafe_text
+
+                            property bool charge_interlock_failsafe_fault: backEnd.charge_interlock_failsafe && backEnd.restart_enable
+                            onCharge_interlock_failsafe_faultChanged: {
+                                if(charge_interlock_failsafe_fault) {
+                                    this.opacity = 1;
+                                }
+                            }
+
+                            anchors.centerIn: parent
+                            text: "Charge interlock failsafe"
+                            color: charge_interlock_failsafe_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }

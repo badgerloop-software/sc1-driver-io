@@ -30,7 +30,11 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
                 addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/100));
             }
         } else if(types[i] == "uint8") {
-            dataToByteArray(data,(uint8_t)fmod(rand(),200));
+            if(names[i] == "mc_status"){
+                dataToByteArray(data,(uint8_t)fmod(rand(),10));
+            }else{
+                dataToByteArray(data,(uint8_t)fmod(rand(),200));
+            }
         } else if(types[i] == "uint16") {
             dataToByteArray(data,(uint16_t)fmod(rand(),200));
         } else if(types[i] == "bool") {
