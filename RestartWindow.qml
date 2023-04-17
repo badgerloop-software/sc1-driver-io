@@ -903,7 +903,7 @@ Popup {
                         Text {
                             id: mc_status_text
                             property int mc_status_fault: backEnd.mc_status
-                            property var err: ["None", "Over current", "Unused", "Hall sensor fault", "Motor locked", "Sensor fault1", "Sensor fault2", "Sensor fault2", "Unused",
+                            property var err: ["", "Over current", "Unused", "Hall sensor fault", "Motor locked", "Sensor fault1", "Sensor fault2", "Sensor fault2", "Unused",
                                             "High battery voltage", "Controller over heat"]
                             onMc_status_faultChanged: {
                                 if(mc_status_fault > 0 && backEnd.restart_enable) {
