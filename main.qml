@@ -7,7 +7,7 @@ Window {
     width: 1920
     height: 1080
     visible: true
-    //visibility: "FullScreen"
+    visibility: "FullScreen"
     title: qsTr("Solar Car Dashboard")
 
     property var restartWin: RestartWindow {
