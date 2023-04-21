@@ -121,13 +121,12 @@ private:
     bool mcu_check=false;
     bool imd_status=false;
     bool bps_fault=false;
-    bool bms_can_heartbeat=false, voltage_failsafe=false, current_failsafe=false, input_power_supply_failsafe=false, relay_failsafe=false;
-    bool discharge_enable=true, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
-    bool restart_enable=false;
+    bool discharge_enable=false, charge_enable=false, bms_can_heartbeat=false;
+    bool mcu_hv_en=false, mcu_stat_fdbk=false, dcdc_valid=false, supplemental_valid=false, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
+    bool voltage_failsafe=false, current_failsafe=false, relay_failsafe=false, cell_balancing_active=true, charge_interlock_failsafe=false, thermistor_b_value_table_invalid=false, input_power_supply_failsafe=false;
     QVector<float> cell_group_voltages;
-    bool cell_balancing_active = false, mcu_hv_en = false, charge_interlock_failsafe = false, thermistor_b_value_table_invalid = false;
-    bool mcu_stat_fdbk = false, dcdc_valid = false, supplemental_valid=false, charge_enable = false;
-    int mc_status = 0;
+    bool restart_enable=true;
+    int mc_status=0;
 
 
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format
