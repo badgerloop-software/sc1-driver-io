@@ -189,6 +189,6 @@ bool DataUnpacker::checkRestartEnable() {
     if (crash) qDebug() << "sw: crash";
     if (mcu_check) qDebug() << "sw: mcu_check";
     if (restart_enable) qDebug() << "sw: restart_enable";
-    return battery_eStop || driver_eStop || external_eStop || imd_status || !door || crash || mcu_check || restart_enable;
+            return battery_eStop || driver_eStop || external_eStop || imd_status || door || crash || mcu_check || restart_enable;
 }
 

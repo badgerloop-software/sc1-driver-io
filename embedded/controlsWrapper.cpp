@@ -34,10 +34,14 @@ void controlsWrapper::startThread() {
     uint8_t directions[16]= {0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0};
     tca.begin(directions);
     // initialize vars for input toggle signals
-    uint8_t lblnk_toggle = 0;
-    uint8_t rblnk_toggle = 0;
-    uint8_t hl_toggle = 0;
-
+    int lblnk_toggle = 0;
+    int rblnk_toggle = 0;
+    int hl_toggle = 0;
+    int toggle = 0;
+    tca.set_state(1, 0, 0); // FL_TS_LED_EN
+    tca.set_state(1, 7, 0); // FR_TS_LED_EN
+    tca.set_state(1, 6, 0); // HL_LED_EN
+    
     int messages_not_received = 0;
     while(true) {
         // TCA code
@@ -46,8 +50,29 @@ void controlsWrapper::startThread() {
         rblnk_toggle = tca.get_state(0, 6);
         hl_toggle = tca.get_state(0, 5);
         // write to enable signals
-        tca.set_state(1, 0, lblnk_toggle); // FL_TS_LED_EN
-        tca.set_state(1, 7, rblnk_toggle); // FR_TS_LED_EN
+        if (toggle == 0) {
+            toggle = 1;
+        } else {
+            toggle = 0;
+        }
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 8; j++) {
+                int k = tca.get_state(i, j);
+                if (k == 1) {
+                    std::cout << "||||||||||||||||||||||||||||| " << i << ", " << j << ": " << k << std::endl;
+                }
+            }
+        }
+        //std::cout << "-----------lblnk_toggle: " << lblnk_toggle << std::endl;
+        //std::cout << "-----------rblnk_toggle: " << rblnk_toggle << std::endl;
+        //std::cout << "-----------hl_toggle: " << hl_toggle << std::endl;
+        //tca.set_state(1, 0, toggle); // FL_TS_LED_EN
+        if (tca.get_state(1, 0) != toggle) {
+            std::cout << "((((((((((((((((((((((((((((((didn't read correctly" << std::endl;
+        } else {
+            std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> read correctly" << std::endl;
+        }
+        //tca.set_state(1, 7, toggle); // FR_TS_LED_EN
         tca.set_state(1, 6, hl_toggle); // F_HL_LED_EN
 
 
