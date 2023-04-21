@@ -889,6 +889,7 @@ Popup {
                             opacity: hidden_opacity
                         }
                     }
+
                     Rectangle {
                         color: 'black'
                         border.color: grid_item_border_color
@@ -902,6 +903,7 @@ Popup {
 
                         Text {
                             id: mc_status_text
+
                             property int mc_status_fault: backEnd.mc_status
                             property var err: ["", "Over current", "Unused", "Hall sensor fault", "Motor locked", "Sensor fault1", "Sensor fault2", "Sensor fault2", "Unused",
                                             "High battery voltage", "Controller over heat"]
