@@ -50,17 +50,17 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool voltage_failsafe MEMBER voltage_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool current_failsafe MEMBER current_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool input_power_supply_failsafe MEMBER input_power_supply_failsafe NOTIFY dataChanged);
-    Q_PROPERTY(int mc_status MEMBER mc_status NOTIFY dataChanged);
     Q_PROPERTY(bool relay_failsafe MEMBER relay_failsafe NOTIFY dataChanged);
-    Q_PROPERTY(bool bps_fault MEMBER bps_fault NOTIFY dataChanged);
     Q_PROPERTY(bool cell_balancing_active MEMBER cell_balancing_active NOTIFY dataChanged);
-    Q_PROPERTY(bool mcu_hv_en MEMBER mcu_hv_en NOTIFY dataChanged);
     Q_PROPERTY(bool charge_interlock_failsafe MEMBER charge_interlock_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool thermistor_b_value_table_invalid MEMBER thermistor_b_value_table_invalid NOTIFY dataChanged);
-    Q_PROPERTY(bool mcu_stat_fdbk MEMBER mcu_stat_fdbk NOTIFY dataChanged);
+    Q_PROPERTY(bool charge_enable MEMBER charge_enable NOTIFY dataChanged);
+    Q_PROPERTY(bool bps_fault MEMBER bps_fault NOTIFY dataChanged);
     Q_PROPERTY(bool dcdc_valid MEMBER dcdc_valid NOTIFY dataChanged);
     Q_PROPERTY(bool supplemental_valid MEMBER supplemental_valid NOTIFY dataChanged);
-    Q_PROPERTY(bool charge_enable MEMBER charge_enable NOTIFY dataChanged);
+    Q_PROPERTY(bool mcu_hv_en MEMBER mcu_hv_en NOTIFY dataChanged);
+    Q_PROPERTY(bool mcu_stat_fdbk MEMBER mcu_stat_fdbk NOTIFY dataChanged);
+    Q_PROPERTY(int mc_status MEMBER mc_status NOTIFY dataChanged);
     // Not in the data format, but shared with controls
     Q_PROPERTY(bool restart_enable MEMBER restart_enable NOTIFY dataChanged);
 
