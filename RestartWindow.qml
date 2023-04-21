@@ -26,7 +26,6 @@ Popup {
                              && !imd_status_text.imd_status_fault && !door_text.door_fault && !crash_text.crash_fault && !mcu_check_text.mcu_check_fault
 
     Overlay.onPressed: {
-        console.log(can_close)
         if(can_close) {
             backEnd.restart_enable = false;
             backEnd.enableRestart(); // Signal user has enabled restart
@@ -303,7 +302,6 @@ Popup {
                     columns: 4
                     columnSpacing: 0
                     rowSpacing: 0
-
 
                     Rectangle {
                         color: 'black'
