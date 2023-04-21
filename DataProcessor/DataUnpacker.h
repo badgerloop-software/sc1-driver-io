@@ -35,7 +35,6 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool eng_dash_commfail MEMBER eng_dash_commfail NOTIFY dataChanged);
 
     // Shutdown circuit
-    Q_PROPERTY(bool battery_eStop MEMBER battery_eStop NOTIFY dataChanged);
     Q_PROPERTY(bool driver_eStop MEMBER driver_eStop NOTIFY dataChanged);
     Q_PROPERTY(bool external_eStop MEMBER external_eStop NOTIFY dataChanged);
     Q_PROPERTY(bool crash MEMBER crash NOTIFY dataChanged);
@@ -115,9 +114,9 @@ private:
     // Data for shutdown circuit
     // TODO Check initial values (should be nominal values, except for contactors, which should be open/false during restart)
     float bms_input_voltage;
-    bool driver_eStop=false, battery_eStop=false, external_eStop=false;
+    bool driver_eStop=false, external_eStop=false;
     bool crash=false;
-    bool door=true;
+    bool door= false;
     bool mcu_check=false;
     bool imd_status=false;
     bool bps_fault=false;
