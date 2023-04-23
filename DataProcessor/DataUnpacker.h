@@ -121,7 +121,6 @@ private:
 
 
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format
-    int mainIO_heartbeat_offset, mcu_check_offset;
 
     QByteArray bytes;
 

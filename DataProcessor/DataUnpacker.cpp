@@ -54,8 +54,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     int dataCount = 0;
     cell_group_voltages_begin = -1;
     cell_group_voltages_end = -1;
-    mainIO_heartbeat_offset = -1;
-    mcu_check_offset = -1;
+    controlsOffsets offsets;
 
     for(Value::ConstMemberIterator itr = d.MemberBegin(); itr != d.MemberEnd(); ++itr) {
         std::string name = itr->name.GetString();
@@ -74,12 +73,46 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
             tstampOff.sc = arrayOffset;
         } else if(name == "tstamp_ms") {
             tstampOff.ms = arrayOffset;
+        } else if(name == "horn_status") {
+            offsets.horn_status = arrayOffset;
+        } else if(name == "hazards") {
+            offsets.hazards = arrayOffset;
+        } else if(name == "headlights") {
+            offsets.headlights = arrayOffset;
+        } else if(name == "right_turn") {
+            offsets.right_turn = arrayOffset;
+        } else if(name == "left_blinker") {
+            offsets.left_blinker = arrayOffset;
+        } else if(name == "headlights_led_en") {
+            offsets.headlights_led_en = arrayOffset;
+        } else if(name == "fr_turn_led_en") {
+            offsets.fr_turn_led_en = arrayOffset;
+        } else if(name == "fl_turn_led_en") {
+            offsets.fl_turn_led_en = arrayOffset;
+        } else if(name == "driver_power_warning") {
+            offsets.driver_power_warning = arrayOffset;
+        } else if(name == "driver_power_critical") {
+            offsets.driver_power_critical = arrayOffset;
+        } else if(name == "driver_power_tc") {
+            offsets.driver_power_tc = arrayOffset;
+        } else if(name == "driver_power_valid") {
+            offsets.driver_power_valid = arrayOffset;
+        } else if(name == "driverIO_temp") {
+            offsets.driverIO_temp = arrayOffset;
+        } else if(name == "cabin_temp") {
+            offsets.cabin_temp = arrayOffset;
+        } else if(name == "driver_vbus_current") {
+            offsets.driver_vbus_current = arrayOffset;
+        } else if(name == "driver_5V_bus") {
+            offsets.driver_5V_bus = arrayOffset;
+        } else if(name == "driver_12V_bus") {
+            offsets.driver_12V_bus = arrayOffset;
+        } else if(name == "driver_vbus") {
+            offsets.driver_vbus = arrayOffset;
         } else if(name == "mainIO_heartbeat") {
-            mainIO_heartbeat_offset = arrayOffset;
+            offsets.mainIO_heartbeat = arrayOffset;
         } else if(name == "mcu_check") {
-            mcu_check_offset = arrayOffset;
-        } else if(name == "pack_voltage") {
-            qDebug() << "pack_voltage offset: " << arrayOffset;
+            offsets.mcu_check = arrayOffset;
         } else if(name.substr(0, 10) == "cell_group") {
             if(cell_group_voltages_begin == -1) {
                 cell_group_voltages_begin = dataCount;
@@ -108,7 +141,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
     dataHandlingThread.start();
     
-    controlsWrapper* loop = new controlsWrapper(bytes, mutex, restart_enable, mainIO_heartbeat_offset, mcu_check_offset);
+    controlsWrapper* loop = new controlsWrapper(bytes, mutex, restart_enable, offsets);
     loop->moveToThread(&controlsThread);
     connect(&controlsThread, &QThread::started, loop, &controlsWrapper::startThread);
     connect(&controlsThread, &QThread::finished, loop, &QObject::deleteLater);
