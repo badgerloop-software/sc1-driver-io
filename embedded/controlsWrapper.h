@@ -39,6 +39,7 @@ class controlsWrapper : public QObject
     private:
         QByteArray &bytes;
         QMutex &mutex;
+        controlsOffsets offsets;
         std::atomic<bool> &restart_enable;
 };
 

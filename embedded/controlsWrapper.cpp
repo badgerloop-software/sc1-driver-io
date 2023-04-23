@@ -17,7 +17,7 @@
 
 Serial serial;
 QMutex uartMutex;
-Tca6416 tca; // tca objects used to read GPIO pins for lights
+Tca6416 tca(0, 0x20); // tca objects used to read GPIO pins for lights
 int lblnk_toggle;
 int rblnk_toggle;
 int hl_toggle;
@@ -90,24 +90,6 @@ void set_lights() {
     tca.set_state(1, 6, hl_toggle); // F_HL_LED_EN
 }
 
-/* Sets values of buffTemp 
- *
- */
-void set_byte_array(*char buffTemp) {
-    buffTemp[offsets.headlights] = hl_toggle;
-    buffTemp[offsets.headlights_led_en] = hl_toggle;
-    buffTemp[offsets.right_turn] = rblnk_toggle;
-    buffTemp[offsets.fr_turn_led_en] = rblnk_toggle;
-    buffTemp[offsets.left_blinker] = lblnk_toggle;
-    buffTemp[offsets.fl_turn_led_en] = lblnk_toggle;
-
-    // copy data in char array to QByteArray
-    mutex.lock();
-    bytes.clear();
-    bytes = QByteArray::fromRawData(buffTemp, TOTAL_BYTES);
-    mutex.unlock();
-}
-
 /* Debug method used to printout all pins of the TCA that are 1.
  * Useful to see if flipping a hardware switch will be read by the TCA.
  */
@@ -157,8 +139,20 @@ void controlsWrapper::startThread() {
         int write = serial.writeBytes(&restart_enable, 1); 
         std::cout << "bytes written: " << write << std::endl;
         uartMutex.unlock();
-        
-        set_byte_array();
+ 
+        // set lights in buffTemp to send to software      
+        buffTemp[offsets.headlights] = hl_toggle;
+        buffTemp[offsets.headlights_led_en] = hl_toggle;
+        buffTemp[offsets.right_turn] = rblnk_toggle;
+        buffTemp[offsets.fr_turn_led_en] = rblnk_toggle;
+        buffTemp[offsets.left_blinker] = lblnk_toggle;
+        buffTemp[offsets.fl_turn_led_en] = lblnk_toggle;
+
+        // copy data in char array to QByteArray
+        mutex.lock();
+        bytes.clear();
+        bytes = QByteArray::fromRawData(buffTemp, TOTAL_BYTES);
+        mutex.unlock();
 
         //usleep(1000000);
         sleep(1);
