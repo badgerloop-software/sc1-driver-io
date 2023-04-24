@@ -164,6 +164,6 @@ void DataUnpacker::eng_dash_connection(bool state) {
 }
 
 bool DataUnpacker::checkRestartEnable() {
-    return battery_eStop || driver_eStop || external_eStop || imd_status || !door || crash || mcu_check || restart_enable;
+    return driver_eStop || external_eStop || imd_status || !door || crash || mcu_check || restart_enable;
 }
 
