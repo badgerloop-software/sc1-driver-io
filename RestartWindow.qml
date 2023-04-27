@@ -34,8 +34,10 @@ Popup {
             var ids = { driver_eStop_text, external_eStop_text, imd_status_text, door_text, crash_text, bps_fault_text, mcu_check_text,
                         cell_balancing_active_text, mcu_hv_en_text, low_contactor_text, mainIO_heartbeat_text, thermistor_b_value_table_invalid_text, under_voltage_text,
                         over_current_text, bms_input_voltage_high_text, dcdc_valid_text, mcu_stat_fdbk_text, bms_can_heartbeat_text,
-                        voltage_failsafe_text, current_failsafe_text, input_power_supply_failsafe_text, mc_status_text, relay_failsafe_text, cell_group_voltages_text };
+                        voltage_failsafe_text, current_failsafe_text, input_power_supply_failsafe_text, mc_status_text, relay_failsafe_text, cell_group_voltages_text, discharge_enable_text,
+                        over_voltage_text, under_current_text, bms_input_voltage_low_text, charge_interlock_failsafe_text};
 
+            //TODO Set mcu_hv_en to 1
             for(const idx in ids) {
                 ids[idx].opacity = hidden_opacity;
             }
@@ -406,7 +408,7 @@ Popup {
                         Text {
                             id: mainIO_heartbeat_text
 
-                            property bool mainIO_heartbeat_fault: backEnd.mainIO_heartbeat && backEnd.restart_enable
+                            property bool mainIO_heartbeat_fault: !backEnd.mainIO_heartbeat && backEnd.restart_enable
                             onMainIO_heartbeat_faultChanged: {
                                 if(mainIO_heartbeat_fault) {
                                     this.opacity = 1;
@@ -445,7 +447,7 @@ Popup {
                             anchors.top: parent.top
                             anchors.horizontalCenter: parent.horizontalCenter
                             text: "Battery overvoltage"
-                            color: under_voltage_fault ? "red" : "white"
+                            color: over_voltage_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
@@ -583,7 +585,7 @@ Popup {
                         Text {
                             id: dcdc_valid_text
 
-                            property bool dcdc_valid_fault: !backEnd.dcdc_valid && backEnd.restart_enable
+                            property bool dcdc_valid_fault: backEnd.dcdc_valid && backEnd.restart_enable
                             onDcdc_valid_faultChanged: {
                                 if(dcdc_valid_fault) {
                                     this.opacity = 1;
@@ -601,7 +603,7 @@ Popup {
                         Text {
                             id: supplemental_valid_text
 
-                            property bool supplemental_valid_fault: backEnd.supplemental_valid && backEnd.restart_enable
+                            property bool supplemental_valid_fault: !backEnd.supplemental_valid && backEnd.restart_enable
                             onSupplemental_valid_faultChanged: {
                                 if(supplemental_valid_fault) {
                                     this.opacity = 1;
@@ -844,7 +846,7 @@ Popup {
                         Text {
                             id: low_contactor_text
 
-                            property bool low_contactor_fault: !backEnd.low_contactor && backEnd.restart_enable
+                            property bool low_contactor_fault: backEnd.low_contactor && backEnd.restart_enable
                             onLow_contactor_faultChanged: {
                                 if(low_contactor_fault) {
                                     this.opacity = 1;
@@ -903,8 +905,8 @@ Popup {
                             id: mc_status_text
 
                             property int mc_status_fault: backEnd.mc_status
-                            property var err: ["", "Over current", "Unused", "Hall sensor fault", "Motor locked", "Sensor fault1", "Sensor fault2", "Sensor fault2", "Unused",
-                                            "High battery voltage", "Controller over heat"]
+                            property var err: ["", "Over Current", "Unused", "Hall Sensor fault", "Motor Locked", "Sensor Fault1", "Sensor Fault2", "Unused",
+                                            "High Battery Voltage", "Controller Over Heat"]
                             onMc_status_faultChanged: {
                                 if(mc_status_fault > 0 && backEnd.restart_enable) {
                                     if(mc_status_fault == 9  && backEnd.motor_controller_temp < 105) {
