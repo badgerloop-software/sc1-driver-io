@@ -904,17 +904,12 @@ Popup {
                         Text {
                             id: mc_status_text
 
-                            property int mc_status_fault: backEnd.mc_status
-                            property var err: ["", "Over Current", "Unused", "Hall Sensor fault", "Motor Locked", "Sensor Fault1", "Sensor Fault2", "Unused",
+                            property int mc_status_fault: (backEnd.mc_status == 9 && backEnd.motor_controller_temp < 105) ? 0 : backEnd.mc_status
+                            property var err: ["", "Over Current", "Unused", "Hall Sensor fault", "Motor Locked", "Sensor Fault 1", "Sensor Fault 2", "Unused",
                                             "High Battery Voltage", "Controller Over Heat"]
                             onMc_status_faultChanged: {
                                 if(mc_status_fault > 0 && backEnd.restart_enable) {
-                                    if(mc_status_fault == 9  && backEnd.motor_controller_temp < 105) {
-                                        mc_status_fault = false;
-                                    } else {
-                                        this.opacity = 1;
-                                    }
-                                    console.log("mc_stat: " + mc_status_fault +err[mc_status_fault])
+                                    this.opacity = 1;
                                 }
                             }
 
