@@ -437,9 +437,9 @@ Popup {
                         Text {
                             id: over_voltage_text
 
-                            property bool under_voltage_fault: (backEnd.pack_voltage > 108) && backEnd.restart_enable
-                            onUnder_voltage_faultChanged: {
-                                if(under_voltage_fault) {
+                            property bool over_voltage_fault: (backEnd.pack_voltage > 108) && backEnd.restart_enable
+                            onOver_voltage_faultChanged: {
+                                if(over_voltage_fault) {
                                     this.opacity = 1;
                                 }
                             }
