@@ -221,15 +221,6 @@ void DataUnpacker::eng_dash_connection(bool state) {
 }
 
 bool DataUnpacker::checkRestartEnable() {
-    qDebug() << "pack_voltage: " << pack_voltage;
-    if (battery_eStop) qDebug() << "sw: battery_eStop";
-    if (driver_eStop) qDebug() << "sw: driver_eStop";
-    if (external_eStop) qDebug() << "sw: external_eStop";
-    if (imd_status) qDebug() << "sw: imd_status";
-    if (!door) qDebug() << "sw: door";
-    if (crash) qDebug() << "sw: crash";
-    if (mcu_check) qDebug() << "sw: mcu_check";
-    if (restart_enable) qDebug() << "sw: restart_enable";
-            return battery_eStop || driver_eStop || external_eStop || imd_status || door || crash || mcu_check || restart_enable;
+    return (!restart_enable ? !mcu_hv_en : false) || driver_eStop || external_eStop || imd_status || door || crash || mcu_check || discharge_enable || restart_enable;
 }
 
