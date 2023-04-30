@@ -19,22 +19,15 @@ Item {
 
     Speed {
         id: speedometer
-        x: 628
-        y: 123
-        scale: 1
-    }
-
-    Temperature {
-        id: temperature
-        x: 616
-        y: 925
+        x: 404
+        y: 195
         scale: 1
     }
 
     Blinkers {
         id: blinkers
-        x: 628
-        y: 123
+        x: 404
+        y: 195
     }
 
     Clock {
@@ -46,21 +39,15 @@ Item {
 
     Battery {
         id: battery
-        x: 1566
-        y: 190
+        x: 1301
+        y: 211
         scale: 1
     }
 
     BatterySolarBox {
         id: batterySolar
-        x: 0
-        y: 261
-    }
-
-    CellStringTemps {
-        id: stringTemps
-        x: 10
-        y: 894
+        x: 1619
+        y: 211
     }
 
     Image {
@@ -92,8 +79,8 @@ Item {
 
     Image {
         id: headlights
-        x: 828
-        y: 25
+        x: 624
+        y: 87
         width: 150
         height: 105
         visible: backEnd.headlights
@@ -105,8 +92,8 @@ Item {
 
     Image {
         id: cruise
-        x: 1160
-        y: 17
+        x: 916
+        y: 79
         width: 120
         height: 120
         visible: backEnd.cruise
@@ -118,10 +105,10 @@ Item {
 
     Image {
         id: engDashComm
-        x: 398
-        y: 0
-        width: 126
-        height: 255
+        x: 1390
+        y: 50
+        width: 125
+        height: 114
         source: "UI/Images/comm.png"
         visible: backEnd.eng_dash_commfail
         sourceSize.height: 169
