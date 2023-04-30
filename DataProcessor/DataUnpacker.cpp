@@ -83,6 +83,14 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
             offsets.right_turn = arrayOffset;
         } else if(name == "left_blinker") {
             offsets.left_blinker = arrayOffset;
+        } else if(name == "bl_turn_led_en") {
+            offsets.bl_turn_led_en = arrayOffset;
+        } else if(name == "br_turn_led_en") {
+            offsets.br_turn_led_en = arrayOffset;
+        } else if(name == "bc_brake_led_en") {
+            offsets.bc_brake_led_en = arrayOffset;
+        } else if(name == "bc_bps_led_en") {
+            offsets.bc_bps_led_en = arrayOffset;
         } else if(name == "headlights_led_en") {
             offsets.headlights_led_en = arrayOffset;
         } else if(name == "fr_turn_led_en") {

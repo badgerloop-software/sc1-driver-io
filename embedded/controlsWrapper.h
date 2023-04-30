@@ -11,6 +11,10 @@ struct controlsOffsets {
     int headlights;
     int right_turn;
     int left_blinker;
+    int bl_turn_led_en;
+    int br_turn_led_en;
+    int bc_brake_led_en;
+    int bc_bps_led_en;
     int headlights_led_en;
     int fr_turn_led_en;
     int fl_turn_led_en;

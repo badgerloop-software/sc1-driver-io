@@ -21,6 +21,8 @@ Tca6416 tca(0, 0x20); // tca objects used to read GPIO pins for lights
 int lblnk_toggle;
 int rblnk_toggle;
 int hl_toggle;
+int lblnk; 
+int rblnk; 
 
 
 #define TOTAL_BYTES 431
@@ -46,6 +48,8 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
     tca.set_state(1, 6, 0); // HL_LED_EN
 
     // initialize values of global ints
+    lblnk = 0;
+    rblnk = 0;
     lblnk_toggle = 0;
     rblnk_toggle = 0;
     hl_toggle = 0;
@@ -55,10 +59,6 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
  * Includes code to make the turn signals blink 
  */
 void set_lights() {
-    // signals used to make turn signals blink
-    int lblnk = 0; 
-    int rblnk = 0; 
-
     // read input signals
     lblnk_toggle = tca.get_state(0, 7);
     rblnk_toggle = tca.get_state(0, 6);
@@ -144,9 +144,9 @@ void controlsWrapper::startThread() {
         buffTemp[offsets.headlights] = hl_toggle;
         buffTemp[offsets.headlights_led_en] = hl_toggle;
         buffTemp[offsets.right_turn] = rblnk_toggle;
-        buffTemp[offsets.fr_turn_led_en] = rblnk_toggle;
+        buffTemp[offsets.fr_turn_led_en] = rblnk;
         buffTemp[offsets.left_blinker] = lblnk_toggle;
-        buffTemp[offsets.fl_turn_led_en] = lblnk_toggle;
+        buffTemp[offsets.fl_turn_led_en] = lblnk;
 
         // copy data in char array to QByteArray
         mutex.lock();
