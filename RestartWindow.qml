@@ -228,7 +228,7 @@ Popup {
 
                 Text {
                     id: door_text
-                    property bool door_fault: !backEnd.door && backEnd.restart_enable
+                    property bool door_fault: backEnd.door && backEnd.restart_enable
                     onDoor_faultChanged: {
                         if(door_fault) {
                             this.opacity = 1;
