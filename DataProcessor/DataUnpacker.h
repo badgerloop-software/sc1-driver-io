@@ -35,24 +35,29 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool eng_dash_commfail MEMBER eng_dash_commfail NOTIFY dataChanged);
 
     // Shutdown circuit
-    Q_PROPERTY(bool battery_eStop MEMBER battery_eStop NOTIFY dataChanged);
     Q_PROPERTY(bool driver_eStop MEMBER driver_eStop NOTIFY dataChanged);
     Q_PROPERTY(bool external_eStop MEMBER external_eStop NOTIFY dataChanged);
     Q_PROPERTY(bool crash MEMBER crash NOTIFY dataChanged);
     Q_PROPERTY(bool door MEMBER door NOTIFY dataChanged);
     Q_PROPERTY(bool mcu_check MEMBER mcu_check NOTIFY dataChanged);
     Q_PROPERTY(bool imd_status MEMBER imd_status NOTIFY dataChanged);
-    Q_PROPERTY(bool mps_enable MEMBER mps_enable NOTIFY dataChanged);
-    Q_PROPERTY(bool mppt_contactor MEMBER mppt_contactor NOTIFY dataChanged);
-    Q_PROPERTY(bool motor_controller_contactor MEMBER motor_controller_contactor NOTIFY dataChanged);
+    Q_PROPERTY(bool discharge_enable MEMBER discharge_enable NOTIFY dataChanged);
     Q_PROPERTY(bool low_contactor MEMBER low_contactor NOTIFY dataChanged);
-    Q_PROPERTY(bool bms_canbus_failure MEMBER bms_canbus_failure NOTIFY dataChanged);
+    Q_PROPERTY(bool bms_can_heartbeat MEMBER bms_can_heartbeat NOTIFY dataChanged);
     Q_PROPERTY(bool voltage_failsafe MEMBER voltage_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool current_failsafe MEMBER current_failsafe NOTIFY dataChanged);
-    Q_PROPERTY(bool supply_power_failsafe MEMBER supply_power_failsafe NOTIFY dataChanged);
-    Q_PROPERTY(bool memory_failsafe MEMBER memory_failsafe NOTIFY dataChanged);
+    Q_PROPERTY(bool input_power_supply_failsafe MEMBER input_power_supply_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool relay_failsafe MEMBER relay_failsafe NOTIFY dataChanged);
+    Q_PROPERTY(bool cell_balancing_active MEMBER cell_balancing_active NOTIFY dataChanged);
+    Q_PROPERTY(bool charge_interlock_failsafe MEMBER charge_interlock_failsafe NOTIFY dataChanged);
+    Q_PROPERTY(bool thermistor_b_value_table_invalid MEMBER thermistor_b_value_table_invalid NOTIFY dataChanged);
+    Q_PROPERTY(bool charge_enable MEMBER charge_enable NOTIFY dataChanged);
     Q_PROPERTY(bool bps_fault MEMBER bps_fault NOTIFY dataChanged);
+    Q_PROPERTY(bool dcdc_valid MEMBER dcdc_valid NOTIFY dataChanged);
+    Q_PROPERTY(bool supplemental_valid MEMBER supplemental_valid NOTIFY dataChanged);
+    Q_PROPERTY(bool mcu_hv_en MEMBER mcu_hv_en NOTIFY dataChanged);
+    Q_PROPERTY(bool mcu_stat_fdbk MEMBER mcu_stat_fdbk NOTIFY dataChanged);
+    Q_PROPERTY(int mc_status MEMBER mc_status NOTIFY dataChanged);
     // Not in the data format, but shared with controls
     Q_PROPERTY(bool restart_enable MEMBER restart_enable NOTIFY dataChanged);
 
@@ -67,6 +72,7 @@ class DataUnpacker : public QObject
     Q_PROPERTY(float motor_temp MEMBER motor_temp NOTIFY dataChanged);
     Q_PROPERTY(float driverIO_temp MEMBER driverIO_temp NOTIFY dataChanged);
     Q_PROPERTY(float mainIO_temp MEMBER mainIO_temp NOTIFY dataChanged);
+    Q_PROPERTY(float motor_controller_temp MEMBER motor_controller_temp NOTIFY dataChanged);
     Q_PROPERTY(float cabin_temp MEMBER cabin_temp NOTIFY dataChanged);
     Q_PROPERTY(float string1_temp MEMBER string1_temp NOTIFY dataChanged);
     Q_PROPERTY(float string2_temp MEMBER string2_temp NOTIFY dataChanged);
@@ -99,7 +105,7 @@ private:
     float soc;
     float mppt_current_out;
     float pack_voltage, pack_current;
-    float pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp;
+    float pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, motor_controller_temp;
     float string1_temp, string2_temp, string3_temp;
     bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat;
     bool eng_dash_commfail=1;
@@ -107,16 +113,18 @@ private:
     // Data for shutdown circuit
     // TODO Check initial values (should be nominal values, except for contactors, which should be open/false during restart)
     float bms_input_voltage;
-    bool driver_eStop=false, battery_eStop=false, external_eStop=false;
+    bool driver_eStop=false, external_eStop=false;
     bool crash=false;
-    bool door=true;
+    bool door= false;
     bool mcu_check=false;
     bool imd_status=false;
     bool bps_fault=false;
-    bool bms_canbus_failure=false, voltage_failsafe=false, current_failsafe=false, supply_power_failsafe=false, memory_failsafe=false, relay_failsafe=false;
-    bool mps_enable=true, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
-    bool restart_enable=false;
+    bool discharge_enable=false, charge_enable=false, bms_can_heartbeat=false;
+    bool mcu_hv_en=false, mcu_stat_fdbk=false, dcdc_valid=false, supplemental_valid=false, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
+    bool voltage_failsafe=false, current_failsafe=false, relay_failsafe=false, cell_balancing_active=true, charge_interlock_failsafe=false, thermistor_b_value_table_invalid=false, input_power_supply_failsafe=false;
     QVector<float> cell_group_voltages;
+    bool restart_enable=true;
+    int mc_status=0;
 
 
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format
