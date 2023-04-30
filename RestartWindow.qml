@@ -7,13 +7,11 @@ Popup {
     id: restartPopup
     parent: Overlay.overlay
     anchors.centerIn: parent
-    width: 1625
-    height: 875
+    width: 1725
+    height: 975
     padding: 25
     modal: true
     closePolicy: Popup.NoAutoClose
-
-    // TODO Assuming NO E-stops, imd_status=false preferred, NO door sensor, crash=false preferred, and mcu_check=false preferred
 
     property int mcu_check_point_size: 22
     property int mcu_check_pref_height: 50
@@ -392,8 +390,6 @@ Popup {
                         }
                     }
 
-
-
                     Rectangle {
                         color: 'black'
                         border.color: grid_item_border_color
@@ -581,7 +577,6 @@ Popup {
                         Layout.preferredWidth: mcu_check.width / 4
                         Layout.preferredHeight: mcu_check_pref_height * 1.6
 
-
                         Text {
                             id: dcdc_valid_text
 
@@ -619,7 +614,6 @@ Popup {
                             opacity: hidden_opacity
                         }
                     }
-
 
                     Rectangle {
                         color: 'black'
@@ -738,9 +732,6 @@ Popup {
 
                     }
 
-
-
-
                     Rectangle {
                         color: 'black'
                         border.color: grid_item_border_color
@@ -799,7 +790,6 @@ Popup {
                         }
                     }
 
-
                     Rectangle {
                         color: 'black'
                         border.color: grid_item_border_color
@@ -828,9 +818,6 @@ Popup {
                             opacity: hidden_opacity
                         }
                     }
-
-
-
 
                     Rectangle {
                         color: 'black'

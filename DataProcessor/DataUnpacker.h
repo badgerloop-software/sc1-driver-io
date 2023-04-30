@@ -72,6 +72,7 @@ class DataUnpacker : public QObject
     Q_PROPERTY(float motor_temp MEMBER motor_temp NOTIFY dataChanged);
     Q_PROPERTY(float driverIO_temp MEMBER driverIO_temp NOTIFY dataChanged);
     Q_PROPERTY(float mainIO_temp MEMBER mainIO_temp NOTIFY dataChanged);
+    Q_PROPERTY(float motor_controller_temp MEMBER motor_controller_temp NOTIFY dataChanged);
     Q_PROPERTY(float cabin_temp MEMBER cabin_temp NOTIFY dataChanged);
     Q_PROPERTY(float string1_temp MEMBER string1_temp NOTIFY dataChanged);
     Q_PROPERTY(float string2_temp MEMBER string2_temp NOTIFY dataChanged);
@@ -104,7 +105,7 @@ private:
     float soc;
     float mppt_current_out;
     float pack_voltage, pack_current;
-    float pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp;
+    float pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, motor_controller_temp;
     float string1_temp, string2_temp, string3_temp;
     bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat;
     bool eng_dash_commfail=1;
