@@ -109,6 +109,7 @@ void printout_tca() {
 // Put your testing code here!
 void controlsWrapper::startThread() {
     int messages_not_received = 0;
+    bool parking_brake = 0;
     while(true) {
         set_lights(); // call method to set the lights using TCA
         char buffTemp[TOTAL_BYTES];
@@ -136,7 +137,11 @@ void controlsWrapper::startThread() {
         // write restart_enable signal
         uartMutex.lock();
         std::cout << "restart_enable: " << restart_enable << std::endl;
-        int write = serial.writeBytes(&restart_enable, 1); 
+        char write_array; 
+        write_array[0] = restart_enable; 
+        write_array[1] = parking_brake; 
+        parking_brake = !parking_brake; // TODO: remove this line. It's used for testing purposes. 
+        int write = serial.writeBytes(write_array, 2); 
         std::cout << "bytes written: " << write << std::endl;
         uartMutex.unlock();
  
