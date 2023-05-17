@@ -115,4 +115,10 @@ Item {
         fillMode: Image.PreserveAspectFit
         sourceSize.width: 90
     }
+
+    LeftBox {
+        id: leftBox
+        x: 0
+        y: 362
+    }
 }
