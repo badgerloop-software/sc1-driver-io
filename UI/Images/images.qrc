@@ -14,5 +14,9 @@
         <file>Power Warning.png</file>
         <file>Exclamation.png</file>
         <file>comm.png</file>
+        <file>Supplemental SoC.svg</file>
+        <file>ECO.png</file>
+        <file>Parking Brake.png</file>
+        <file>main_telem.png</file>
     </qresource>
 </RCC>
