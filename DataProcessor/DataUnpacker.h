@@ -30,9 +30,10 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool right_turn MEMBER right_turn NOTIFY dataChanged);
     Q_PROPERTY(bool hazards MEMBER hazards NOTIFY dataChanged);
     Q_PROPERTY(bool headlights MEMBER headlights NOTIFY dataChanged);
-    Q_PROPERTY(bool cruise MEMBER cruise NOTIFY dataChanged);
     Q_PROPERTY(bool mainIO_heartbeat MEMBER mainIO_heartbeat NOTIFY dataChanged);
     Q_PROPERTY(bool eng_dash_commfail MEMBER eng_dash_commfail NOTIFY dataChanged);
+    Q_PROPERTY(bool crz_pwr_mode MEMBER crz_pwr_mode NOTIFY dataChanged)
+    Q_PROPERTY(bool crz_spd_mode MEMBER crz_spd_mode NOTIFY dataChanged)
 
     // Shutdown circuit
     Q_PROPERTY(bool driver_eStop MEMBER driver_eStop NOTIFY dataChanged);
@@ -57,6 +58,9 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool supplemental_valid MEMBER supplemental_valid NOTIFY dataChanged);
     Q_PROPERTY(bool mcu_hv_en MEMBER mcu_hv_en NOTIFY dataChanged);
     Q_PROPERTY(bool mcu_stat_fdbk MEMBER mcu_stat_fdbk NOTIFY dataChanged);
+    Q_PROPERTY(bool parking_brake MEMBER parking_brake NOTIFY dataChanged);
+    Q_PROPERTY(bool eco MEMBER eco NOTIFY dataChanged);
+    Q_PROPERTY(bool main_telem MEMBER main_telem NOTIFY dataChanged);
     Q_PROPERTY(int mc_status MEMBER mc_status NOTIFY dataChanged);
     // Not in the data format, but shared with controls
     Q_PROPERTY(bool restart_enable MEMBER restart_enable NOTIFY dataChanged);
@@ -77,7 +81,10 @@ class DataUnpacker : public QObject
     Q_PROPERTY(float string1_temp MEMBER string1_temp NOTIFY dataChanged);
     Q_PROPERTY(float string2_temp MEMBER string2_temp NOTIFY dataChanged);
     Q_PROPERTY(float string3_temp MEMBER string3_temp NOTIFY dataChanged);
-
+    Q_PROPERTY(float crz_pwr_setpt MEMBER crz_pwr_setpt NOTIFY dataChanged);
+    Q_PROPERTY(float crz_spd_setpt MEMBER crz_spd_setpt NOTIFY dataChanged);
+    Q_PROPERTY(float supplemental_voltage MEMBER supplemental_voltage NOTIFY dataChanged);
+    Q_PROPERTY(float est_supplemental_soc MEMBER est_supplemental_soc NOTIFY dataChanged);
     // NOTE: char data is displayed as its ASCII decimal value, not the character, so QString is used instead
     Q_PROPERTY(QString state MEMBER state NOTIFY dataChanged);
 
@@ -101,13 +108,13 @@ private:
     // TODO Include only the properties that need to be displayed on the driver dashboard
     uint8_t fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
     uint16_t tstamp_ms;
-    float speed, accelerator;
-    float soc;
+    float speed, accelerator, crz_spd_setpt, crz_pwr_setpt;
+    float soc, est_supplemental_soc;
     float mppt_current_out;
-    float pack_voltage, pack_current;
+    float pack_voltage, pack_current, supplemental_voltage;
     float pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, motor_controller_temp;
     float string1_temp, string2_temp, string3_temp;
-    bool headlights, cruise, left_turn, right_turn, hazards, mainIO_heartbeat;
+    bool headlights, left_turn, right_turn, hazards, mainIO_heartbeat, crz_pwr_mode, crz_spd_mode, eco, main_telem, parking_brake;
     bool eng_dash_commfail=1;
     QString state;
     // Data for shutdown circuit
