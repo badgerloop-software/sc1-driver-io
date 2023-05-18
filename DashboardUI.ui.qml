@@ -51,33 +51,6 @@ Item {
     }
 
     Image {
-        id: mainioCommsIcon
-        x: 37
-        y: 58
-        width: 115
-        height: 132
-        visible: backEnd.mainIO_heartbeat
-        source: "UI/Images/Main IO Comms Lost.png"
-        sourceSize.height: 175
-        sourceSize.width: 175
-        fillMode: Image.PreserveAspectFit
-    }
-
-    Image {
-        id: powerWarningIcon
-        x: 230
-        y: 61
-        width: 80
-        height: 129
-        // TODO If there are no specific power warnings, maybe just use this as an alert for when any voltages/currents are within 10% of their nominal min/max
-        //      In that case, maybe add an icon to do the same thing but for temperatures.
-        source: "UI/Images/Power Warning.png"
-        sourceSize.height: 169
-        sourceSize.width: 90
-        fillMode: Image.PreserveAspectFit
-    }
-
-    Image {
         id: headlights
         x: 624
         y: 87
@@ -96,7 +69,7 @@ Item {
         y: 79
         width: 120
         height: 120
-        visible: backEnd.cruise
+        visible: backEnd.crz_pwr_mode || backEnd.crz_spd_mode
         source: "UI/Images/Cruise Control.png"
         sourceSize.height: 120
         sourceSize.width: 120
@@ -118,7 +91,54 @@ Item {
 
     LeftBox {
         id: leftBox
-        x: 0
+        x: -1
         y: 362
+    }
+
+    SupplementalBat {
+        id: supplementalBat
+        x: 20
+        y: 985
+    }
+
+    Image {
+        id: main_telem
+        x: 155
+        y: 194
+        source: "UI/Images/main_telem.png"
+        fillMode: Image.PreserveAspectFit
+        visible: backEnd.main_telem
+    }
+
+    Image {
+        id: parkingBrake
+        x: 265
+        y: 40
+        source: "UI/Images/Parking Brake.png"
+        fillMode: Image.PreserveAspectFit
+        visible: backEnd.parking_brake
+    }
+
+    Image {
+        id: eco
+        x: 55
+        y: 63
+        source: "UI/Images/ECO.png"
+        fillMode: Image.PreserveAspectFit
+        visible: backEnd.eco
+    }
+
+    Text {
+        id: text1
+        x: 1036
+        y: 72
+        width: 92
+        height: 56
+        color: "#40c321"
+        text: qsTr("SET")
+        font.pixelSize: 48
+        font.weight: Font.Bold
+        font.family: "Work Sans"
+        visible: backEnd.crz_pwr_mode || backEnd.crz_spd_mode
     }
 }
