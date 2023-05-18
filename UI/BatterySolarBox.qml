@@ -15,6 +15,13 @@ Item {
         }
     }
 
+    function wkw(num) {
+        return num > 1000 ? (num/1000).toFixed(2): num.toFixed(1)
+    }
+
+    function wkwstr(num) {
+        return num > 1000 ? "kw": "w"
+    }
 
     Rectangle {
         id: solar
@@ -55,8 +62,8 @@ Item {
             width: 301
             height: (solar.height - 62) / 2
             color: "#ffffff"
-            text: (backEnd.pack_voltage * backEnd.mppt_current_out).toFixed(1)
-            font.pixelSize: 72
+            text: wkw(backEnd.pack_voltage * backEnd.mppt_current_out)
+            font.pixelSize: 64
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             z: 1
@@ -86,7 +93,7 @@ Item {
             width: 50
             height: 50
             color: "#ffffff"
-            text: qsTr("W")
+            text: wkwstr(backEnd.pack_voltage * backEnd.mppt_current_out)
             font.pixelSize: 42
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -171,8 +178,8 @@ Item {
             width: 301
             height: (338 - 62) / 3
             color: "#ffffff"
-            text: (backEnd.pack_voltage * backEnd.pack_current).toFixed(1)
-            font.pixelSize: 72
+            text: wkw(backEnd.pack_voltage * backEnd.pack_current)
+            font.pixelSize: 64
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             z: 1
@@ -219,7 +226,7 @@ Item {
             width: 50
             height: 50
             color: "#ffffff"
-            text: qsTr("W")
+            text: wkwstr(backEnd.pack_voltage * backEnd.pack_current)
             font.pixelSize: 42
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
