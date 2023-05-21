@@ -17,7 +17,7 @@
 
 Serial serial;
 QMutex uartMutex;
-Tca6416 tca(0, 0x20); // tca objects used to read GPIO pins for lights
+//Tca6416 tca(0, 0x20); // tca objects used to read GPIO pins for lights
 int lblnk_toggle;
 int rblnk_toggle;
 int hl_toggle;
@@ -37,6 +37,7 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
     serial = Serial();
     serial.openDevice(0, 115200);
 
+    /*
     // initialize tca
     tca = Tca6416(0, 0x20);
     // set enable signals P00, P04, P10, P16, P17 to write (0)
@@ -46,6 +47,7 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
     tca.set_state(1, 0, 0); // FL_TS_LED_EN
     tca.set_state(1, 7, 0); // FR_TS_LED_EN
     tca.set_state(1, 6, 0); // HL_LED_EN
+    */
 
     // initialize values of global ints
     lblnk = 0;
@@ -58,6 +60,7 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
 /* Uses the TCA to read inputs (toggles) and set outputs (enables for lights).
  * Includes code to make the turn signals blink 
  */
+/*
 void set_lights() {
     // read input signals
     lblnk_toggle = tca.get_state(0, 7);
@@ -89,10 +92,12 @@ void set_lights() {
     tca.set_state(1, 7, rblnk); // FR_TS_LED_EN
     tca.set_state(1, 6, hl_toggle); // F_HL_LED_EN
 }
+*/
 
 /* Debug method used to printout all pins of the TCA that are 1.
  * Useful to see if flipping a hardware switch will be read by the TCA.
  */
+/*
 void printout_tca() {
     // print out all tca pins that are 1 
     for (int i = 0; i < 2; i++) {
@@ -104,6 +109,7 @@ void printout_tca() {
         }
     }
 }
+*/
 
 // This is the firmware main loop. It's called in a separate thread in DataUnpacker.cpp
 // Put your testing code here!
@@ -111,7 +117,7 @@ void controlsWrapper::startThread() {
     int messages_not_received = 0;
     bool parking_brake = 0;
     while(true) {
-        set_lights(); // call method to set the lights using TCA
+        //set_lights(); // call method to set the lights using TCA
         char buffTemp[TOTAL_BYTES];
         // UART code
         std::cout << "===========================================" << std::endl;
@@ -137,12 +143,12 @@ void controlsWrapper::startThread() {
         // write restart_enable signal
         uartMutex.lock();
         std::cout << "restart_enable: " << restart_enable << std::endl;
-        char write_array; 
+        char write_array[2]; 
         write_array[0] = restart_enable; 
         write_array[1] = parking_brake; 
         parking_brake = !parking_brake; // TODO: remove this line. It's used for testing purposes. 
         int write = serial.writeBytes(write_array, 2); 
-        std::cout << "bytes written: " << write << std::endl;
+        std::cout << "write success: " << write << std::endl;
         uartMutex.unlock();
  
         // set lights in buffTemp to send to software      
