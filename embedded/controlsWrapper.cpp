@@ -8,6 +8,8 @@
 
 #include <embedded/devices/include/ads1219.h>
 #include <embedded/devices/src/ads1219.cpp>
+#include <embedded/devices/include/ina219.h>
+#include <embedded/devices/src/ina219.cpp>
 #include <embedded/devices/include/tca6416.h>
 #include <embedded/devices/src/tca6416.cpp>
 #include <embedded/drivers/include/serial.h>
@@ -114,9 +116,21 @@ void printout_tca() {
 // This is the firmware main loop. It's called in a separate thread in DataUnpacker.cpp
 // Put your testing code here!
 void controlsWrapper::startThread() {
+    INA219 ina = INA219(7, 0x44, 0.005, 2.0)
+    if(ina.begin() == 1) {
+        printf("ina begin threw an error\n");
+        sleep(10);
+    }
     int messages_not_received = 0;
     bool parking_brake = 0;
     while(true) {
+
+        printf("bus voltage: %f\n", ina.get_bus_voltage());
+        printf("shunt voltage: %f\n", ina.get_shunt_voltage());
+        printf("current: %f\n", ina.get_current());
+        printf("power: %f\n", ina.get_power());
+        printf("---------------------------\n");
+
         //set_lights(); // call method to set the lights using TCA
         char buffTemp[TOTAL_BYTES];
         // UART code
@@ -167,6 +181,7 @@ void controlsWrapper::startThread() {
 
         //usleep(1000000);
         sleep(1);
+        
     }
 }
 

@@ -16,6 +16,7 @@ SOURCES += \
         embedded/drivers/src/gpio.cpp \
         embedded/devices/src/ads1219.cpp \
         embedded/devices/src/ina3221.cpp \
+        embedded/devices/src/ina219.cpp \
         embedded/devices/src/tca6416.cpp \
         embedded/controlsWrapper.cpp \
         telemetrylib/TCP.cpp \
@@ -73,6 +74,7 @@ HEADERS += \
     embedded/drivers/include/gpio.h \
     embedded/devices/include/ads1219.h \
     embedded/devices/include/ina3221.h \
+    embedded/devices/include/ina219.h \
     embedded/devices/include/tca6416.h \
     embedded/controlsWrapper.h \
     telemetrylib/Telemetry.h \
