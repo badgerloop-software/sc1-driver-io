@@ -1,22 +1,17 @@
 <RCC>
     <qresource prefix="/UI/Images">
         <file>Blinker.png</file>
-        <file>Cabin.png</file>
-        <file>Cell String 1 (No Number).png</file>
-        <file>Cell String 1 Top Box.png</file>
-        <file>Cell String 2 (No Number).png</file>
-        <file>Cell String 3 (No Number).png</file>
-        <file>Cruise Control.png</file>
         <file>Headlights.png</file>
-        <file>Main IO Comms Lost.png</file>
         <file>Masked SpeedometerNo Numbers.svg</file>
         <file>Needle (More Fade).svg</file>
-        <file>Power Warning.png</file>
         <file>Exclamation.png</file>
         <file>comm.png</file>
         <file>Supplemental SoC.svg</file>
         <file>ECO.png</file>
         <file>Parking Brake.png</file>
+        <file>Cruise Speed.png</file>
+        <file>Cruise Power.png</file>
         <file>main_telem.png</file>
+        <file>Cruise Needle (More Fade).svg</file>
     </qresource>
 </RCC>

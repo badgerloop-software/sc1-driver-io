@@ -70,7 +70,7 @@ Item {
         width: 120
         height: 120
         visible: backEnd.crz_pwr_mode || backEnd.crz_spd_mode
-        source: "UI/Images/Cruise Control.png"
+        source: backEnd.crz_spd_mode ? "UI/Images/Cruise Speed.png" : "UI/Images/Cruise Power.png"
         sourceSize.height: 120
         sourceSize.width: 120
         fillMode: Image.PreserveAspectFit
@@ -91,7 +91,7 @@ Item {
 
     LeftBox {
         id: leftBox
-        x: -1
+        x: 0
         y: 362
     }
 
@@ -139,6 +139,6 @@ Item {
         font.pixelSize: 48
         font.weight: Font.Bold
         font.family: "Work Sans"
-        visible: backEnd.crz_pwr_mode || backEnd.crz_spd_mode
+        visible: (backEnd.crz_pwr_mode || backEnd.crz_spd_mode) && backEnd.state === "C"
     }
 }

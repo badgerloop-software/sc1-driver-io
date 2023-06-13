@@ -5,8 +5,17 @@ Item {
     height: 606
     visible: true
 
-    function green(b) {
-        return b ? "#40C321" : "#FFFFFF"
+    function threshold(val, min, max) {
+        if(val <= max && val >= min) {
+            return "#000000"
+        }
+        else {
+            return "#bbbb00"
+        }
+    }
+
+    function cruiseGreen(b) {
+        return (b && backEnd.state === "C") ? "#40C321" : "#FFFFFF"
     }
 
     Rectangle {
@@ -40,26 +49,50 @@ Item {
             }
         }
 
-        Text {
-            x: 0
+        Rectangle {
+            x: 1
             y: 62
-            width: 350
+            width: 348
             height: 100
-            color: "#ffffff"
-            text: (backEnd.pack_voltage * backEnd.pack_current).toFixed(1)
-            font.pixelSize: 64
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            font.family: "Work Sans"
-            font.styleName: "Medium"
+            color: threshold(backEnd.pack_voltage * backEnd.pack_current, 0, 100)
+
+            Text {
+                x: 19
+                y: 0
+                width: 256
+                height: 100
+                color: "#ffffff"
+                text: (backEnd.pack_voltage * backEnd.pack_current).toFixed(1)
+                font.pixelSize: 64
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                font.family: "Work Sans"
+                font.styleName: "Medium"
+            }
+
+            Text {
+                x: 275
+                y: 0
+                width: 50
+                height: 100
+                color: "#ffffff"
+                text: qsTr("W")
+                font.pixelSize: 42
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                z: 1
+                font.family: "Work Sans"
+                font.styleName: "Regular"
+            }
         }
 
+
         Text {
-            x: 0
+            x: 20
             y: 162
-            width: 350
+            width: 256
             height: 100
-            color: green(backEnd.crz_pwr_mode)
+            color: cruiseGreen(backEnd.crz_pwr_mode)
             text: backEnd.crz_pwr_setpt.toFixed(1)
             font.pixelSize: 64
             horizontalAlignment: Text.AlignHCenter
@@ -70,26 +103,11 @@ Item {
 
         Text {
             x: 276
-            y: 62
-            width: 50
-            height: 100
-            color: "#ffffff"
-            text: qsTr("w")
-            font.pixelSize: 42
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            z: 1
-            font.family: "Work Sans"
-            font.styleName: "Regular"
-        }
-
-        Text {
-            x: 276
             y: 162
             width: 50
             height: 100
-            color: "#ffffff"
-            text: qsTr("w")
+            color: cruiseGreen(backEnd.crz_pwr_mode)
+            text: qsTr("W")
             font.pixelSize: 42
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -131,11 +149,11 @@ Item {
         }
 
         Text {
-            x: 0
+            x: 20
             y: 62
-            width: 350
+            width: 256
             height: 120
-            color: green(backEnd.crz_spd_mode)
+            color: cruiseGreen(backEnd.crz_spd_mode)
             text: backEnd.crz_spd_setpt.toFixed(1)
             font.pixelSize: 64
             horizontalAlignment: Text.AlignHCenter
@@ -149,7 +167,7 @@ Item {
             y: 62
             width: 50
             height: 120
-            color: "#ffffff"
+            color: cruiseGreen(backEnd.crz_spd_mode)
             text: qsTr("MPH")
             font.pixelSize: 42
             horizontalAlignment: Text.AlignHCenter
@@ -191,33 +209,41 @@ Item {
             }
         }
 
-        Text {
-            x: 0
+        Rectangle {
+            x: 1
             y: 62
-            width: 350
-            height: 100
-            color: "#ffffff"
-            text: backEnd.supplemental_voltage.toFixed(1)
-            font.pixelSize: 64
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            font.family: "Work Sans"
-            font.styleName: "Medium"
-        }
+            width: 348
+            height: 99
+            color: threshold(backEnd.supplemental_voltage, 0, 100)
 
-        Text {
-            x: 276
-            y: 62
-            width: 50
-            height: 100
-            color: "#ffffff"
-            text: qsTr("V")
-            font.pixelSize: 42
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            z: 1
-            font.family: "Work Sans"
-            font.styleName: "Regular"
+            Text {
+                x: 0
+                y: 0
+                width: 348
+                height: 100
+                color: "#ffffff"
+                text: backEnd.supplemental_voltage.toFixed(1)
+                font.pixelSize: 64
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                font.family: "Work Sans"
+                font.styleName: "Medium"
+            }
+
+            Text {
+                x: 275
+                y: 0
+                width: 50
+                height: 100
+                color: "#ffffff"
+                text: qsTr("V")
+                font.pixelSize: 42
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                z: 1
+                font.family: "Work Sans"
+                font.styleName: "Regular"
+            }
         }
     }
 }

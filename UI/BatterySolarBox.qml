@@ -20,7 +20,7 @@ Item {
     }
 
     function wkwstr(num) {
-        return num > 1000 ? "kw": "w"
+        return num > 1000 ? "kW": "W"
     }
 
     Rectangle {
@@ -36,7 +36,7 @@ Item {
         Rectangle {
             x: 1
             y: 1
-            width: 302
+            width: 300
             height: 62
             color: "#40ffffff"
             border.width: 0
@@ -57,10 +57,10 @@ Item {
 
         Text {
             id: solarPower
-            x: 0
-            y: 62
-            width: 301
-            height: (solar.height - 62) / 2
+            x: 20
+            y: 63
+            width: 209
+            height: (solar.height - 63) / 2
             color: "#ffffff"
             text: wkw(backEnd.pack_voltage * backEnd.mppt_current_out)
             font.pixelSize: 64
@@ -73,10 +73,10 @@ Item {
 
         Text {
             id: solarCurrent
-            x: 0
-            y: 62 + solarPower.height
-            width: 301
-            height: (solar.height - 62) / 2
+            x: 20
+            y: 63 + solarPower.height
+            width: 209
+            height: solar.height - (64 + solarPower.height)
             color: "#ffffff"
             text: backEnd.mppt_current_out.toFixed(1)
             font.pixelSize: 64
@@ -89,9 +89,9 @@ Item {
 
         Text {
             x: 229
-            y: 97
+            y: solarPower.y
             width: 50
-            height: 50
+            height: solarPower.height
             color: "#ffffff"
             text: wkwstr(backEnd.pack_voltage * backEnd.mppt_current_out)
             font.pixelSize: 42
@@ -104,9 +104,9 @@ Item {
 
         Text {
             x: 229
-            y: 175
+            y: solarCurrent.y
             width: 50
-            height: 50
+            height: solarCurrent.height
             color: "#ffffff"
             text: qsTr("A")
             font.pixelSize: 42
@@ -119,9 +119,9 @@ Item {
 
         Rectangle {
             id: samprect1
-            x: solarCurrent.x +1
+            x: 1
             y: solarCurrent.y
-            width: solarCurrent.width -1
+            width: solar.width - 2
             height: solarCurrent.height
             color: threshold(solarCurrent.text, 0, 7)
             z: 0
@@ -129,9 +129,9 @@ Item {
 
         Rectangle {
             id: swattrect1
-            x: solarPower.x +1
+            x: 1
             y: solarPower.y
-            width: solarPower.width -1
+            width: solar.width - 2
             height: solarPower.height
             color: threshold(solarPower.text, 0, 756)
             z: 0
@@ -173,9 +173,9 @@ Item {
 
         Text {
             id: packPower
-            x: 0
+            x: 20
             y: 62
-            width: 301
+            width: 209
             height: (338 - 62) / 3
             color: "#ffffff"
             text: wkw(backEnd.pack_voltage * backEnd.pack_current)
@@ -189,9 +189,9 @@ Item {
 
         Text {
             id: packVoltage
-            x: 0
-            y:62 + packPower.height
-            width: 301
+            x: 20
+            y: 62 + packPower.height
+            width: 209
             height: (338 - 62) / 3
             color: "#ffffff"
             text: backEnd.pack_voltage.toFixed(1)
@@ -205,9 +205,9 @@ Item {
 
         Text {
             id: packCurrent
-            x: 0
-            y:62 + packPower.height + packVoltage.height
-            width: 301
+            x: 20
+            y: 62 + packPower.height + packVoltage.height
+            width: 209
             height: (338 - 62) / 3
             color: "#ffffff"
             text: backEnd.pack_current.toFixed(1)
@@ -222,9 +222,9 @@ Item {
 
         Text {
             x: 229
-            y: 97
+            y: packPower.y
             width: 50
-            height: 50
+            height: packPower.height
             color: "#ffffff"
             text: wkwstr(backEnd.pack_voltage * backEnd.pack_current)
             font.pixelSize: 42
@@ -237,9 +237,9 @@ Item {
 
         Text {
             x: 229
-            y: 175
+            y: packVoltage.y
             width: 50
-            height: 50
+            height: packVoltage.height
             color: "#ffffff"
             text: qsTr("V")
             font.pixelSize: 42
@@ -252,9 +252,9 @@ Item {
 
         Text {
             x: 229
-            y: 253
+            y: packCurrent.y
             width: 50
-            height: 50
+            height: packCurrent.height
             color: "#ffffff"
             text: qsTr("A")
             font.pixelSize: 42
@@ -266,10 +266,20 @@ Item {
         }
 
         Rectangle {
+            id: wattrect
+            x: 1
+            y: packPower.y
+            width: battery.width - 2
+            height: packPower.width
+            color: threshold(packPower.text, 0, 10800)
+            z: 0
+        }
+
+        Rectangle {
             id: voltrect
-            x: packVoltage.x + 1
+            x: 1
             y: packVoltage.y
-            width: packVoltage.width - 1
+            width: battery.width - 2
             height: packVoltage.height
             color: threshold(packVoltage.text, 69, 108)
             rotation: 0
@@ -278,21 +288,11 @@ Item {
 
         Rectangle {
             id: amprect
-            x: packCurrent.x + 1
+            x: 1
             y: packCurrent.y
-            width: packCurrent.width - 1
+            width: battery.width - 2
             height: packCurrent.height
             color: threshold(packCurrent.text, 0, 100)
-            z: 0
-        }
-
-        Rectangle {
-            id: wattrect
-            x: packPower.x + 1
-            y: packPower.y
-            width: packPower.width - 1
-            height: packPower.width
-            color: threshold(packPower.text, 0, 10800)
             z: 0
         }
     }
@@ -306,6 +306,21 @@ Item {
         color: "#000000"
         border.color: "#ffffff"
         z: 0
+
+        Text {
+            x: 66
+            y: 10
+            width: 170
+            height: 50
+            color: "#ffffff"
+            text: qsTr("Pack Temp")
+            font.pixelSize: 30
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            z: 1
+            font.family: "Work Sans"
+            font.styleName: "Regular"
+        }
 
         Text {
             id: packTemp
@@ -331,21 +346,6 @@ Item {
             color: "#ffffff"
             text: qsTr("°C")
             font.pixelSize: 42
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            z: 1
-            font.family: "Work Sans"
-            font.styleName: "Regular"
-        }
-
-        Text {
-            x: 66
-            y: 10
-            width: 170
-            height: 50
-            color: "#ffffff"
-            text: qsTr("Pack Temp")
-            font.pixelSize: 30
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             z: 1
@@ -388,7 +388,7 @@ Item {
             id: packtmprect
             x: 1
             y: 1
-            width: 300
+            width: tempFan.width - 2
             height: tempFan.height/2
             color: threshold(packTemp.text, 0, 60)
             z: 0
@@ -398,7 +398,7 @@ Item {
             id: fanspeedrect
             x: 1
             y: packtmprect.height
-            width: 300
+            width: tempFan.width - 2
             height: tempFan.height/2
             color: threshold(fanSpeed.text, (backEnd.pack_temp < 50) ? Math.floor(((backEnd.pack_temp >= 20) ? (backEnd.pack_temp - 15) : 0) / 5) : 6, 6)
             z: 0
