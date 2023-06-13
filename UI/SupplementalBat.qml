@@ -20,9 +20,9 @@ Item {
         id: batteryLevel
         x: 0
         y: 5
-        width: 280*backEnd.supplemental_voltage/100
+        width: 280*backEnd.est_supplemental_soc/100
         height: 60
-        color: getColor(backEnd.supplemental_voltage)
+        color: getColor(backEnd.est_supplemental_soc)
         anchors.right: battery.right
         anchors.rightMargin: 14
         transformOrigin: Item.Center
@@ -53,7 +53,7 @@ Item {
     }
 
     Text {
-        x: 508
+        x: 525
         y: 12
         width: 50
         height: 50
