@@ -1,5 +1,5 @@
 #include <cmath>
-#include "ina219.h"
+#include "embedded/devices/include/ina219.h"
 
 // register offsets
 #define CONFIGURATION_REG 0x0

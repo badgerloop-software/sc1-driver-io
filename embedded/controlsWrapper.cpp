@@ -116,7 +116,7 @@ void printout_tca() {
 // This is the firmware main loop. It's called in a separate thread in DataUnpacker.cpp
 // Put your testing code here!
 void controlsWrapper::startThread() {
-    INA219 ina = INA219(7, 0x44, 0.005, 2.0)
+    INA219 ina = INA219(1, 0x44, 0.005, 2.0);
     if(ina.begin() == 1) {
         printf("ina begin threw an error\n");
         sleep(10);
