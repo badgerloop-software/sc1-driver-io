@@ -21,49 +21,25 @@ public:
         t->join();
     }
 
-    void sendData(QByteArray bytes) override {
-        auto curr_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    void sendData(QByteArray bytes, long long timestamp) override {
+        qDebug()<<"sending Via SQL: "<<timestamp;
 
         QUrl myurl;
         myurl.setScheme("http");
-        myurl.setHost("host"); // TODO
-        myurl.setPort(3000); // TODO
-        myurl.setPath("/add-data"); // TODO
-        myurl.setQuery("table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(curr_msec)));
-
+        myurl.setHost("150.136.104.125");
+        myurl.setPort(3000);
+        myurl.setPath("/add-data");
+        myurl.setQuery("table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(timestamp)));
         //QNetworkRequest request;
         request.setUrl(myurl);
-        request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer")); // TODO Try "blob" for content type as well
+        request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));
         request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
-
-        // TODO SPLIT THIS UP INTO TWO PARTS:
-        //        X 1. table-name: ("_" + first_msec, which is equivalent to the response from the "/add-table/*" request) table name created from the start time of the session
-        //        X 2. dataset-time: (curr_msec) timestamp associated with the byte array being sent to the server
-        // TODO request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(first_msec))));
-
-
-        //request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; table-name=" + tableName + ",dataset-time=" + QString::fromStdString(std::to_string(curr_msec))));
-        // TODO request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(first_msec)) + ",dataset-time=" + QString::fromStdString(std::to_string(curr_msec))));
-        // TODO request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=_quickTest,dataset-time=" + QString::fromStdString(std::to_string(curr_msec))));
-        // TODO request.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("identifier; session-time=" + QString::fromStdString(std::to_string(curr_msec))));
-
-        // TODO Note in case message frequency becomes an issue: Set up a message queue for HTTP requests,
-        //      and send groups of byte arrays to the server at less frequent intervals (/as soon as we can send our next message)
-
-        // TODO Remove: qDebug() << this->thread() << "\t\t" << restclient->thread() << "\t\t" << sec_counter;
-
-        // TODO Allows HTTP pipelining so that the request doesn't wait for a response from the server before allowing a new message to be sent
-        //      This should help to avoid stalling while waiting for a response from the server
-        //      NOTE - The number of messages sent before a response from the first message is received might still be limited
-        // TODO Send the byte array, along with the corresponding timestamp, to the server
-        // TODO reply = this->restclient->post(request, bytes);
         this->restclient->post(request, bytes);
     }
 
-    std::string receiveData() override{
+    /*
+     std::string receiveData() override{
         QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
-        //QJsonObject json = QJsonDocument::fromJson(QByteArray::fromStdString("JSON Derulo")).object();
-
         if (json.isEmpty()) {
             qDebug() << "EMPTY JSON";
             return "nada";
@@ -75,6 +51,7 @@ public:
             this->restclient->setAutoDeleteReplies(true);
         }
     }
+    */
 
     bool getConnectionStatus() override{
         // Send request to create a new table when connection to server is first established
@@ -83,8 +60,8 @@ public:
 
             QUrl myurl;
             myurl.setScheme("http");
-            myurl.setHost("150.136.104.125"); // TODO
-            myurl.setPort(3000); // TODO
+            myurl.setHost("150.136.104.125"); 
+            myurl.setPort(3000);
             myurl.setPath("/add-table/" + tableToCreate);
 
             request.setUrl(myurl);
@@ -100,10 +77,13 @@ public:
 
 
 public slots:
-    void readReply() override{
+    /**
+     * Read response from the server. Specifically, reads the response to the request to
+     * add a new table on the server and sets tableName to the response.
+     */
+    void readReply() override {
         qDebug()<<"read reply invoked";
         QJsonObject json = QJsonDocument::fromJson(reply->readAll()).object();
-        //QJsonObject json = QJsonDocument::fromJson(QByteArray::fromStdString("JSON Derulo")).object();
 
         if(json.isEmpty()) {
             qDebug() << "EMPTY JSON";
@@ -115,7 +95,6 @@ public slots:
             this->restclient->setAutoDeleteReplies(true);
         }
     }
-
 private:
     /**
      * creates a thread that ping a website to check connection
@@ -123,8 +102,8 @@ private:
     void checkConnection() {
         QTcpSocket sock;
         while(!finish) {
-            sock.connectToHost("www.google.com", 80);
-            bool connected = sock.waitForConnected(500);
+            sock.connectToHost("www.google.com", 80);   //create a socket to connect google
+            bool connected = sock.waitForConnected(500);    //if connected in 500ms then we say it's connected
             if (!connected && connection) {
                 sock.abort();
                 connection = false;
@@ -139,12 +118,12 @@ private:
         }
     }
 
-    std::atomic<bool> connection = false;
+    std::atomic<bool> connection = false; //connection status to the internet
     QNetworkRequest request;
     QNetworkAccessManager *restclient = NULL;
     QNetworkReply *reply;
-    QString tableName;
-    QString tableToCreate;
-    std::thread *t;
-    std::atomic<bool> finish=false;
+    QString tableName; // James added this
+    QString tableToCreate; 
+    std::thread *t; // thread to check connection by pinging a website in the background
+    std::atomic<bool> finish=false; //for soft quiting the thread
 };

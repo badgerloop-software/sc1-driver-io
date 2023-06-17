@@ -12,16 +12,11 @@
 class DTI : public QObject{
     Q_OBJECT
 public:
-    /**
-     * Send bytes via channel to be implemented, do not record data in this function.
-     * @param bytes literally.
-     */
-    virtual void sendData(QByteArray bytes) = 0;
-    /**
+    /* nope
      * Receive bytes via channel to be implemented
      * @return bytes received
      */
-    virtual std::string receiveData() = 0;
+    //virtual std::string receiveData() = 0;
     /**
      * @return connection status
      */
@@ -31,10 +26,16 @@ signals:
     /**
      * for notifying telemetry class to redo polling.
      */
-    void connectionStatusChanged() ;
+    void connectionStatusChanged();
 
 public slots:
+    /**
+     * Send bytes via channel to be implemented, do not record data in this function.
+     * @param bytes literally.
+     */
+
     //if inheritance instance needs slots, add them here as a VIRTUAL function, otherwise there will be a stupid vtable error
+    virtual void sendData(QByteArray bytes, long long timestamp) = 0;
     virtual void onNewConnection() {};
     virtual void onSocketStateChanged(QAbstractSocket::SocketState state) {};
     virtual void readReply() {};

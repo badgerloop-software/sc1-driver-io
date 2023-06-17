@@ -6,7 +6,7 @@
 #include <QMutex>
 #include "DataProcessor/DataGen.h"
 
-#include "telemetrylib/library.h"
+#include "telemetrylib/Telemetry.h"
 #include "telemetrylib/DTI.h"
 #include "telemetrylib/TCP.cpp"
 #include "telemetrylib/SQL.cpp"
@@ -39,7 +39,7 @@ private:
 
     QByteArray &bytes;
 
-    std::atomic<bool> stop =false;
+    std::atomic<bool> stop = false;
     std::vector<std::string> &names;
     std::vector<std::string> &types;
 

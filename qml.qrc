@@ -11,6 +11,7 @@
         <file>RestartWindow.qml</file>
         <file>UI/Accelerator.qml</file>
         <file>UI/BatterySolarBox.qml</file>
-        <file>UI/CellStringTemps.qml</file>
+        <file>UI/LeftBox.qml</file>
+        <file>UI/SupplementalBat.qml</file>
     </qresource>
 </RCC>

@@ -104,13 +104,13 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 DataUnpacker::~DataUnpacker()
 {
     dataHandlingThread.quit();
-    dataHandlingThread.wait();
+    dataHandlingThread.wait();  //wait until the thread fully stops to avoid error message
 }
 
 void DataUnpacker::unpack()
 {
     int currByte = 0;
-    
+
     mutex.lock();
 
     for(uint i=0; i < names.size(); i++) {
@@ -148,7 +148,7 @@ void DataUnpacker::unpack()
 
         currByte += byteNums[i];
     }
-    
+
     mutex.unlock();
 
     this->restart_enable = checkRestartEnable();
@@ -164,6 +164,6 @@ void DataUnpacker::eng_dash_connection(bool state) {
 }
 
 bool DataUnpacker::checkRestartEnable() {
-    return battery_eStop || driver_eStop || external_eStop || imd_status || !door || crash || mcu_check || restart_enable;
+    return (!restart_enable ? !mcu_hv_en : false) || driver_eStop || external_eStop || imd_status || door || crash || mcu_check || discharge_enable || restart_enable;
 }
 

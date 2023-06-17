@@ -18,7 +18,7 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
             if((names[i] == "pack_voltage") || (names[i] == "pack_current")) {
                 addFloatToArray(data,(float)sqrt(abs(solarFunc(timeArg)-0.5*1000*(speedFunc(timeArg)*speedFunc(timeArg)-lastSpeed*lastSpeed)/efficiency)));
             } else if((names[i] == "pack_temp") || (names[i] == "motor_temp") || (names[i] == "driverIO_temp") ||
-                      (names[i] == "mainIO_temp") || (names[i] == "cabin_temp")) {
+                      (names[i] == "mainIO_temp") || (names[i] == "cabin_temp") || (names[i] == "motor_controller_temp")) {
                 addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/200));
             } else if(names[i] == "soc") {
                 addFloatToArray(data,(float)batteryFunc(timeArg));
@@ -30,26 +30,18 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
                 addFloatToArray(data,(float)rand()/((RAND_MAX+1u)/100));
             }
         } else if(types[i] == "uint8") {
-            dataToByteArray(data,(uint8_t)fmod(rand(),200));
+            if(names[i] == "mc_status"){
+                dataToByteArray(data,(uint8_t)fmod(rand(),10));
+            }else{
+                dataToByteArray(data,(uint8_t)fmod(rand(),200));
+            }
         } else if(types[i] == "uint16") {
             dataToByteArray(data,(uint16_t)fmod(rand(),200));
         } else if(types[i] == "bool") {
             // For shutdown circuit inputs, any triggerred error will stay triggered for 3 seconds after the most recent error is triggered
             // When a new error is triggerred, the countdown will restart from 3 seconds for all currently triggered errors
-            if(names[i] == "door") {
-                // NC/preferred true shutdown circuit inputs
-                std::size_t errPos = errors.find(names[i]);
-                // Trigger a fault for FAULT_TIME seconds if a random number (1<=n<=SHUTDOWN_RANGE) is less than SHUTDOWN_LIMIT
-                bool error = (rand()%SHUTDOWN_RANGE+1 >= SHUTDOWN_LIMIT) && !((errStartTime > time(NULL) - FAULT_TIME) && (errPos != std::string::npos));
-                dataToByteArray(data,error);
-                if(!error && (errPos == std::string::npos)) {
-                    time(&errStartTime);
-                    errors += names[i];
-                } else if((errPos != std::string::npos) && (errStartTime <= time(NULL) - FAULT_TIME)) {
-                    errors.erase(errPos,names[i].length());
-                }
-            } else if((names[i] == "battery_eStop") || (names[i] == "driver_eStop") || (names[i] == "external_eStop") ||
-                      (names[i] == "imd_status") || (names[i] == "crash") || (names[i] == "mcu_check")) {
+            if((names[i] == "door") || (names[i] == "battery_eStop") || (names[i] == "driver_eStop") || (names[i] == "external_eStop") ||
+               (names[i] == "imd_status") || (names[i] == "crash") || (names[i] == "mcu_check") || (names[i] == "discharge_enable")) {
                 // NO/preferred false shutdown circuit inputs
                 std::size_t errPos = errors.find(names[i]);
                 // Trigger a fault for FAULT_TIME seconds if a random number (1<=n<=SHUTDOWN_RANGE) is less than SHUTDOWN_LIMIT
@@ -67,7 +59,7 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
             }
         } else if(types[i] == "char") {
             if(names[i] == "state") {
-                switch((int)fmod(rand(),4)) {
+                switch((int)fmod(rand(),5)) {
                     case 0:
                         dataToByteArray(data,'P');
                         break;
@@ -79,6 +71,9 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
                         break;
                     case 3:
                         dataToByteArray(data,'R');
+                        break;
+                    case 4:
+                        dataToByteArray(data,'C');
                         break;
                     default:
                         dataToByteArray(data,'Q');

@@ -1,11 +1,10 @@
 QT += quick
 
-CONFIG += c++11
+CONFIG += c++20
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-#LIBS += -Ltelemetrylib/cmake-build-debug -llibtelemetrylib
 
 SOURCES += \
         backendprocesses.cpp \
@@ -13,8 +12,9 @@ SOURCES += \
         DataProcessor/DataGen.cpp \
         DataProcessor/DataUnpacker.cpp \
         telemetrylib/TCP.cpp \
-        telemetrylib/library.cpp \
-        telemetrylib/SQL.cpp
+        telemetrylib/Telemetry.cpp \
+        telemetrylib/SQL.cpp \
+        telemetrylib/DataResend.cpp
 
 RESOURCES += qml.qrc \
     UI/Images/images.qrc \
@@ -60,5 +60,6 @@ HEADERS += \
     DataProcessor/DataUnpacker.h \
     DataProcessor/DataGen.h \
     backendprocesses.h \
-    telemetrylib/library.h \
-    telemetrylib/DTI.h
+    telemetrylib/Telemetry.h \
+    telemetrylib/DTI.h \
+    telemetrylib/DataResend.h
