@@ -34,6 +34,8 @@ public:
         request.setUrl(myurl);
         request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));
         request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
+        bytes.push_front("<bl>");
+        bytes.push_back("</bl>");
         this->restclient->post(request, bytes);
     }
 
