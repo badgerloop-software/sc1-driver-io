@@ -19,15 +19,16 @@
  *       and I was too lazy to replace all of its uses below.
  */
 uint16_t INA219::read_from_reg(uint8_t reg) {
-    uint8_t data[2];
-    read_bytes_from_reg(reg, data, 2);
-    return (data[0] << 8) + data[1]; // convert char array to uint16_t
+    uint16_t data;
+    read_bytes_from_reg(reg, (uint8_t *)&data, 2);
+    return data; 
 }
 
 /* Write 2 bytes to a register. Can only write to the configuration and calibration registers.
  */
 void INA219::write_to_reg(uint8_t reg, uint16_t val) {
     write_data<uint16_t>(reg, val);
+    printf("write function in ina219 ran\n");
 }
 
 INA219::INA219(int bus, int addr, float r_shunt, float max_current) : I2c(bus, addr, O_RDWR) {
@@ -40,6 +41,12 @@ INA219::INA219(int bus, int addr, float r_shunt, float max_current) : I2c(bus, a
  * Returns 0 on success, 1 if an error occurred
  */
 int INA219::begin() {
+    // open the i2c bus if it hasn't been opened by another device.
+    int rc;
+    if (!this->is_open()) {
+        rc = this->open_i2c();
+        if (rc) return rc;
+    }
     // check value of configuration register to make sure this is the right device.
     if (read_from_reg(CONFIGURATION_REG) != CONFIG_REG_DEFAULT) {
         printf("Error reading from configuration register.\n");
