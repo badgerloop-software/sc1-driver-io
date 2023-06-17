@@ -3,7 +3,7 @@
 //
 
 #include "DataResend.h"
-
+#include <QCoreApplication>
 
 void DataResend::setChannel(DTI *channel) {
     this->channel = channel;
@@ -40,6 +40,7 @@ void DataResend::resend() {
         data cur = q.dequeue();
         qDebug()<<cur.t;
         emit(send(cur.d, cur.t));
+        QCoreApplication::processEvents(); //allow qt engine to process the tcp traffic
     }
     mutex.unlock(); //exit the loop data can be added
     disconnect(this, SIGNAL(send(QByteArray, long long)), 0, 0);
