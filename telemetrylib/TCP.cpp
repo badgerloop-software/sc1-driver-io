@@ -9,6 +9,8 @@ class TCP : public DTI {
 public:
     void sendData(QByteArray bytes, long long timestamp) override {
         qDebug()<<"sending via TCP";
+        bytes.push_front("<bl>");
+        bytes.push_back("</bl>");
         for (QTcpSocket* socket : _sockets) {
             socket->write(bytes);
         }
@@ -83,7 +85,7 @@ private:
     void checkConnection() {
         QTcpSocket sock;
         while(!isConnected) {
-            sock.connectToHost("196.186.1.16", 80);
+            sock.connectToHost("196.186.1.16", 22);
             bool connected = sock.waitForConnected(500);
             if (!connected && connection) {
                 sock.abort();
