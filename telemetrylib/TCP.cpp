@@ -83,7 +83,7 @@ private:
     void checkConnection() {
         QTcpSocket sock;
         while(!isConnected) {
-            sock.connectToHost("196.186.1.16", 80);
+            sock.connectToHost("196.168.1.16", 22);
             bool connected = sock.waitForConnected(500);
             if (!connected && connection) {
                 sock.abort();
