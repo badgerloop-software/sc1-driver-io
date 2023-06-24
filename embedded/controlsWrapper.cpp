@@ -19,7 +19,7 @@
 
 Serial serial;
 QMutex uartMutex;
-//Tca6416 tca(0, 0x20); // tca objects used to read GPIO pins for lights
+Tca6416 tca(1, 0x20); // tca objects used to read GPIO pins for lights
 int lblnk_toggle;
 int rblnk_toggle;
 int hl_toggle;
@@ -39,17 +39,22 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
     serial = Serial();
     serial.openDevice(0, 115200);
 
-    /*
+    
     // initialize tca
     tca = Tca6416(0, 0x20);
-    // set enable signals P00, P04, P10, P16, P17 to write (0)
-    uint8_t directions[16]= {0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0};
+    // set enable signals to write (0)
+    uint8_t directions[16]= {1, 1, 1, 1, 1, 1, 1, 1, 
+                                0, 1, 0, 0, 0, 0, 0, 0};
     tca.begin(directions);
     // initialize lights to 0
-    tca.set_state(1, 0, 0); // FL_TS_LED_EN
-    tca.set_state(1, 7, 0); // FR_TS_LED_EN
-    tca.set_state(1, 6, 0); // HL_LED_EN
-    */
+    tca.set_state(1, 7, 0); // BR_TSB_LED_EN back right turn signal
+    tca.set_state(1, 6, 0); // BC_BRK_LED_EN
+    tca.set_state(1, 5, 0); // BL_TSB_LED_EN back left turn signal
+    tca.set_state(1, 4, 0); // F_HL_LED_EN front headlight
+    tca.set_state(1, 3, 0); // BC_BPS_LED_EN
+    tca.set_state(1, 2, 0); // FR_TS_LED_EN front right turn signal
+    tca.set_state(1, 0, 0); // FL_TS_LED_EN front left turn signal
+    
 
     // initialize values of global ints
     lblnk = 0;
@@ -62,12 +67,11 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
 /* Uses the TCA to read inputs (toggles) and set outputs (enables for lights).
  * Includes code to make the turn signals blink 
  */
-/*
 void set_lights() {
     // read input signals
-    lblnk_toggle = tca.get_state(0, 7);
-    rblnk_toggle = tca.get_state(0, 6);
-    hl_toggle = tca.get_state(0, 5);
+    lblnk_toggle = tca.get_state(0, 5);
+    rblnk_toggle = tca.get_state(0, 4);
+    hl_toggle = tca.get_state(0, 2);
 
     // blink code 
     if (lblnk_toggle == 1) {
@@ -91,10 +95,12 @@ void set_lights() {
 
     // set lights 
     tca.set_state(1, 0, lblnk); // FL_TS_LED_EN
-    tca.set_state(1, 7, rblnk); // FR_TS_LED_EN
-    tca.set_state(1, 6, hl_toggle); // F_HL_LED_EN
+    tca.set_state(1, 5, lblnk); // BL_TSB_LED_EN
+    tca.set_state(1, 2, rblnk); // FR_TS_LED_EN
+    tca.set_state(1, 7, rblnk); // BR_TSB_LED_EN
+    tca.set_state(1, 4, hl_toggle); // F_HL_LED_EN
 }
-*/
+
 
 /* Debug method used to printout all pins of the TCA that are 1.
  * Useful to see if flipping a hardware switch will be read by the TCA.
@@ -131,7 +137,7 @@ void controlsWrapper::startThread() {
         printf("power: %f\n", ina.get_power());
         printf("---------------------------\n");
 
-        //set_lights(); // call method to set the lights using TCA
+        set_lights(); // call method to set the lights using TCA
         char buffTemp[TOTAL_BYTES];
         // UART code
         std::cout << "===========================================" << std::endl;
@@ -160,7 +166,8 @@ void controlsWrapper::startThread() {
         char write_array[2]; 
         write_array[0] = restart_enable; 
         write_array[1] = parking_brake; 
-        parking_brake = !parking_brake; // TODO: remove this line. It's used for testing purposes. 
+        //parking_brake = !parking_brake; // TODO: remove this line. It's used for testing purposes. 
+        parking_brake = tca.get_state(0, 1) // Parking Brake
         int write = serial.writeBytes(write_array, 2); 
         std::cout << "write success: " << write << std::endl;
         uartMutex.unlock();
