@@ -23,8 +23,9 @@ Tca6416 tca(1, 0x20); // tca objects used to read GPIO pins for lights
 int lblnk_toggle;
 int rblnk_toggle;
 int hl_toggle;
-int lblnk; 
-int rblnk; 
+int brk_toggle;
+int hzd_toggle;
+int blnk; 
 
 
 #define TOTAL_BYTES 431
@@ -40,8 +41,6 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
     serial.openDevice(0, 115200);
 
     
-    // initialize tca
-    tca = Tca6416(0, 0x20);
     // set enable signals to write (0)
     uint8_t directions[16]= {1, 1, 1, 1, 1, 1, 1, 1, 
                                 0, 1, 0, 0, 0, 0, 0, 0};
@@ -57,11 +56,12 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
     
 
     // initialize values of global ints
-    lblnk = 0;
-    rblnk = 0;
+    blnk = 0;
     lblnk_toggle = 0;
     rblnk_toggle = 0;
     hl_toggle = 0;
+    brk_toggle = 0;
+    hzd_toggle = 0;
 }
 
 /* Uses the TCA to read inputs (toggles) and set outputs (enables for lights).
@@ -72,40 +72,41 @@ void set_lights() {
     lblnk_toggle = tca.get_state(0, 5);
     rblnk_toggle = tca.get_state(0, 4);
     hl_toggle = tca.get_state(0, 2);
+    brk_toggle = tca.get_state(0,7);
+    hzd_toggle = tca.get_state(0,3);
 
     // blink code 
-    if (lblnk_toggle == 1) {
-        if (lblnk == 0) {
-            lblnk = 1;
+    if (lblnk_toggle | rblnk_toggle | hzd_toggle) {
+        if (blnk == 0) {
+            blnk = 1;
         } else {
-            lblnk = 0;
+            blnk = 0;
         }
     } else {
-        lblnk = 0;
-    }
-    if (rblnk_toggle == 1) {
-        if (rblnk == 0) {
-            rblnk = 1;
-        } else {
-            rblnk = 0;
-        }
-    } else {
-        rblnk = 0;
+        blnk = 0;
     }
 
-    // set lights 
-    tca.set_state(1, 0, lblnk); // FL_TS_LED_EN
-    tca.set_state(1, 5, lblnk); // BL_TSB_LED_EN
-    tca.set_state(1, 2, rblnk); // FR_TS_LED_EN
-    tca.set_state(1, 7, rblnk); // BR_TSB_LED_EN
+    // set lights
+    printf("blnk: %d\n", blnk);
+    printf("lblnk_toggle: %d\n", lblnk_toggle);
+    printf("rblnk_toggle: %d\n", rblnk_toggle);
+    printf("hl_toggle: %d\n", hl_toggle);
+    printf("brk_toggle: %d\n", brk_toggle);
+    printf("hzd_toggle: %d\n", hzd_toggle);
+    
+    tca.set_state(1, 0, (lblnk_toggle | hzd_toggle) & blnk); // FL_TS_LED_EN
+    tca.set_state(1, 5, ((lblnk_toggle | hzd_toggle) & blnk) | (~(lblnk_toggle | hzd_toggle) & brk_toggle)); // BL_TSB_LED_EN
+    tca.set_state(1, 2, (rblnk_toggle | hzd_toggle) & blnk); // FR_TS_LED_EN
+    tca.set_state(1, 7, ((rblnk_toggle | hzd_toggle) & blnk) | (~(rblnk_toggle | hzd_toggle) & brk_toggle)); // BR_TSB_LED_EN
     tca.set_state(1, 4, hl_toggle); // F_HL_LED_EN
+    tca.set_state(1, 6, brk_toggle); //BC_BRK_LED_EN
 }
 
 
 /* Debug method used to printout all pins of the TCA that are 1.
  * Useful to see if flipping a hardware switch will be read by the TCA.
  */
-/*
+ /*
 void printout_tca() {
     // print out all tca pins that are 1 
     for (int i = 0; i < 2; i++) {
@@ -118,7 +119,6 @@ void printout_tca() {
     }
 }
 */
-
 // This is the firmware main loop. It's called in a separate thread in DataUnpacker.cpp
 // Put your testing code here!
 void controlsWrapper::startThread() {
@@ -160,14 +160,21 @@ void controlsWrapper::startThread() {
         }
         uartMutex.unlock();
         
-        // write restart_enable signal
+        /*
+        // check bps_fault from MainIO
+        bool bps_fault = buffTemp[offsets.bps_fault];
+        printf("bps_fault offset: %d\n", offsets.bps_fault);
+        */
+
+        // write 
+        // restart_enable and parking brake
         uartMutex.lock();
         std::cout << "restart_enable: " << restart_enable << std::endl;
         char write_array[2]; 
         write_array[0] = restart_enable; 
         write_array[1] = parking_brake; 
         //parking_brake = !parking_brake; // TODO: remove this line. It's used for testing purposes. 
-        parking_brake = tca.get_state(0, 1) // Parking Brake
+        parking_brake = tca.get_state(0, 1); // Parking Brake
         int write = serial.writeBytes(write_array, 2); 
         std::cout << "write success: " << write << std::endl;
         uartMutex.unlock();
@@ -176,9 +183,9 @@ void controlsWrapper::startThread() {
         buffTemp[offsets.headlights] = hl_toggle;
         buffTemp[offsets.headlights_led_en] = hl_toggle;
         buffTemp[offsets.right_turn] = rblnk_toggle;
-        buffTemp[offsets.fr_turn_led_en] = rblnk;
+        buffTemp[offsets.fr_turn_led_en] = (blnk & rblnk_toggle);
         buffTemp[offsets.left_blinker] = lblnk_toggle;
-        buffTemp[offsets.fl_turn_led_en] = lblnk;
+        buffTemp[offsets.fl_turn_led_en] = (blnk & lblnk_toggle);
 
         // copy data in char array to QByteArray
         mutex.lock();
