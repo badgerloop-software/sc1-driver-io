@@ -15,7 +15,7 @@
 #include <embedded/drivers/include/serial.h>
 #include <embedded/drivers/src/serial.cpp>
 #define T_MESSAGE_MS 1000  // 1 second 
-#define UART_WAIT_US 375000 // .375 seconds
+#define UART_WAIT_US 125000 // .375 seconds
 #define BLINK_RATE 375000// 1 second
 #define HEARTBEAT 2         // go to error state if this # messages that aren't read
 
@@ -146,19 +146,17 @@ void controlsWrapper::startThread() {
     int messages_not_received = 0;
     bool parking_brake = 0;
 
-    // TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
-    // TODO Write 2 bytes here, and we can use the 2 bytes we normally write (pbrake and restart_en) as the request later
+	// TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
+	// TODO Write 2 bytes here, and we can use the 2 bytes we normally write (pbrake and restart_en) as the request later
     /* TODO This should be unnecessary
-    uartMutex.lock();
-    char intial_request[2] = {0, 1}; // TODO Do we want different values?
-    int init_write;
-    do {
+	uartMutex.lock();
+	char intial_request[2] = {0, 1}; // TODO Do we want different values?
+	int init_write;
+	do {
         init_write = serial.writeBytes(initial_request, 2); 
         std::cout << "write success: " << write << std::endl;
     } while(!init_write);
     uartMutex.unlock();*/
-    
-    int toggle = 0; // used to control bps_fault light strobe
 
     while(true) {
         printf("bus voltage: %f\n", ina.get_bus_voltage());
@@ -172,10 +170,10 @@ void controlsWrapper::startThread() {
         // UART code
         std::cout << "===========================================" << std::endl;
         
-        // TODO Moved this here from below
-        // write 
+		// TODO Moved this here from below
+		// write 
         // restart_enable and parking brake
-        // TODO This acts as our request for new data
+		// TODO This acts as our request for new data
         uartMutex.lock();
         std::cout << "restart_enable: " << restart_enable << std::endl;
         char write_array[2]; 
@@ -238,11 +236,11 @@ void controlsWrapper::startThread() {
         //int numBytesRead = serial.readBytes(buffTemp, TOTAL_BYTES, T_MESSAGE_MS, 0);
         
 
-        // write 
+		// write 
         // restart_enable and parking brake
-        // TODO This acts as our request for new data
+		// TODO This acts as our request for new data
         /* TODO
-        uartMutex.lock();
+		uartMutex.lock();
         std::cout << "restart_enable: " << restart_enable << std::endl;
         char write_array[2]; 
         write_array[0] = restart_enable; 
@@ -264,7 +262,7 @@ void controlsWrapper::startThread() {
         // copy data in char array to QByteArray
         mutex.lock();
         bytes.clear();
-        // TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
+		// TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
 
         bytes = QByteArray::fromRawData(buffTemp, TOTAL_BYTES);
         mutex.unlock();
