@@ -75,6 +75,10 @@ void set_lights() {
     brk_toggle = tca.get_state(0,7);
     hzd_toggle = tca.get_state(0,3);
 
+    // TODO Add logic to only toggle the lights/blinkers every N cycles of the main loop (increase UART freq and control blinker freq)
+    // TODO Make sure number of flashes is between 60-120 flashes/sec (toggle freq of 120 - 240Hz)
+    // TODO Decided on 80 bps (togles every 375 ms)
+
     // blink code 
     if (lblnk_toggle | rblnk_toggle | hzd_toggle) {
         if (blnk == 0) {
@@ -193,8 +197,8 @@ void controlsWrapper::startThread() {
         bytes = QByteArray::fromRawData(buffTemp, TOTAL_BYTES);
         mutex.unlock();
 
-        //usleep(1000000);
-        sleep(1);
+        usleep(375000);
+        //sleep(1);
         
     }
 }

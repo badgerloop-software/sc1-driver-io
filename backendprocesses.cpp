@@ -65,7 +65,8 @@ void BackendProcesses::threadProcedure()
         return;
     }
 
-    usleep(100000);//50000);
+    // TODO Half the frequency of the UART loop so that we don't reread mcu_hv_en in the byte array
+    usleep(2000000);//50000);
 
     //DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
 
