@@ -13,6 +13,15 @@ Popup {
     modal: true
     closePolicy: Popup.NoAutoClose
 
+    MouseArea {
+        x: 1520
+        y: 0
+        z: 1
+        width: 400
+        height: 200
+        onClicked: Qt.quit()
+    }
+
     property int mcu_check_point_size: 22
     property int mcu_check_pref_height: 50
     property int shutdown_input_text_size: 30
@@ -1064,8 +1073,8 @@ Popup {
             x: (parent.width - width) / 2
             y: parent.height - height - 15
             horizontalAlignment: Text.AlignHCenter
-            font.pointSize: 18
-            text: can_close ? qsTr("All faults cleared\nTap anywhere to clear warning") : qsTr("")
+            font.pointSize: 32
+            text: can_close ? qsTr("All faults cleared\nTap anywhere other than the top-right corner of the screen to clear this warning") : qsTr("")
             color: "#ffffff"
         }
     }
