@@ -133,8 +133,20 @@ void controlsWrapper::startThread() {
     }
     int messages_not_received = 0;
     bool parking_brake = 0;
-    while(true) {
 
+	// TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
+	// TODO Write 2 bytes here, and we can use the 2 bytes we normally write (pbrake and restart_en) as the request later
+    /* TODO This should be unnecessary
+	uartMutex.lock();
+	char intial_request[2] = {0, 1}; // TODO Do we want different values?
+	int init_write;
+	do {
+        init_write = serial.writeBytes(initial_request, 2); 
+        std::cout << "write success: " << write << std::endl;
+    } while(!init_write);
+    uartMutex.unlock();*/
+
+	while(true) {
         printf("bus voltage: %f\n", ina.get_bus_voltage());
         printf("shunt voltage: %f\n", ina.get_shunt_voltage());
         printf("current: %f\n", ina.get_current());
@@ -146,10 +158,28 @@ void controlsWrapper::startThread() {
         // UART code
         std::cout << "===========================================" << std::endl;
         
+		// TODO Moved this here from below
+		// write 
+        // restart_enable and parking brake
+		// TODO This acts as our request for new data
+        uartMutex.lock();
+        std::cout << "restart_enable: " << restart_enable << std::endl;
+        char write_array[2]; 
+        write_array[0] = restart_enable; 
+        write_array[1] = parking_brake; 
+        //parking_brake = !parking_brake; // TODO: remove this line. It's used for testing purposes. 
+        parking_brake = tca.get_state(0, 1); // Parking Brake
+        int write = serial.writeBytes(write_array, 2); 
+        std::cout << "write success: " << write << std::endl;
+        uartMutex.unlock();
+       
+
+
         // read
         uartMutex.lock();
-        // check if we actually read a message 
-        int numBytesRead = serial.readBytes(buffTemp, TOTAL_BYTES, T_MESSAGE_MS, 0); 
+
+        // check if we actually read a message
+        int numBytesRead = serial.readBytes(buffTemp, TOTAL_BYTES, T_MESSAGE_MS, 0);
         if (numBytesRead == 0) {
             std::cout << "message not received" << std::endl;
             if (++messages_not_received >= HEARTBEAT) {
@@ -170,9 +200,15 @@ void controlsWrapper::startThread() {
         printf("bps_fault offset: %d\n", offsets.bps_fault);
         */
 
-        // write 
+        // TODO Potentially wait to read a request from Main IO acknowledging that it wants data (can probably take it for granted right now)
+        //int numBytesRead = serial.readBytes(buffTemp, TOTAL_BYTES, T_MESSAGE_MS, 0);
+        
+
+		// write 
         // restart_enable and parking brake
-        uartMutex.lock();
+		// TODO This acts as our request for new data
+        /* TODO
+		uartMutex.lock();
         std::cout << "restart_enable: " << restart_enable << std::endl;
         char write_array[2]; 
         write_array[0] = restart_enable; 
@@ -181,7 +217,7 @@ void controlsWrapper::startThread() {
         parking_brake = tca.get_state(0, 1); // Parking Brake
         int write = serial.writeBytes(write_array, 2); 
         std::cout << "write success: " << write << std::endl;
-        uartMutex.unlock();
+        uartMutex.unlock();*/
  
         // set lights in buffTemp to send to software      
         buffTemp[offsets.headlights] = hl_toggle;
@@ -194,6 +230,8 @@ void controlsWrapper::startThread() {
         // copy data in char array to QByteArray
         mutex.lock();
         bytes.clear();
+		// TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
+
         bytes = QByteArray::fromRawData(buffTemp, TOTAL_BYTES);
         mutex.unlock();
 
