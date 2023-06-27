@@ -134,19 +134,21 @@ void controlsWrapper::startThread() {
     int messages_not_received = 0;
     bool parking_brake = 0;
 
-	// TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
-	// TODO Write 2 bytes here, and we can use the 2 bytes we normally write (pbrake and restart_en) as the request later
+    // TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
+    // TODO Write 2 bytes here, and we can use the 2 bytes we normally write (pbrake and restart_en) as the request later
     /* TODO This should be unnecessary
-	uartMutex.lock();
-	char intial_request[2] = {0, 1}; // TODO Do we want different values?
-	int init_write;
-	do {
+    uartMutex.lock();
+    char intial_request[2] = {0, 1}; // TODO Do we want different values?
+    int init_write;
+    do {
         init_write = serial.writeBytes(initial_request, 2); 
         std::cout << "write success: " << write << std::endl;
     } while(!init_write);
     uartMutex.unlock();*/
+    
+    int toggle = 0; // used to control bps_fault light strobe
 
-	while(true) {
+    while(true) {
         printf("bus voltage: %f\n", ina.get_bus_voltage());
         printf("shunt voltage: %f\n", ina.get_shunt_voltage());
         printf("current: %f\n", ina.get_current());
@@ -158,10 +160,10 @@ void controlsWrapper::startThread() {
         // UART code
         std::cout << "===========================================" << std::endl;
         
-		// TODO Moved this here from below
-		// write 
+        // TODO Moved this here from below
+        // write 
         // restart_enable and parking brake
-		// TODO This acts as our request for new data
+        // TODO This acts as our request for new data
         uartMutex.lock();
         std::cout << "restart_enable: " << restart_enable << std::endl;
         char write_array[2]; 
@@ -196,19 +198,47 @@ void controlsWrapper::startThread() {
         
         /*
         // check bps_fault from MainIO
-        bool bps_fault = buffTemp[offsets.bps_fault];
         printf("bps_fault offset: %d\n", offsets.bps_fault);
+
+        // check things that could trigger bps_fault
+        bool bps_fault = buffTemp[offsets.bps_fault];
+        float pack_temp = buffTemp[offsets.pack_temp];
+        float pack_current = buffTemp[offsets.pack_current];
+        float pack_voltage = buffTemp[offsets.pack_voltage];
+        bool imd_status = buffTemp[offsets.imd_status];
+        bool discharge_enable = buffTemp[offsets.discharge_enable];
+        bool voltage_failsafe = buffTemp[offsets.voltage_failsafe];
+        bool external_eStop = buffTemp[offsets.external_eStop];
+
+        if (pack_temp > PACK_TEMP_MAX
+            || pack_current > PACK_CURRENT_MAX
+            || pack_voltage < PACK_VOLTAGE_MIN || pack_voltage > PACK_VOLTAGE_MAX
+            || imd_status || discharge_enable || voltage_failsafe || external_eStop || bps_fault
+            ) {
+            // make bps light strobe
+            if (toggle) {
+                toggle = 0;
+            } else {
+                toggle = 1;
+            }
+            tca.set_state(1, 3, toggle);
+            buffTemp[offsets.bps_fault] = 1; // set bps_fault in driverIO data format
+        } else {
+            if (tca.get_state(1, 3) != 0) {
+                tca.set_state(1, 3, 0);
+            }
+        }
         */
 
         // TODO Potentially wait to read a request from Main IO acknowledging that it wants data (can probably take it for granted right now)
         //int numBytesRead = serial.readBytes(buffTemp, TOTAL_BYTES, T_MESSAGE_MS, 0);
         
 
-		// write 
+        // write 
         // restart_enable and parking brake
-		// TODO This acts as our request for new data
+        // TODO This acts as our request for new data
         /* TODO
-		uartMutex.lock();
+        uartMutex.lock();
         std::cout << "restart_enable: " << restart_enable << std::endl;
         char write_array[2]; 
         write_array[0] = restart_enable; 
@@ -230,7 +260,7 @@ void controlsWrapper::startThread() {
         // copy data in char array to QByteArray
         mutex.lock();
         bytes.clear();
-		// TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
+        // TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
 
         bytes = QByteArray::fromRawData(buffTemp, TOTAL_BYTES);
         mutex.unlock();
