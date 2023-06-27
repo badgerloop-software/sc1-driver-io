@@ -112,7 +112,7 @@ void set_lights() {
         tca.set_state(1, 7, ((rblnk_toggle | hzd_toggle) & blnk) | (~(rblnk_toggle | hzd_toggle) & brk_toggle)); // BR_TSB_LED_EN
         tca.set_state(1, 4, hl_toggle); // F_HL_LED_EN
         tca.set_state(1, 6, brk_toggle); //BC_BRK_LED_EN
-        tca.set_state(1, 3, bps_led_toggle & blnk); // BC_BPS_LED_EN
+        tca.set_state(1, 3, hzd_toggle & blnk); // BC_BPS_LED_EN
     } else {
         blnk_cycle++;
     }
