@@ -41,7 +41,7 @@ Item {
         y: 0
         width: 400
         height: 200
-        color: "#000000"
+        color: "#480000"
 
         Text {
             id: clock
@@ -65,6 +65,11 @@ Item {
             font.styleName: "Regular"
             font.family: "Work Sans"
         }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: Qt.quit()
     }
 
     Timer {
