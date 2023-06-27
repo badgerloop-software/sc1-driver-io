@@ -15,6 +15,8 @@
 #include <embedded/drivers/include/serial.h>
 #include <embedded/drivers/src/serial.cpp>
 #define T_MESSAGE_MS 1000  // 1 second 
+#define UART_WAIT_US 375000 // .375 seconds
+#define BLINK_RATE 375000// 1 second
 #define HEARTBEAT 2         // go to error state if this # messages that aren't read
 
 Serial serial;
@@ -25,7 +27,9 @@ int rblnk_toggle;
 int hl_toggle;
 int brk_toggle;
 int hzd_toggle;
+int bps_led_toggle;
 int blnk; 
+int blnk_cycle; // controls when the light setting code runs
 
 
 #define TOTAL_BYTES 431
@@ -62,6 +66,8 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
     hl_toggle = 0;
     brk_toggle = 0;
     hzd_toggle = 0;
+    bps_led_toggle = 0;
+    blnk_cycle = 0;
 }
 
 /* Uses the TCA to read inputs (toggles) and set outputs (enables for lights).
@@ -77,33 +83,39 @@ void set_lights() {
 
     // TODO Add logic to only toggle the lights/blinkers every N cycles of the main loop (increase UART freq and control blinker freq)
     // TODO Make sure number of flashes is between 60-120 flashes/sec (toggle freq of 120 - 240Hz)
-    // TODO Decided on 80 bps (togles every 375 ms)
+    // TODO Decided on 80 bpm (togles every 375 ms)
+    if (blnk_cycle >= BLINK_RATE / UART_WAIT_US) {
+        blnk_cycle = 0;
 
-    // blink code 
-    if (lblnk_toggle | rblnk_toggle | hzd_toggle) {
-        if (blnk == 0) {
-            blnk = 1;
+        // blink code 
+        if (lblnk_toggle | rblnk_toggle | hzd_toggle | bps_led_toggle) {
+            if (blnk == 0) {
+                blnk = 1;
+            } else {
+                blnk = 0;
+            }
         } else {
             blnk = 0;
         }
-    } else {
-        blnk = 0;
-    }
 
-    // set lights
-    printf("blnk: %d\n", blnk);
-    printf("lblnk_toggle: %d\n", lblnk_toggle);
-    printf("rblnk_toggle: %d\n", rblnk_toggle);
-    printf("hl_toggle: %d\n", hl_toggle);
-    printf("brk_toggle: %d\n", brk_toggle);
-    printf("hzd_toggle: %d\n", hzd_toggle);
-    
-    tca.set_state(1, 0, (lblnk_toggle | hzd_toggle) & blnk); // FL_TS_LED_EN
-    tca.set_state(1, 5, ((lblnk_toggle | hzd_toggle) & blnk) | (~(lblnk_toggle | hzd_toggle) & brk_toggle)); // BL_TSB_LED_EN
-    tca.set_state(1, 2, (rblnk_toggle | hzd_toggle) & blnk); // FR_TS_LED_EN
-    tca.set_state(1, 7, ((rblnk_toggle | hzd_toggle) & blnk) | (~(rblnk_toggle | hzd_toggle) & brk_toggle)); // BR_TSB_LED_EN
-    tca.set_state(1, 4, hl_toggle); // F_HL_LED_EN
-    tca.set_state(1, 6, brk_toggle); //BC_BRK_LED_EN
+        // set lights
+        printf("blnk: %d\n", blnk);
+        printf("lblnk_toggle: %d\n", lblnk_toggle);
+        printf("rblnk_toggle: %d\n", rblnk_toggle);
+        printf("hl_toggle: %d\n", hl_toggle);
+        printf("brk_toggle: %d\n", brk_toggle);
+        printf("hzd_toggle: %d\n", hzd_toggle);
+        
+        tca.set_state(1, 0, (lblnk_toggle | hzd_toggle) & blnk); // FL_TS_LED_EN
+        tca.set_state(1, 5, ((lblnk_toggle | hzd_toggle) & blnk) | (~(lblnk_toggle | hzd_toggle) & brk_toggle)); // BL_TSB_LED_EN
+        tca.set_state(1, 2, (rblnk_toggle | hzd_toggle) & blnk); // FR_TS_LED_EN
+        tca.set_state(1, 7, ((rblnk_toggle | hzd_toggle) & blnk) | (~(rblnk_toggle | hzd_toggle) & brk_toggle)); // BR_TSB_LED_EN
+        tca.set_state(1, 4, hl_toggle); // F_HL_LED_EN
+        tca.set_state(1, 6, brk_toggle); //BC_BRK_LED_EN
+        tca.set_state(1, 3, bps_led_toggle & blnk); // BC_BPS_LED_EN
+    } else {
+        blnk_cycle++;
+    }
 }
 
 
@@ -215,18 +227,10 @@ void controlsWrapper::startThread() {
             || pack_voltage < PACK_VOLTAGE_MIN || pack_voltage > PACK_VOLTAGE_MAX
             || imd_status || discharge_enable || voltage_failsafe || external_eStop || bps_fault
             ) {
-            // make bps light strobe
-            if (toggle) {
-                toggle = 0;
-            } else {
-                toggle = 1;
-            }
-            tca.set_state(1, 3, toggle);
+            bps_led_toggle = 1;
             buffTemp[offsets.bps_fault] = 1; // set bps_fault in driverIO data format
         } else {
-            if (tca.get_state(1, 3) != 0) {
-                tca.set_state(1, 3, 0);
-            }
+            bps_led_toggle = 0;
         }
         */
 
@@ -265,7 +269,7 @@ void controlsWrapper::startThread() {
         bytes = QByteArray::fromRawData(buffTemp, TOTAL_BYTES);
         mutex.unlock();
 
-        usleep(375000);
+        usleep(UART_WAIT_US);
         //sleep(1);
         
     }
