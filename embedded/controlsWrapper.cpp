@@ -78,8 +78,9 @@ void set_lights() {
     lblnk_toggle = tca.get_state(0, 5);
     rblnk_toggle = tca.get_state(0, 4);
     hl_toggle = tca.get_state(0, 2);
-    brk_toggle = tca.get_state(0,7);
-    hzd_toggle = tca.get_state(0,3);
+    // TODO brake signal was rerouted to the parking brake header: brk_toggle = tca.get_state(0,7);
+    brk_toggle = tca.get_state(0, 1); // Parking Brake
+    hzd_toggle = tca.get_state(0, 3);
 
     // TODO Add logic to only toggle the lights/blinkers every N cycles of the main loop (increase UART freq and control blinker freq)
     // TODO Make sure number of flashes is between 60-120 flashes/sec (toggle freq of 120 - 240Hz)
@@ -145,15 +146,15 @@ void controlsWrapper::startThread() {
         sleep(10);
     }
     int messages_not_received = 0;
-    bool parking_brake = 0;
+    // TODO Parking brake was moved to MCC: bool parking_brake = 0;
 
-	// TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
-	// TODO Write 2 bytes here, and we can use the 2 bytes we normally write (pbrake and restart_en) as the request later
+    // TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
+    // TODO Write 2 bytes here, and we can use the 2 bytes we normally write (pbrake and restart_en) as the request later
     /* TODO This should be unnecessary
-	uartMutex.lock();
-	char intial_request[2] = {0, 1}; // TODO Do we want different values?
-	int init_write;
-	do {
+    uartMutex.lock();
+    char intial_request[2] = {0, 1}; // TODO Do we want different values?
+    int init_write;
+    do {
         init_write = serial.writeBytes(initial_request, 2); 
         std::cout << "write success: " << write << std::endl;
     } while(!init_write);
@@ -171,17 +172,16 @@ void controlsWrapper::startThread() {
         // UART code
         std::cout << "===========================================" << std::endl;
         
-		// TODO Moved this here from below
-		// write 
+        // write 
         // restart_enable and parking brake
-		// TODO This acts as our request for new data
+        // This acts as our request for new data
         uartMutex.lock();
         std::cout << "restart_enable: " << restart_enable << std::endl;
         char write_array[2]; 
         write_array[0] = restart_enable; 
-        write_array[1] = parking_brake; 
-        //parking_brake = !parking_brake; // TODO: remove this line. It's used for testing purposes. 
-        parking_brake = tca.get_state(0, 1); // Parking Brake
+        write_array[1] = 0; // TODO Just a stop-gap measure so that we don't have to update the number of bytes expected on Main IO
+        // TODO Moved to MCC: write_array[1] = parking_brake; 
+        // TODO Moved to MCC: parking_brake = tca.get_state(0, 1); // Parking Brake
         int write = serial.writeBytes(write_array, 2); 
         std::cout << "write success: " << write << std::endl;
         uartMutex.unlock();
@@ -238,11 +238,11 @@ void controlsWrapper::startThread() {
         //int numBytesRead = serial.readBytes(buffTemp, TOTAL_BYTES, T_MESSAGE_MS, 0);
         
 
-		// write 
+        // write 
         // restart_enable and parking brake
-		// TODO This acts as our request for new data
+        // TODO This acts as our request for new data
         /* TODO
-		uartMutex.lock();
+        uartMutex.lock();
         std::cout << "restart_enable: " << restart_enable << std::endl;
         char write_array[2]; 
         write_array[0] = restart_enable; 
@@ -268,7 +268,7 @@ void controlsWrapper::startThread() {
         // copy data in char array to QByteArray
         mutex.lock();
         bytes.clear();
-		// TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
+        // TODO Have Driver IO intiate the connection by sending an ack/handshaek to Main IO to request a packet
 
         bytes = QByteArray::fromRawData(buffTemp, TOTAL_BYTES);
         mutex.unlock();
