@@ -128,12 +128,16 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
             offsets.pack_temp = arrayOffset;
         } else if(name == "pack_current") {
             offsets.pack_current = arrayOffset;
-        } else if(name == "pack_voltage") {
-            offsets.pack_voltage = arrayOffset;
+        } else if(name == "lowest_cell_group_voltage") {
+            offsets.lowest_cell_group_voltage = arrayOffset;
+        } else if(name == "highest_cell_group_voltage") {
+            offsets.highest_cell_group_voltage = arrayOffset;
         } else if(name == "bps_fault") {
             offsets.bps_fault = arrayOffset;
         } else if(name == "imd_status") {
             offsets.imd_status = arrayOffset;
+        } else if(name == "charge_enable") {
+            offsets.charge_enable = arrayOffset;
         } else if(name == "discharge_enable") {
             offsets.discharge_enable = arrayOffset;
         } else if(name == "voltage_failsafe") {

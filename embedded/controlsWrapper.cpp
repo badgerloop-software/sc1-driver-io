@@ -14,9 +14,9 @@
 #include <embedded/devices/src/tca6416.cpp>
 #include <embedded/drivers/include/serial.h>
 #include <embedded/drivers/src/serial.cpp>
-#define T_MESSAGE_MS 1000  // 1 second 
+#define T_MESSAGE_MS 1000   // 1 second
 #define UART_WAIT_US 125000 // .375 seconds
-#define BLINK_RATE 375000// 1 second
+#define BLINK_RATE 375000   // .375 seconds
 #define HEARTBEAT 2         // go to error state if this # messages that aren't read
 
 Serial serial;
@@ -105,6 +105,7 @@ void set_lights() {
         printf("hl_toggle: %d\n", hl_toggle);
         printf("brk_toggle: %d\n", brk_toggle);
         printf("hzd_toggle: %d\n", hzd_toggle);
+        printf("bps_led_toggle: %d\n", bps_led_toggle);
         
         tca.set_state(1, 0, (lblnk_toggle | hzd_toggle) & blnk); // FL_TS_LED_EN
         tca.set_state(1, 5, ((lblnk_toggle | hzd_toggle) & blnk) | (~(lblnk_toggle | hzd_toggle) & brk_toggle)); // BL_TSB_LED_EN
@@ -112,7 +113,7 @@ void set_lights() {
         tca.set_state(1, 7, ((rblnk_toggle | hzd_toggle) & blnk) | (~(rblnk_toggle | hzd_toggle) & brk_toggle)); // BR_TSB_LED_EN
         tca.set_state(1, 4, hl_toggle); // F_HL_LED_EN
         tca.set_state(1, 6, brk_toggle); //BC_BRK_LED_EN
-        tca.set_state(1, 3, hzd_toggle & blnk); // BC_BPS_LED_EN
+        tca.set_state(1, 3, bps_led_toggle & blnk); // BC_BPS_LED_EN
     } else {
         blnk_cycle++;
     }
@@ -206,7 +207,6 @@ void controlsWrapper::startThread() {
         }
         uartMutex.unlock();
         
-        /*
         // check bps_fault from MainIO
         printf("bps_fault offset: %d\n", offsets.bps_fault);
 
@@ -214,23 +214,25 @@ void controlsWrapper::startThread() {
         bool bps_fault = buffTemp[offsets.bps_fault];
         float pack_temp = buffTemp[offsets.pack_temp];
         float pack_current = buffTemp[offsets.pack_current];
-        float pack_voltage = buffTemp[offsets.pack_voltage];
+        float lowest_cell_group_voltage = buffTemp[offsets.lowest_cell_group_voltage];
+        float highest_cell_group_voltage = buffTemp[offsets.highest_cell_group_voltage];
         bool imd_status = buffTemp[offsets.imd_status];
+        bool charge_enable = buffTemp[offsets.charge_enable];
         bool discharge_enable = buffTemp[offsets.discharge_enable];
         bool voltage_failsafe = buffTemp[offsets.voltage_failsafe];
         bool external_eStop = buffTemp[offsets.external_eStop];
 
-        if (pack_temp > PACK_TEMP_MAX
-            || pack_current > PACK_CURRENT_MAX
-            || pack_voltage < PACK_VOLTAGE_MIN || pack_voltage > PACK_VOLTAGE_MAX
-            || imd_status || discharge_enable || voltage_failsafe || external_eStop || bps_fault
+        if (pack_temp > 55
+            || pack_current < -24.4 || pack_current > 48.8
+            || lowest_cell_group_voltage < 2.5 || highest_cell_group_voltage > 3.65
+            || imd_status || charge_enable || discharge_enable || voltage_failsafe || external_eStop
+            || bps_fault
             ) {
             bps_led_toggle = 1;
             buffTemp[offsets.bps_fault] = 1; // set bps_fault in driverIO data format
         } else {
             bps_led_toggle = 0;
         }
-        */
 
         // TODO Potentially wait to read a request from Main IO acknowledging that it wants data (can probably take it for granted right now)
         //int numBytesRead = serial.readBytes(buffTemp, TOTAL_BYTES, T_MESSAGE_MS, 0);
@@ -256,8 +258,12 @@ void controlsWrapper::startThread() {
         buffTemp[offsets.headlights_led_en] = hl_toggle;
         buffTemp[offsets.right_turn] = rblnk_toggle;
         buffTemp[offsets.fr_turn_led_en] = (blnk & rblnk_toggle);
+        buffTemp[offsets.br_turn_led_en] = (blnk & rblnk_toggle);
         buffTemp[offsets.left_blinker] = lblnk_toggle;
         buffTemp[offsets.fl_turn_led_en] = (blnk & lblnk_toggle);
+        buffTemp[offsets.bl_turn_led_en] = (blnk & lblnk_toggle);
+        buffTemp[offsets.bc_bps_led_en] = (blnk & bps_led_toggle);
+        buffTemp[offsets.bc_brake_led_en] = brk_toggle;
 
         // copy data in char array to QByteArray
         mutex.lock();

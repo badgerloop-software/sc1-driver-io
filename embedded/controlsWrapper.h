@@ -30,14 +30,17 @@ struct controlsOffsets {
     int driver_vbus;
     int mainIO_heartbeat;
     int mcu_check;
-	int bps_fault;
-	int pack_temp;
-	int pack_current;
-	int pack_voltage;
-	int imd_status;
-	int discharge_enable; 
-	int voltage_failsafe;
-	int external_eStop;
+    int bps_fault;
+    int pack_temp;
+    int pack_current;
+    int pack_voltage;
+    int lowest_cell_group_voltage;
+    int highest_cell_group_voltage;
+    int imd_status;
+    int charge_enable;
+    int discharge_enable;
+    int voltage_failsafe;
+    int external_eStop;
 };
 
 class controlsWrapper : public QObject
