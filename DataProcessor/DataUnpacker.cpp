@@ -139,7 +139,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
         } else if(name == "voltage_failsafe") {
             offsets.voltage_failsafe = arrayOffset;
         } else if(name == "external_eStop") {
-            offsets.voltage_external_eStop = arrayOffset;
+            offsets.external_eStop = arrayOffset;
         } else if(name.substr(0, 10) == "cell_group") {
             if(cell_group_voltages_begin == -1) {
                 cell_group_voltages_begin = dataCount;
