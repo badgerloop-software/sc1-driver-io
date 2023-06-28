@@ -6,11 +6,16 @@ Item {
     height: 802
 
     property real displaySpeed: 0
-    property int refreshTime: 1000
+    property real crzDisplaySpeed: 0
+    property int refreshTime: 500
+    property int crzRefreshTime: 100
 
     function updateSpeed() {
-        //console.log("triggered")
         displaySpeed = backEnd.speed;
+    }
+
+    function updateCrzSpeed() {
+        crzDisplaySpeed = backEnd.crz_spd_setpt;
     }
 
     Image {
@@ -45,7 +50,7 @@ Item {
             width: 166
             height: 166
             color: "#ffffff"
-            text: qsTr(backEnd.state)
+            text: backEnd.state === "C" ? "D" : qsTr(backEnd.state)
             font.pixelSize: 142
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -252,6 +257,52 @@ Item {
             }
         }
 
+        Image {
+            id: crzNeedle
+            x: 30
+            y: 423
+            width: 188
+            height: 29
+            source: "Images/Cruise Needle (More Fade).svg"
+            sourceSize.width: 188
+            sourceSize.height: 31
+            smooth: true
+            clip: false
+            fillMode: Image.PreserveAspectFit
+            visible: backEnd.crz_spd_mode && backEnd.state === "C"
+
+            property real prevCrzSpeed: 0
+            property real newCrzSpeed: 0
+
+            Connections {
+                target: backEnd
+                function onDataChanged() {
+                    crzNeedle.prevCrzSpeed = crzNeedle.newCrzSpeed
+                    crzNeedle.newCrzSpeed = crzDisplaySpeed
+                }
+            }
+
+            Behavior on newCrzSpeed {
+                PathAnimation {
+                    id: crzArcPath
+                    target: crzNeedle
+                    anchorPoint: Qt.point(0, 14.5)
+                    orientation: (crzDisplaySpeed - crzNeedle.prevCrzSpeed >= 0) ? PathAnimation.TopFirst : PathAnimation.BottomFirst;
+                    duration: refreshTime
+                    path: Path {
+                        PathAngleArc {
+                            centerX: 437.5
+                            centerY: 437.5
+                            radiusX: 407.5
+                            radiusY: 407.5
+                            startAngle: 135 + (crzNeedle.prevCrzSpeed/90)*270
+                            sweepAngle: ((crzDisplaySpeed-crzNeedle.prevCrzSpeed)/90)*270
+                        }
+                    }
+                }
+            }
+        }
+
         Accelerator {
             id: accelerator
             x: 257
@@ -304,6 +355,11 @@ Item {
     Timer {
         interval: refreshTime; running: true; repeat: true
         onTriggered: updateSpeed();
+    }
+
+    Timer {
+        interval: crzRefreshTime; running: true; repeat: true
+        onTriggered: updateCrzSpeed();
     }
 
 }

@@ -59,7 +59,7 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
             }
         } else if(types[i] == "char") {
             if(names[i] == "state") {
-                switch((int)fmod(rand(),4)) {
+                switch((int)fmod(rand(),5)) {
                     case 0:
                         dataToByteArray(data,'P');
                         break;
@@ -71,6 +71,9 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
                         break;
                     case 3:
                         dataToByteArray(data,'R');
+                        break;
+                    case 4:
+                        dataToByteArray(data,'C');
                         break;
                     default:
                         dataToByteArray(data,'Q');

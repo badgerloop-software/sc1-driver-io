@@ -19,22 +19,15 @@ Item {
 
     Speed {
         id: speedometer
-        x: 628
-        y: 123
-        scale: 1
-    }
-
-    Temperature {
-        id: temperature
-        x: 616
-        y: 925
+        x: 404
+        y: 195
         scale: 1
     }
 
     Blinkers {
         id: blinkers
-        x: 628
-        y: 123
+        x: 404
+        y: 195
     }
 
     Clock {
@@ -46,54 +39,21 @@ Item {
 
     Battery {
         id: battery
-        x: 1566
-        y: 190
+        x: 1301
+        y: 211
         scale: 1
     }
 
     BatterySolarBox {
         id: batterySolar
-        x: 0
-        y: 261
-    }
-
-    CellStringTemps {
-        id: stringTemps
-        x: 10
-        y: 894
-    }
-
-    Image {
-        id: mainioCommsIcon
-        x: 37
-        y: 58
-        width: 115
-        height: 132
-        visible: backEnd.mainIO_heartbeat
-        source: "UI/Images/Main IO Comms Lost.png"
-        sourceSize.height: 175
-        sourceSize.width: 175
-        fillMode: Image.PreserveAspectFit
-    }
-
-    Image {
-        id: powerWarningIcon
-        x: 230
-        y: 61
-        width: 80
-        height: 129
-        // TODO If there are no specific power warnings, maybe just use this as an alert for when any voltages/currents are within 10% of their nominal min/max
-        //      In that case, maybe add an icon to do the same thing but for temperatures.
-        source: "UI/Images/Power Warning.png"
-        sourceSize.height: 169
-        sourceSize.width: 90
-        fillMode: Image.PreserveAspectFit
+        x: 1619
+        y: 211
     }
 
     Image {
         id: headlights
-        x: 828
-        y: 25
+        x: 624
+        y: 87
         width: 150
         height: 105
         visible: backEnd.headlights
@@ -105,12 +65,12 @@ Item {
 
     Image {
         id: cruise
-        x: 1160
-        y: 17
+        x: 916
+        y: 79
         width: 120
         height: 120
-        visible: backEnd.cruise
-        source: "UI/Images/Cruise Control.png"
+        visible: backEnd.crz_pwr_mode || backEnd.crz_spd_mode
+        source: backEnd.crz_spd_mode ? "UI/Images/Cruise Speed.png" : "UI/Images/Cruise Power.png"
         sourceSize.height: 120
         sourceSize.width: 120
         fillMode: Image.PreserveAspectFit
@@ -118,14 +78,67 @@ Item {
 
     Image {
         id: engDashComm
-        x: 398
-        y: 0
-        width: 126
-        height: 255
+        x: 1390
+        y: 50
+        width: 125
+        height: 114
         source: "UI/Images/comm.png"
         visible: backEnd.eng_dash_commfail
         sourceSize.height: 169
         fillMode: Image.PreserveAspectFit
         sourceSize.width: 90
+    }
+
+    LeftBox {
+        id: leftBox
+        x: 0
+        y: 362
+    }
+
+    SupplementalBat {
+        id: supplementalBat
+        x: 20
+        y: 985
+    }
+
+    Image {
+        id: main_telem
+        x: 155
+        y: 194
+        source: "UI/Images/main_telem.png"
+        fillMode: Image.PreserveAspectFit
+        visible: backEnd.main_telem
+    }
+
+    Image {
+        id: parkingBrake
+        x: 265
+        y: 40
+        source: "UI/Images/Parking Brake.png"
+        fillMode: Image.PreserveAspectFit
+        visible: backEnd.parking_brake
+    }
+
+    Image {
+        id: eco
+        x: 55
+        y: 63
+        source: "UI/Images/ECO.png"
+        fillMode: Image.PreserveAspectFit
+        visible: backEnd.eco
+    }
+
+    Text {
+        id: text1
+        x: 1036
+        y: 72
+        width: 92
+        height: 56
+        color: "#40c321"
+        text: qsTr("SET")
+        font.pixelSize: 48
+        font.weight: Font.Bold
+        font.family: "Work Sans"
+        visible: (backEnd.crz_pwr_mode || backEnd.crz_spd_mode) && backEnd.state === "C"
     }
 }

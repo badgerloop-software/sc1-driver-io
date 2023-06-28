@@ -267,7 +267,7 @@ Item {
 
     Text {
         id: charge
-        x: 4
+        x: 0
         y: 760
         width: 246
         height: 100
@@ -281,7 +281,7 @@ Item {
     }
 
     Text {
-        x: 250
+        x: 260
         y: 785
         width: 50
         height: 50
