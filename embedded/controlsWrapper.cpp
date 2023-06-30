@@ -15,9 +15,9 @@
 #include <embedded/drivers/include/serial.h>
 #include <embedded/drivers/src/serial.cpp>
 #define T_MESSAGE_MS 1000   // 1 second
-#define UART_WAIT_US 125000 // .375 seconds
-#define BLINK_RATE 375000   // .375 seconds
-#define HEARTBEAT 2         // go to error state if this # messages that aren't read
+#define UART_WAIT_US 125000 // .125 seconds
+#define BLINK_RATE 62500    // .0625 seconds
+#define HEARTBEAT 4         // go to error state if this # messages that aren't read
 
 Serial serial;
 QMutex uartMutex;
@@ -32,7 +32,7 @@ int blnk;
 int blnk_cycle; // controls when the light setting code runs
 
 
-#define TOTAL_BYTES 431
+#define TOTAL_BYTES 441
 /*
  * bytes the byte array that software uses
  * mutex the mutex for that byte array
@@ -85,7 +85,7 @@ void set_lights() {
     // TODO Add logic to only toggle the lights/blinkers every N cycles of the main loop (increase UART freq and control blinker freq)
     // TODO Make sure number of flashes is between 60-120 flashes/sec (toggle freq of 120 - 240Hz)
     // TODO Decided on 80 bpm (togles every 375 ms)
-    if (blnk_cycle >= BLINK_RATE / UART_WAIT_US) {
+    if (true) { //blnk_cycle >= BLINK_RATE / UART_WAIT_US) {
         blnk_cycle = 0;
 
         // blink code 
@@ -222,16 +222,16 @@ void controlsWrapper::startThread() {
         bool voltage_failsafe = buffTemp[offsets.voltage_failsafe];
         bool external_eStop = buffTemp[offsets.external_eStop];
 
-        if (pack_temp > 55
+        if (/*TODO pack_temp > 36
             || pack_current < -24.4 || pack_current > 48.8
             || lowest_cell_group_voltage < 2.5 || highest_cell_group_voltage > 3.65
-            || imd_status || charge_enable || discharge_enable || voltage_failsafe || external_eStop
-            || bps_fault
+            || imd_status ||*/ charge_enable || discharge_enable // TODO || voltage_failsafe || external_eStop
             ) {
             bps_led_toggle = 1;
             buffTemp[offsets.bps_fault] = 1; // set bps_fault in driverIO data format
         } else {
             bps_led_toggle = 0;
+            buffTemp[offsets.bps_fault] = 0; // set bps_fault in driverIO data format
         }
 
         // TODO Potentially wait to read a request from Main IO acknowledging that it wants data (can probably take it for granted right now)

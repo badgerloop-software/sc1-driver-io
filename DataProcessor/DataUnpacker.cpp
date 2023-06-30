@@ -244,6 +244,6 @@ void DataUnpacker::eng_dash_connection(bool state) {
 }
 
 bool DataUnpacker::checkRestartEnable() {
-    return (!restart_enable ? !mcu_hv_en : false) || driver_eStop || external_eStop || imd_status || door || crash || mcu_check || discharge_enable || restart_enable;
+    return (!restart_enable ? !mcu_hv_en : false) || driver_eStop || external_eStop || imd_status || door || crash || mcu_check || discharge_enable || bps_fault || restart_enable;
 }
 

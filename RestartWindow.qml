@@ -442,7 +442,7 @@ Popup {
                         Text {
                             id: over_voltage_text
 
-                            property bool over_voltage_fault: (backEnd.pack_voltage > 108) && backEnd.restart_enable
+                            property bool over_voltage_fault: (backEnd.pack_voltage > 113.15) && backEnd.restart_enable
                             onOver_voltage_faultChanged: {
                                 if(over_voltage_fault) {
                                     this.opacity = 1;
@@ -460,7 +460,7 @@ Popup {
                         Text {
                             id: under_voltage_text
 
-                            property bool under_voltage_fault: (backEnd.pack_voltage < 69) && backEnd.restart_enable
+                            property bool under_voltage_fault: (backEnd.pack_voltage < 77.5) && backEnd.restart_enable
                             onUnder_voltage_faultChanged: {
                                 if(under_voltage_fault) {
                                     this.opacity = 1;
@@ -491,7 +491,7 @@ Popup {
                         Text {
                             id: over_current_text
 
-                            property bool over_current_fault: (backEnd.pack_current > 100) && backEnd.restart_enable // TODO
+                            property bool over_current_fault: (backEnd.pack_current > 48.8) && backEnd.restart_enable // TODO
                             onOver_current_faultChanged: {
                                 if(over_current_fault) {
                                     this.opacity = 1;
@@ -509,7 +509,7 @@ Popup {
                         Text {
                             id: under_current_text
 
-                            property bool under_current_fault: (backEnd.pack_current < 0) && backEnd.restart_enable // TODO
+                            property bool under_current_fault: (backEnd.pack_current < -24.4) && backEnd.restart_enable // TODO
                             onUnder_current_faultChanged: {
                                 if(under_current_fault) {
                                     this.opacity = 1;
