@@ -97,10 +97,15 @@ public:
 public slots:
     void unpack();
     void eng_dash_connection(bool state);
+    /**
+     * @brief DataUnpacker::controlsWrapperBreak Slot to cause a brief break in the controlsWrapper loop so that its thread can exit cleanly
+     */
+    void controlsWrapperBreak() { emit goToControlsProcess(); }
 signals:
     void getData();
     void dataChanged();
     void setMcuHvEn(bool state);
+    void goToControlsProcess();
 private:
     bool checkRestartEnable();
 

@@ -5,6 +5,7 @@
 #include <QByteArray>
 #include <QMutex>
 
+
 struct controlsOffsets {
     int horn_status;
     int hazards;
@@ -48,10 +49,15 @@ class controlsWrapper : public QObject
     Q_OBJECT
     public:
         explicit controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<bool> &restart_enable, controlsOffsets offsets, QObject *parent = nullptr);
+        ~controlsWrapper();
     public slots:
-        void startThread();
+        void mainProcess();
         // need other slot for a signal
+    signals:
+        void endMainProcess();
     private:
+        std::atomic<bool> endControlsWrapper = false;
+        int messages_not_received = 0;
         QByteArray &bytes;
         QMutex &mutex;
         controlsOffsets offsets;

@@ -177,9 +177,12 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     
     controlsWrapper* loop = new controlsWrapper(bytes, mutex, restart_enable, offsets);
     loop->moveToThread(&controlsThread);
-    connect(&controlsThread, &QThread::started, loop, &controlsWrapper::startThread);
+    connect(&controlsThread, &QThread::started, loop, &controlsWrapper::mainProcess);
+    connect(this, &DataUnpacker::goToControlsProcess, loop, &controlsWrapper::mainProcess);
+    connect(loop, &controlsWrapper::endMainProcess, this, &DataUnpacker::controlsWrapperBreak);
     connect(&controlsThread, &QThread::finished, loop, &QObject::deleteLater);
     connect(&controlsThread, &QThread::finished, &controlsThread, &QThread::deleteLater);
+    
     controlsThread.start();
 }
 
@@ -188,6 +191,7 @@ DataUnpacker::~DataUnpacker()
     dataHandlingThread.quit();
     dataHandlingThread.wait();  //wait until the thread fully stops to avoid error message
     controlsThread.quit();
+    controlsThread.wait();  //wait until the thread fully stops to avoid error message
 }
 
 void DataUnpacker::unpack()
