@@ -92,7 +92,7 @@ void set_lights() {
     brk_toggle = tca.get_state(0, 1); // Parking Brake
     hzd_toggle = tca.get_state(0, 3);
 
-    // TODO Add logic to only toggle the lights/blinkers every N cycles of the main loop (increase UART freq and control blinker freq)
+    // Only toggle the lights/blinkers every N cycles of the main loop (increase UART freq and control blinker freq)
     // TODO Make sure number of flashes is between 60-120 flashes/sec (toggle freq of 120 - 240Hz)
     // TODO Decided on 80 bpm (togles every 375 ms)
     if (true) { //blnk_cycle >= BLINK_RATE / UART_WAIT_US) {
@@ -129,24 +129,6 @@ void set_lights() {
         blnk_cycle++;
     }
 }
-
-
-/* Debug method used to printout all pins of the TCA that are 1.
- * Useful to see if flipping a hardware switch will be read by the TCA.
- */
- /*
-void printout_tca() {
-    // print out all tca pins that are 1
-    for (int i = 0; i < 2; i++) {
-        for (int j = 0; j < 8; j++) {
-            int k = tca.get_state(i, j);
-            if (k == 1) {
-                std::cout << "||||||||||||||||||||||||||||| " << i << ", " << j << ": " << k << std::endl;
-            }
-        }
-    }
-}
-*/
 
 // This is the firmware main loop. It's called in a separate thread in DataUnpacker.cpp
 void controlsWrapper::mainProcess() {
@@ -188,8 +170,6 @@ void controlsWrapper::mainProcess() {
     int write = serial.writeBytes(write_array, 2);
     std::cout << "write success: " << write << std::endl;
     uartMutex.unlock();
-
-
 
     // read
     uartMutex.lock();
@@ -277,6 +257,5 @@ void controlsWrapper::mainProcess() {
     mutex.unlock();
 
     usleep(UART_WAIT_US);
-    //sleep(1);
     emit endMainProcess();
 }
