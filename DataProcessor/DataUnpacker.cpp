@@ -86,8 +86,8 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
             offsets.headlights = arrayOffset;
         } else if(name == "right_turn") {
             offsets.right_turn = arrayOffset;
-        } else if(name == "left_blinker") {
-            offsets.left_blinker = arrayOffset;
+        } else if(name == "left_turn") {
+            offsets.left_turn = arrayOffset;
         } else if(name == "bl_turn_led_en") {
             offsets.bl_turn_led_en = arrayOffset;
         } else if(name == "br_turn_led_en") {

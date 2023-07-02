@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QByteArray>
 #include <QMutex>
+#include <thread>
 
 
 struct controlsOffsets {
@@ -11,7 +12,7 @@ struct controlsOffsets {
     int hazards;
     int headlights;
     int right_turn;
-    int left_blinker;
+    int left_turn;
     int bl_turn_led_en;
     int br_turn_led_en;
     int bc_brake_led_en;
@@ -56,12 +57,23 @@ class controlsWrapper : public QObject
     signals:
         void endMainProcess();
     private:
+        void set_lights();
+
         std::atomic<bool> endControlsWrapper = false;
         int messages_not_received = 0;
         QByteArray &bytes;
         QMutex &mutex;
         controlsOffsets offsets;
         std::atomic<bool> &restart_enable;
+        std::thread *lightsThread;
+        std::atomic<int> lblnk_toggle;
+        std::atomic<int> rblnk_toggle;
+        std::atomic<int> hl_toggle;
+        std::atomic<int> brk_toggle;
+        std::atomic<int> hzd_toggle;
+        std::atomic<int> bps_led_toggle;
+        std::atomic<int> blnk;
+        std::atomic<int> blnk_cycle; // controls when the light setting code runs
 };
 
 #endif

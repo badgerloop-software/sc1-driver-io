@@ -32,7 +32,7 @@ Item {
     }
 
     Timer {
-        interval: 500
+        interval: 375
         running: backEnd.left_turn || backEnd.right_turn || backEnd.hazards || blinkersOn
         repeat: true
         onTriggered: {

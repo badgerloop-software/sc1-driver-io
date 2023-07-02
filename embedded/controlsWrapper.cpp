@@ -16,7 +16,7 @@
 #include <embedded/drivers/src/serial.cpp>
 #define T_MESSAGE_MS 1000   // 1 second
 #define UART_WAIT_US 125000 // .125 seconds
-#define BLINK_RATE 62500    // .0625 seconds
+#define BLINK_RATE 375000   // .375 seconds
 #define HEARTBEAT 4         // go to error state if this # messages that aren't read
 #define TOTAL_BYTES 441
 
@@ -24,15 +24,6 @@ Serial serial;
 QMutex uartMutex;
 Tca6416 tca(1, 0x20); // tca objects used to read GPIO pins for lights
 INA219 ina(1, 0x44, 0.005, 2.0);
-int lblnk_toggle;
-int rblnk_toggle;
-int hl_toggle;
-int brk_toggle;
-int hzd_toggle;
-int bps_led_toggle;
-int blnk;
-int blnk_cycle; // controls when the light setting code runs
-
 
 /*
  * bytes the byte array that software uses
@@ -70,6 +61,9 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
     bps_led_toggle = 0;
     blnk_cycle = 0;
 
+    lightsThread = new std::thread(&controlsWrapper::set_lights, this);
+    lightsThread->detach();
+
     if(ina.begin() == 1) {
         printf("ina begin threw an error\n");
         sleep(10);
@@ -77,27 +71,26 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
 }
 
 controlsWrapper::~controlsWrapper() {
+    lightsThread->join();
     endControlsWrapper = true; // This will cause the thread's loop to return
 }
 
 /* Uses the TCA to read inputs (toggles) and set outputs (enables for lights).
  * Includes code to make the turn signals blink
  */
-void set_lights() {
-    // read input signals
-    lblnk_toggle = tca.get_state(0, 5);
-    rblnk_toggle = tca.get_state(0, 4);
-    hl_toggle = tca.get_state(0, 2);
-    // TODO brake signal was rerouted to the parking brake header: brk_toggle = tca.get_state(0,7);
-    brk_toggle = tca.get_state(0, 1); // Parking Brake
-    hzd_toggle = tca.get_state(0, 3);
+void controlsWrapper::set_lights() {
+    while(!endControlsWrapper) {
+        // read input signals
+        lblnk_toggle = tca.get_state(0, 5);
+        rblnk_toggle = tca.get_state(0, 4);
+        hl_toggle = tca.get_state(0, 2);
+        // TODO brake signal was rerouted to the parking brake header: brk_toggle = tca.get_state(0,7);
+        brk_toggle = tca.get_state(0, 1); // Parking Brake
+        hzd_toggle = tca.get_state(0, 3);
 
-    // Only toggle the lights/blinkers every N cycles of the main loop (increase UART freq and control blinker freq)
-    // TODO Make sure number of flashes is between 60-120 flashes/sec (toggle freq of 120 - 240Hz)
-    // TODO Decided on 80 bpm (togles every 375 ms)
-    if (true) { //blnk_cycle >= BLINK_RATE / UART_WAIT_US) {
-        blnk_cycle = 0;
-
+        // Only toggle the lights/blinkers every N cycles of the main loop (increase UART freq and control blinker freq)
+        // TODO Make sure number of flashes is between 60-120 flashes/sec (toggle freq of 120 - 240Hz)
+        // TODO Decided on 80 bpm (togles every 375 ms)
         // blink code
         if (lblnk_toggle | rblnk_toggle | hzd_toggle | bps_led_toggle) {
             if (blnk == 0) {
@@ -106,18 +99,10 @@ void set_lights() {
                 blnk = 0;
             }
         } else {
-            blnk = 0;
+                blnk = 0;
         }
 
         // set lights
-        printf("blnk: %d\n", blnk);
-        printf("lblnk_toggle: %d\n", lblnk_toggle);
-        printf("rblnk_toggle: %d\n", rblnk_toggle);
-        printf("hl_toggle: %d\n", hl_toggle);
-        printf("brk_toggle: %d\n", brk_toggle);
-        printf("hzd_toggle: %d\n", hzd_toggle);
-        printf("bps_led_toggle: %d\n", bps_led_toggle);
-
         tca.set_state(1, 0, (lblnk_toggle | hzd_toggle) & blnk); // FL_TS_LED_EN
         tca.set_state(1, 5, ((lblnk_toggle | hzd_toggle) & blnk) | (~(lblnk_toggle | hzd_toggle) & brk_toggle)); // BL_TSB_LED_EN
         tca.set_state(1, 2, (rblnk_toggle | hzd_toggle) & blnk); // FR_TS_LED_EN
@@ -125,8 +110,8 @@ void set_lights() {
         tca.set_state(1, 4, hl_toggle); // F_HL_LED_EN
         tca.set_state(1, 6, brk_toggle); //BC_BRK_LED_EN
         tca.set_state(1, 3, bps_led_toggle & blnk); // BC_BPS_LED_EN
-    } else {
-        blnk_cycle++;
+
+        usleep(BLINK_RATE);
     }
 }
 
@@ -152,7 +137,6 @@ void controlsWrapper::mainProcess() {
     printf("power: %f\n", ina.get_power());
     printf("---------------------------\n");
 
-    set_lights(); // call method to set the lights using TCA
     // UART code
     char buffTemp[TOTAL_BYTES];
     std::cout << "===========================================" << std::endl;
@@ -240,9 +224,10 @@ void controlsWrapper::mainProcess() {
     buffTemp[offsets.headlights] = hl_toggle;
     buffTemp[offsets.headlights_led_en] = hl_toggle;
     buffTemp[offsets.right_turn] = rblnk_toggle;
+    buffTemp[offsets.left_turn] = lblnk_toggle;
+    buffTemp[offsets.hazards] = hzd_toggle;
     buffTemp[offsets.fr_turn_led_en] = (blnk & rblnk_toggle);
     buffTemp[offsets.br_turn_led_en] = (blnk & rblnk_toggle);
-    buffTemp[offsets.left_blinker] = lblnk_toggle;
     buffTemp[offsets.fl_turn_led_en] = (blnk & lblnk_toggle);
     buffTemp[offsets.bl_turn_led_en] = (blnk & lblnk_toggle);
     buffTemp[offsets.bc_bps_led_en] = (blnk & bps_led_toggle);
