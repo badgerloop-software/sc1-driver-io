@@ -146,6 +146,12 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
             offsets.voltage_failsafe = arrayOffset;
         } else if(name == "external_eStop") {
             offsets.external_eStop = arrayOffset;
+        } else if(name == "driver_5V_bus") {
+            offsets.driver_5V_bus = arrayOffset;
+        } else if(name == "driver_12V_bus") {
+            offsets.driver_12V_bus = arrayOffset;
+        } else if(name == "driver_vbus") {
+            offsets.driver_vbus = arrayOffset;
         } else if(name.substr(0, 10) == "cell_group") {
             if(cell_group_voltages_begin == -1) {
                 cell_group_voltages_begin = dataCount;

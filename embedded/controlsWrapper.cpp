@@ -23,7 +23,9 @@
 Serial serial;
 QMutex uartMutex;
 Tca6416 tca(1, 0x20); // tca objects used to read GPIO pins for lights
-INA219 ina(1, 0x44, 0.005, 2.0);
+INA219 ina_5V(1, 0x41, 0.005, 1.0);
+INA219 ina_12V(1, 0x44, 0.005, 2.0);
+INA219 ina_vbus(1, 0x4f, 0.005, 2.0);
 
 /*
  * bytes the byte array that software uses
@@ -64,10 +66,19 @@ controlsWrapper::controlsWrapper(QByteArray &bytes, QMutex &mutex, std::atomic<b
     lightsThread = new std::thread(&controlsWrapper::set_lights, this);
     lightsThread->detach();
 
-    if(ina.begin() == 1) {
-        printf("ina begin threw an error\n");
-        sleep(10);
+    if(ina_5V.begin() == 1) {
+        printf("ina_5V begin threw an error\n");
+        sleep(3);
     }
+    if(ina_12V.begin() == 1) {
+        printf("ina_12V begin threw an error\n");
+        sleep(3);
+    }
+    if(ina_vbus.begin() == 1) {
+        printf("ina_vbus begin threw an error\n");
+        sleep(3);
+    }
+
 }
 
 controlsWrapper::~controlsWrapper() {
@@ -131,11 +142,11 @@ void controlsWrapper::mainProcess() {
     } while(!init_write);
     uartMutex.unlock();*/
 
-    printf("bus voltage: %f\n", ina.get_bus_voltage());
+    /*printf("bus voltage: %f\n", ina.get_bus_voltage());
     printf("shunt voltage: %f\n", ina.get_shunt_voltage());
     printf("current: %f\n", ina.get_current());
     printf("power: %f\n", ina.get_power());
-    printf("---------------------------\n");
+    printf("---------------------------\n");*/
 
     // UART code
     char buffTemp[TOTAL_BYTES];
@@ -232,6 +243,9 @@ void controlsWrapper::mainProcess() {
     buffTemp[offsets.bl_turn_led_en] = (blnk & lblnk_toggle);
     buffTemp[offsets.bc_bps_led_en] = (blnk & bps_led_toggle);
     buffTemp[offsets.bc_brake_led_en] = brk_toggle;
+    buffTemp[offsets.driver_5V_bus] = ina_5V.get_bus_voltage();
+    buffTemp[offsets.driver_12V_bus] = ina_12V.get_bus_voltage();
+    buffTemp[offsets.driver_vbus] = ina_vbus.get_bus_voltage();
 
     // copy data in char array to QByteArray
     mutex.lock();
