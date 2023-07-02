@@ -100,6 +100,7 @@ public slots:
 signals:
     void getData();
     void dataChanged();
+    void setMcuHvEn(bool state);
 private:
     bool checkRestartEnable();
 

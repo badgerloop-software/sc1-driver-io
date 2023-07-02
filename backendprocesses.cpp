@@ -18,8 +18,8 @@ double batteryFunc(double t)
 
 
 
-BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent) :
-    QObject(parent), bytes(bytes), names(names), types(types), mutex(mutex),
+BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, backendProcessesOffsets offsets, QMutex &mutex, QObject *parent) :
+    QObject(parent), bytes(bytes), names(names), types(types), backendOffsets(offsets), mutex(mutex),
     data(DataGen(&speedFunc,&solarFunc,&batteryFunc,100))
 {
     //this->bytes = bytes;
@@ -33,10 +33,11 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
         qDebug() << QString::fromStdString(i); 
     }
     printf("\n");
-    this->tstampOffsets.hr = timeDataOffsets.hr;
-    this->tstampOffsets.mn = timeDataOffsets.mn;
-    this->tstampOffsets.sc = timeDataOffsets.sc;
-    this->tstampOffsets.ms = timeDataOffsets.ms;
+    /*this->backendOffsets.tstamp_hr = offsets.tstamp_hr;
+    this->backendOffsets.tstamp_mn = offsets.tstamp_mn;
+    this->backendOffsets.tstamp_sc = offsets.tstamp_sc;
+    this->backendOffsets.tstamp_ms = offsets.tstamp_ms;
+    this->backendOffsets.tstamp_ms = offsets.mcu_hv_en;*/
 }
 
 void BackendProcesses::comm_status(bool s) {
@@ -66,7 +67,7 @@ void BackendProcesses::threadProcedure()
     }
 
     // TODO Half the frequency of the UART loop so that we don't reread mcu_hv_en in the byte array
-    usleep(2000000);//50000);
+    usleep(125000);//50000);
 
     //DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
 
@@ -90,19 +91,27 @@ void BackendProcesses::threadProcedure()
     //data.getData(bytes, names, types, sec_time%7+msec_time/1000.0); // COMMENT THIS OUT
 
     // Update timestamp in byte array
-    bytes.remove(tstampOffsets.hr,1);
-    bytes.insert(tstampOffsets.hr, hour_time & 0xFF);
-    bytes.remove(tstampOffsets.mn,1);
-    bytes.insert(tstampOffsets.mn, min_time & 0xFF);
-    bytes.remove(tstampOffsets.sc,1);
-    bytes.insert(tstampOffsets.sc, sec_time & 0xFF);
-    bytes.remove(tstampOffsets.ms,2);
-    bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
-    bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
+    bytes.remove(backendOffsets.tstamp_hr,1);
+    bytes.insert(backendOffsets.tstamp_hr, hour_time & 0xFF);
+    bytes.remove(backendOffsets.tstamp_mn,1);
+    bytes.insert(backendOffsets.tstamp_mn, min_time & 0xFF);
+    bytes.remove(backendOffsets.tstamp_sc,1);
+    bytes.insert(backendOffsets.tstamp_sc, sec_time & 0xFF);
+    bytes.remove(backendOffsets.tstamp_ms,2);
+    bytes.insert(backendOffsets.tstamp_ms, msec_time & 0xFF);
+    bytes.insert(backendOffsets.tstamp_ms, (msec_time >> 8) & 0xFF);
 
     // 60 lines of comments were removed here.
     tel->sendData(bytes, curr_msec); //this passes the data to the telemetrylib to be sent to the chase car
 
     mutex.unlock();
     emit dataReady();
+}
+
+void BackendProcesses::setMcuHvEn(bool state) {
+    mutex.lock();
+    bytes.remove(backendOffsets.mcu_hv_en, 1);
+    bytes.insert(backendOffsets.mcu_hv_en, state);
+    qDebug() << "mcu_hv_en in byte array: " << bytes.at(backendOffsets.mcu_hv_en);
+    mutex.unlock();
 }

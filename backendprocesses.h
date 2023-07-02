@@ -11,11 +11,12 @@
 #include "telemetrylib/TCP.cpp"
 #include "telemetrylib/SQL.cpp"
 
-struct timestampOffsets {
-    int hr;
-    int mn;
-    int sc;
-    int ms;
+struct backendProcessesOffsets {
+    int tstamp_hr;
+    int tstamp_mn;
+    int tstamp_sc;
+    int tstamp_ms;
+    int mcu_hv_en;
 };
 
 class BackendProcesses : public QObject
@@ -23,19 +24,20 @@ class BackendProcesses : public QObject
     Q_OBJECT
 
 public:
-    explicit BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent = nullptr);
+    explicit BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, backendProcessesOffsets offsets, QMutex &mutex, QObject *parent = nullptr);
     ~BackendProcesses();
     //~BackendProcesses();
 public slots:
     void threadProcedure();
     void startThread();
     void comm_status(bool s);
+    void setMcuHvEn(bool state);
 signals:
     void dataReady();
     void eng_dash_connection(bool state);
 private:
 
-    timestampOffsets tstampOffsets;
+    backendProcessesOffsets backendOffsets;
 
     QByteArray &bytes;
 

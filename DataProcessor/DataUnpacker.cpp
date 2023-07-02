@@ -53,7 +53,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     d.ParseStream(is);
 
     int arrayOffset = 0;
-    timestampOffsets tstampOff;
+    backendProcessesOffsets backendOff;
     int dataCount = 0;
     cell_group_voltages_begin = -1;
     cell_group_voltages_end = -1;
@@ -69,13 +69,15 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
         types.push_back(arr[1].GetString());
 
         if(name == "tstamp_hr") {
-            tstampOff.hr = arrayOffset;
+            backendOff.tstamp_hr = arrayOffset;
         } else if(name == "tstamp_mn") {
-            tstampOff.mn = arrayOffset;
+            backendOff.tstamp_mn = arrayOffset;
         } else if(name == "tstamp_sc") {
-            tstampOff.sc = arrayOffset;
+            backendOff.tstamp_sc = arrayOffset;
         } else if(name == "tstamp_ms") {
-            tstampOff.ms = arrayOffset;
+            backendOff.tstamp_ms = arrayOffset;
+        } else if(name == "mcu_hv_en") {
+            backendOff.mcu_hv_en = arrayOffset;
         } else if(name == "horn_status") {
             offsets.horn_status = arrayOffset;
         } else if(name == "hazards") {
@@ -159,7 +161,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
     fclose(fp);
 
-    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff, mutex);
+    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, backendOff, mutex);
 
     retriever->moveToThread(&dataHandlingThread);
 
@@ -167,6 +169,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     connect(this, &DataUnpacker::getData, retriever, &BackendProcesses::threadProcedure);
     connect(retriever, &BackendProcesses::dataReady, this, &DataUnpacker::unpack);
     connect(retriever, &BackendProcesses::eng_dash_connection, this, &DataUnpacker::eng_dash_connection);
+    connect(this, &DataUnpacker::setMcuHvEn, retriever, &BackendProcesses::setMcuHvEn);
     connect(&dataHandlingThread, &QThread::finished, retriever, &QObject::deleteLater);
     connect(&dataHandlingThread, &QThread::finished, &dataHandlingThread, &QThread::deleteLater);
 

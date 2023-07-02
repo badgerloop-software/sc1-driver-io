@@ -36,7 +36,8 @@ Popup {
         if(can_close) {
             backEnd.restart_enable = false;
             //TODO Set mcu_hv_en to 1
-            backEnd.mcu_hv_en = 1;
+            backEnd.setMcuHvEn(true);
+
             // Reset opacities of fault texts to hidden_opacity so that they aren't shown as being triggered when restartPopup opens again
             var ids = { driver_eStop_text, external_eStop_text, imd_status_text, door_text, crash_text, bps_fault_text, mcu_check_text,
                         cell_balancing_active_text, mcu_hv_en_text, low_contactor_text, mainIO_heartbeat_text, thermistor_b_value_table_invalid_text, under_voltage_text,
