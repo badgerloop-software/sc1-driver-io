@@ -93,7 +93,6 @@ private:
                 sock.close();
                 if (!connection) {
                     connection = true;
-                    emit connectionStatusChanged();
                 }
             } else {
                 sock.abort();

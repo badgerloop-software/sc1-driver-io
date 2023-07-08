@@ -113,7 +113,6 @@ private:
             } else if(connected && !connection) {
                 sock.close();
                 connection = true;
-                emit connectionStatusChanged();
             }
             usleep(50000);
             sock.abort();
