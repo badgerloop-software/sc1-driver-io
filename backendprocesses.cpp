@@ -87,8 +87,10 @@ void BackendProcesses::threadProcedure()
     uint8_t sec_time = (curr_msec/1000) % 60;
     //uint8_t sec_time = gmtime(&now)->tm_sec;
     uint16_t msec_time = curr_msec % 1000;
-
-    //data.getData(bytes, names, types, sec_time%7+msec_time/1000.0); // COMMENT THIS OUT
+#ifndef FIRMWARE
+    bytes.clear();
+    data.getData(bytes, names, types, sec_time%7+msec_time/1000.0); // COMMENT THIS OUT
+#endif
 
     // Update timestamp in byte array
     bytes.remove(backendOffsets.tstamp_hr,1);

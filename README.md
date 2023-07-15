@@ -37,17 +37,27 @@
     1. When committing and pushing changes, do not add your solar-car-dashboard.pro.user file to the version control, as this is specific to your computer.
 8. Once you are happy with the state of your code, open a pull request and request someone to conduct a code review. It may be kicked back with some suggestions or edits, but when it is accepted, it will be merged with `main`. Congrats! Now it's just time to rinse and repeat.
 
-### Compiling and Running the Project on a Rapberry Pi
+### Installing dependencies
 
 0. If running the project on the driver IO board, skip this step, as the necessary dependencies have already been installed on it. Otherwise, if you have not already, install the dependencies on the Raspberry Pi:
     ```
     sudo apt-get install build-essential
     sudo apt-get install qt5-doc qtbase5-examples qtbase5-doc-html qtdeclarative5-dev qml-module-qtquick-controls2
     ```
-1. Copy the project to the Raspberry Pi.
-2. Make and run the project on the Raspberry Pi by running the following commands:
-    ```
-    qmake solar-car-dashboard.pro
-    make
-    ./solar-car-dashboard
-    ```
+### Compilation options
+0. To compile the project with firmware's system:
+   ```
+   mkdir build
+   cmake -DFIRMWARE=ON ..
+   ```
+   To compile the project with generated data:
+   ```
+   mkdir build
+   cmake -DFIRMWARE=OFF ..
+   ```
+   To run the application after compile:
+   ```
+   ./solar-car-dashboard
+   ```
+1. No additional settings needed to run with data generator on an IDE. If you want to configure your IDE for firmware build, go to cmake settings and add ```-DFIRMWARE=ON``` to the cmake options to enable firmware build.
+   

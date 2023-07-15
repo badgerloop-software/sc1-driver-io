@@ -11,7 +11,10 @@
 #include "backendprocesses.h"
 #include "3rdparty/rapidjson/document.h"
 #include "3rdparty/rapidjson/filereadstream.h"
+
+#ifdef FIRMWARE
 #include "embedded/controlsWrapper.h"
+#endif
 
 using namespace rapidjson;
 

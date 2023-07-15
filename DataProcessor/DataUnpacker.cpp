@@ -57,7 +57,9 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     int dataCount = 0;
     cell_group_voltages_begin = -1;
     cell_group_voltages_end = -1;
+#ifdef FIRMWARE
     controlsOffsets offsets;
+#endif
 
     for(Value::ConstMemberIterator itr = d.MemberBegin(); itr != d.MemberEnd(); ++itr) {
         std::string name = itr->name.GetString();
@@ -75,9 +77,8 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
         } else if(name == "tstamp_sc") {
             backendOff.tstamp_sc = arrayOffset;
         } else if(name == "tstamp_ms") {
-            backendOff.tstamp_ms = arrayOffset;
-        } else if(name == "mcu_hv_en") {
-            backendOff.mcu_hv_en = arrayOffset;
+            tstampOff.ms = arrayOffset;
+#ifdef FIRMWARE
         } else if(name == "horn_status") {
             offsets.horn_status = arrayOffset;
         } else if(name == "hazards") {
@@ -126,26 +127,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
             offsets.mainIO_heartbeat = arrayOffset;
         } else if(name == "mcu_check") {
             offsets.mcu_check = arrayOffset;
-        } else if(name == "pack_temp") {
-            offsets.pack_temp = arrayOffset;
-        } else if(name == "pack_current") {
-            offsets.pack_current = arrayOffset;
-        } else if(name == "lowest_cell_group_voltage") {
-            offsets.lowest_cell_group_voltage = arrayOffset;
-        } else if(name == "highest_cell_group_voltage") {
-            offsets.highest_cell_group_voltage = arrayOffset;
-        } else if(name == "bps_fault") {
-            offsets.bps_fault = arrayOffset;
-        } else if(name == "imd_status") {
-            offsets.imd_status = arrayOffset;
-        } else if(name == "charge_enable") {
-            offsets.charge_enable = arrayOffset;
-        } else if(name == "discharge_enable") {
-            offsets.discharge_enable = arrayOffset;
-        } else if(name == "voltage_failsafe") {
-            offsets.voltage_failsafe = arrayOffset;
-        } else if(name == "external_eStop") {
-            offsets.external_eStop = arrayOffset;
+#endif
         } else if(name.substr(0, 10) == "cell_group") {
             if(cell_group_voltages_begin == -1) {
                 cell_group_voltages_begin = dataCount;
@@ -174,8 +156,11 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     connect(&dataHandlingThread, &QThread::finished, &dataHandlingThread, &QThread::deleteLater);
 
     dataHandlingThread.start();
-    
-    controlsWrapper* loop = new controlsWrapper(bytes, mutex, restart_enable, offsets);
+
+    //get enviormental variable exported
+#ifdef FIRMWARE
+    QDebug() << "------ DRIVER-IO FIRMWARE BUILD -------"
+    controlsWrapper loop = new controlsWrapper(bytes, mutex, restart_enable, offsets);
     loop->moveToThread(&controlsThread);
     connect(&controlsThread, &QThread::started, loop, &controlsWrapper::mainProcess);
     connect(this, &DataUnpacker::goToControlsProcess, loop, &controlsWrapper::mainProcess);
@@ -184,6 +169,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     connect(&controlsThread, &QThread::finished, &controlsThread, &QThread::deleteLater);
     
     controlsThread.start();
+#endif
 }
 
 DataUnpacker::~DataUnpacker()
@@ -199,7 +185,6 @@ void DataUnpacker::unpack()
     int currByte = 0;
 
     mutex.lock();
-
     for(uint i=0; i < names.size(); i++) {
         if(types[i] == "float") {
             // Make sure the property exists
@@ -232,9 +217,9 @@ void DataUnpacker::unpack()
         } else if(types[i] == "double") {
             // TODO: No double data yet; Implement when there is double data
         }
-
         currByte += byteNums[i];
     }
+
 
     mutex.unlock();
 
