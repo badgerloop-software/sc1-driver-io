@@ -53,20 +53,22 @@ void BackendProcesses::onSocketStateChanged(QAbstractSocket::SocketState socketS
     }
 }
 
-/*void BackendProcesses::onReadyRead()
+void BackendProcesses::onReadyRead()
 {
-    QTcpSocket* sender = static_cast<QTcpSocket*>(QObject::sender());
-    QByteArray datas = sender->readAll();
-    for (QTcpSocket* socket : _sockets) {
-        if (socket != sender)
-            socket->write(QByteArray::fromStdString(sender->peerAddress().toString().toStdString() + ": " + datas.toStdString()));
-    }
-}*/
+    QByteArray dataRead = _client->readAll();
+    qDebug() << "Data: " << QString(&dataRead);
+}
 
 void BackendProcesses::startThread()
 {
-    _server.listen(QHostAddress::AnyIPv4, 4003);
-    connect(&_server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
+    _client = new QTcpSocket(this);
+    connect(_client, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+    _client->connectToHost("192.168.1.16", 4005);
+    
+    if(_client->waitForConnected()) {
+        // Successfully connected
+        qDebug() << "CONNECTED TO SERVER";
+    }
 
     threadProcedure();
 }
@@ -106,11 +108,11 @@ void BackendProcesses::threadProcedure()
     bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
     bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
 
-    for (QTcpSocket* socket : _sockets) {
+    //for (QTcpSocket* socket : _sockets) {
         //socket->write(QByteArray::fromStdString("From solar car: connected to server! " + std::to_string(time) + "\n"));
         //socket->write(QByteArray::fromStdString("Speed: " + std::to_string(speed) + "; Size: " + std::to_string(sizeof(bytes)) + "\n"));
-        socket->write(bytes);
-    }
+        //socket->write(bytes);
+    //}
     mutex.unlock();
     emit dataReady();
 }

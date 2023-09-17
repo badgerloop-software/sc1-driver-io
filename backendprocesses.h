@@ -29,7 +29,7 @@ public:
 public slots:
     void onNewConnection();
     void onSocketStateChanged(QAbstractSocket::SocketState socketState);
-    //void onReadyRead();
+    void onReadyRead();
 
     void threadProcedure();
     void startThread();
@@ -37,8 +37,9 @@ signals:
     void dataReady();
     void eng_dash_connection(bool state);
 private:
-    QTcpServer _server;
-    QList<QTcpSocket*> _sockets;
+    //QTcpServer _server;
+    //QList<QTcpSocket*> _sockets;
+    QTcpSocket *_client;
 
     timestampOffsets tstampOffsets;
 
