@@ -19,17 +19,20 @@ Item {
         return time
     }
 
-    function updateDelay(packetHr, packetMin, packetSec, packetMSec) {
+    function updateDelay(packetUnix) {
         var realTime = new Date
-        var packetTime = new Date
+       // var packetTime = new Date
+       // console.log("clock:"+ packetUnix)
 
         realTime.setHours(hours)
-        packetTime.setHours(packetHr)
-        packetTime.setMinutes(packetMin)
-        packetTime.setSeconds(packetSec)
-        packetTime.setMilliseconds(packetMSec)
 
-        delay = realTime.getTime() - packetTime.getTime()
+        //packetTime.setHours(packetHr)
+        //packetTime.setMinutes(packetMin)
+        //packetTime.setSeconds(packetSec)
+        //packetTime.setMilliseconds(packetMSec)
+
+        delay = realTime.getTime() - packetUnix
+
     }
 
     width: 400
@@ -67,13 +70,14 @@ Item {
         }
     }
 
-    Timer {
+    Timer
+    {
         interval: 100
         running: true
         repeat: true
         onTriggered: {
             updateTime()
-            updateDelay(backEnd.tstamp_hr, backEnd.tstamp_mn, backEnd.tstamp_sc, backEnd.tstamp_ms)
+            updateDelay(backEnd.tstamp_unix)
         }
     }
 }

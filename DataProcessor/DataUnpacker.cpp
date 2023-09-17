@@ -1,3 +1,4 @@
+
 //
 // Created by Mingcan Li on 11/16/21.
 //
@@ -71,6 +72,8 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
             tstampOff.sc = arrayOffset;
         } else if(name == "tstamp_ms") {
             tstampOff.ms = arrayOffset;
+        } else if(name == "tstamp_unix"){
+            tstampOff.unix = arrayOffset;
         } else if(name.substr(0, 10) == "cell_group") {
             if(cell_group_voltages_begin == -1) {
                 cell_group_voltages_begin = dataCount;
@@ -131,7 +134,17 @@ void DataUnpacker::unpack()
             if(this->property(names[i].c_str()).isValid()) {
                 this->setProperty(names[i].c_str(), bytesToGeneralData(bytes, currByte, currByte + byteNums[i] - 1, (uint16_t)0));
             }
-        } else if(types[i] == "bool") {
+        } else if(types[i] == "uint32") {
+            // Make sure the property exists
+            if(this->property(names[i].c_str()).isValid()) {
+                this->setProperty(names[i].c_str(), bytesToGeneralData(bytes, currByte, currByte + byteNums[i] - 1, (uint32_t)0));
+            }
+        }else if(types[i] == "uint64") {
+            // Make sure the property exists
+            if(this->property(names[i].c_str()).isValid()) {
+                this->setProperty(names[i].c_str(), bytesToGeneralData(bytes, currByte, currByte + byteNums[i] - 1, (uint64_t)0));
+            }
+        }  else if(types[i] == "bool") {
             // Make sure the property exists
             if(this->property(names[i].c_str()).isValid()) {
                 this->setProperty(names[i].c_str(), bytesToGeneralData(bytes, currByte, currByte + byteNums[i] - 1, false));

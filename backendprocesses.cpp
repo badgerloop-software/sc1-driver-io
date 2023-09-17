@@ -26,10 +26,9 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     //this->bytes = bytes;
     //this->names = names;
     //this->types = types;
-    this->tstampOffsets.hr = timeDataOffsets.hr;
-    this->tstampOffsets.mn = timeDataOffsets.mn;
-    this->tstampOffsets.sc = timeDataOffsets.sc;
-    this->tstampOffsets.ms = timeDataOffsets.ms;
+    this->tstampOffsets.unix  = timeDataOffsets.unix;
+
+
 }
 
 void BackendProcesses::comm_status(bool s) {
@@ -37,6 +36,7 @@ void BackendProcesses::comm_status(bool s) {
 }
 
 void BackendProcesses::startThread() {
+    qDebug()<<"a";
     std::vector<DTI*> obj(2); //create a bunch of DTI instances and add them into this array in order of priority to be sent to telemetrylib
     long long first_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
@@ -44,7 +44,7 @@ void BackendProcesses::startThread() {
     obj[1]=new TCP(QHostAddress::AnyIPv4, 4003); //this sends data thru TCP sockets
     this->tel = new Telemetry(obj);
     connect(this->tel, &Telemetry::eng_dash_connection, this, &BackendProcesses::comm_status); //for notifing the system connection status
-
+    qDebug()<<"b";
     threadProcedure();
 }
 
@@ -54,16 +54,16 @@ BackendProcesses::~BackendProcesses() {
 
 void BackendProcesses::threadProcedure()
 {
+    qDebug()<<"";
     if(stop) {
         return;
     }
 
-    usleep(100000);//50000);
+    _sleep(0.1);//50000);
 
     //DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
 
     mutex.lock();
-
     bytes.clear();
 
     // Get time data is received (then written to byte array right after byte array is updated/data is received)
@@ -71,29 +71,20 @@ void BackendProcesses::threadProcedure()
 
     //time_t now = time(NULL);
 
-    uint8_t hour_time = (curr_msec/3600000 + 18) % 24;
-    //uint8_t hour_time = (gmtime(&now)->tm_hour + 18) % 24;
-    uint8_t min_time = (curr_msec/60000) % 60;
-    //uint8_t min_time = gmtime(&now)->tm_min;
-    uint8_t sec_time = (curr_msec/1000) % 60;
-    //uint8_t sec_time = gmtime(&now)->tm_sec;
-    uint16_t msec_time = curr_msec % 1000;
+    uint64_t unix_time  = curr_msec;
+    data.getData(bytes, names, types, unix_time);
 
-    data.getData(bytes, names, types, sec_time%7+msec_time/1000.0);
 
     // Update timestamp in byte array
-    bytes.remove(tstampOffsets.hr,1);
-    bytes.insert(tstampOffsets.hr, hour_time & 0xFF);
-    bytes.remove(tstampOffsets.mn,1);
-    bytes.insert(tstampOffsets.mn, min_time & 0xFF);
-    bytes.remove(tstampOffsets.sc,1);
-    bytes.insert(tstampOffsets.sc, sec_time & 0xFF);
-    bytes.remove(tstampOffsets.ms,2);
-    bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
-    bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
+
+        bytes.remove(tstampOffsets.unix, 8);
+   // declared unix timestamp as a 64 bit number so we pass in one byte at a time from most significant to least significant
+    for(int i = 7 ; i >= 0 ; i--){
+        bytes.insert(tstampOffsets.unix, (unix_time >> 8 * i) & 0xFF);
+    }
 
     // 60 lines of comments were removed here.
-    tel->sendData(bytes, curr_msec); //this passes the data to the telemetrylib to be sent to the chase car
+    tel->sendData(bytes, unix_time); //this passes the data to the telemetrylib to be sent to the chase car
     mutex.unlock();
     emit dataReady();
 }

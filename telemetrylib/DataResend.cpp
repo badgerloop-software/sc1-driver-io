@@ -1,3 +1,4 @@
+
 //
 // Created by Mingcan Li on 2/23/23.
 //
@@ -35,7 +36,7 @@ void DataResend::resend() {
             break;
         }
         mutex.unlock(); //additional data can be added during this temporary unlock
-        usleep(10000);
+        _sleep(10000);
         mutex.lock();
         data cur = q.dequeue();
         qDebug()<<cur.t;

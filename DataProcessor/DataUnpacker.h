@@ -20,12 +20,10 @@ class DataUnpacker : public QObject
 
     // Include only the properties that need to be displayed on the driver dashboard
     // Qml didn't want to play nice with uint8_t on the pi, so now it's int
-    Q_PROPERTY(int fan_speed MEMBER fan_speed NOTIFY dataChanged);
-    Q_PROPERTY(int tstamp_hr MEMBER tstamp_hr NOTIFY dataChanged);
-    Q_PROPERTY(int tstamp_mn MEMBER tstamp_mn NOTIFY dataChanged);
-    Q_PROPERTY(int tstamp_sc MEMBER tstamp_sc NOTIFY dataChanged);
-    Q_PROPERTY(int tstamp_ms MEMBER tstamp_ms NOTIFY dataChanged);
 
+
+    Q_PROPERTY(int fan_speed MEMBER fan_speed NOTIFY dataChanged);
+    Q_PROPERTY(int tstamp_unix MEMBER tstamp_unix NOTIFY dataChanged);
     Q_PROPERTY(bool left_turn MEMBER left_turn NOTIFY dataChanged);
     Q_PROPERTY(bool right_turn MEMBER right_turn NOTIFY dataChanged);
     Q_PROPERTY(bool hazards MEMBER hazards NOTIFY dataChanged);
@@ -106,8 +104,8 @@ private:
     QThread dataHandlingThread;
 
     // TODO Include only the properties that need to be displayed on the driver dashboard
-    uint8_t fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
-    uint16_t tstamp_ms;
+    uint8_t fan_speed;
+    uint64_t tstamp_unix;
     float speed, accelerator, crz_spd_setpt, crz_pwr_setpt;
     float soc, est_supplemental_soc;
     float mppt_current_out;
