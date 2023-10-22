@@ -14,7 +14,8 @@ SOURCES += \
         telemetrylib/TCP.cpp \
         telemetrylib/Telemetry.cpp \
         telemetrylib/SQL.cpp \
-        telemetrylib/DataResend.cpp
+        telemetrylib/DataResend.cpp \
+        telemetrylib/UDP.cpp
 
 RESOURCES += qml.qrc \
     UI/Images/images.qrc \

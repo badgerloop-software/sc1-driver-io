@@ -10,6 +10,7 @@
 #include "telemetrylib/DTI.h"
 #include "telemetrylib/TCP.cpp"
 #include "telemetrylib/SQL.cpp"
+#include "telemetrylib/UDP.cpp"
 
 struct timestampOffsets {
     int hr;

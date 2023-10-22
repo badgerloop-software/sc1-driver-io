@@ -85,25 +85,25 @@ private:
      * Creates a thread that pings the engineering server's static IP to check connection
      */
     void checkConnection() {
-        QTcpSocket sock;
-        while (!finish) {
-            sock.connectToHost("192.168.1.16", 4005);
-            bool connected = sock.waitForConnected(4000);
-            if (connected) {
-                sock.close();
-                if (!connection) {
-                    connection = true;
-                    emit connectionStatusChanged();
-                }
-            } else {
-                sock.abort();
-                if (connection) {
-                    connection = false;
-                    emit connectionStatusChanged();
-                }
-            }
-            usleep(50000);
-        }
+//        QTcpSocket sock;
+//        while (!finish) {
+//            sock.connectToHost("192.168.1.16", 4005);
+//            bool connected = sock.waitForConnected(4000);
+//            if (connected) {
+//                sock.close();
+//                if (!connection) {
+//                    connection = true;
+//                    emit connectionStatusChanged();
+//                }
+//            } else {
+//                sock.abort();
+//                if (connection) {
+//                    connection = false;
+//                    emit connectionStatusChanged();
+//                }
+//            }
+//            usleep(50000);
+//        }
     }
 };
 
