@@ -99,6 +99,10 @@ void BackendProcesses::threadProcedure()
         bytes.insert(tstampOffsets.unix,(time>>mask) & 0xFF);
         mask=mask-8;
     }
+    // write byte array to file for sync
+    std::ofstream("file_sync/" + std::to_string(curr_msec) + "_bytes.bin", std::ios::binary)
+        .write(bytes.data(), bytes.size());
+
     // 60 lines of comments were removed here.
     tel->sendData(bytes, curr_msec); //this passes the data to the telemetrylib to be sent to the chase car
     mutex.unlock();

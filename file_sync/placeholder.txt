@@ -1,0 +1,1 @@
+This folder needs to be here for the file sync feature, but its contents should not be checked into git. 
