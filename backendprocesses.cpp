@@ -99,9 +99,18 @@ void BackendProcesses::threadProcedure()
         bytes.insert(tstampOffsets.unix,(time>>mask) & 0xFF);
         mask=mask-8;
     }
-    // write byte array to file for sync
-    std::ofstream("file_sync/" + std::to_string(curr_msec) + "_bytes.bin", std::ios::binary)
-        .write(bytes.data(), bytes.size());
+    // write byte array to file for sync, once a minute
+    static uint8_t last_minute = 0;
+    static QByteArray all_bytes_in_minute = QByteArray();
+
+    all_bytes_in_minute.push_back(bytes);
+
+    if (sec_time % 60 == 0 && min_time != last_minute) {
+        std::ofstream("file_sync/" + std::to_string(curr_msec) + "_all_bytes.bin", std::ios::binary)
+            .write(all_bytes_in_minute.data(), all_bytes_in_minute.size());
+        last_minute = min_time;
+        all_bytes_in_minute.clear();
+    }
 
     // 60 lines of comments were removed here.
     tel->sendData(bytes, curr_msec); //this passes the data to the telemetrylib to be sent to the chase car
