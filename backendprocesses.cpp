@@ -103,7 +103,9 @@ void BackendProcesses::threadProcedure()
     static uint8_t last_minute = 0;
     static QByteArray all_bytes_in_minute = QByteArray();
 
+    all_bytes_in_minute.push_back("<bsr>");
     all_bytes_in_minute.push_back(bytes);
+    all_bytes_in_minute.push_back("</bsr>");
 
     if (sec_time % 60 == 0 && min_time != last_minute) {
         std::ofstream("file_sync/" + std::to_string(curr_msec) + "_all_bytes.bin", std::ios::binary)
