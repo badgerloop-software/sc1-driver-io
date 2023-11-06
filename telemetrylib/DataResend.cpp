@@ -35,7 +35,7 @@ void DataResend::resend() {
             break;
         }
         mutex.unlock(); //additional data can be added during this temporary unlock
-        _sleep(10000);
+        usleep(10000);
         mutex.lock();
         data cur = q.dequeue();
         qDebug()<<cur.t;

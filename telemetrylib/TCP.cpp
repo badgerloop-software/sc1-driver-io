@@ -102,7 +102,7 @@ private:
                     emit connectionStatusChanged();
                 }
             }
-            _sleep(50000);
+            usleep(50000);
         }
     }
 };

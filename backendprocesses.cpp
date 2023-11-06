@@ -58,7 +58,7 @@ void BackendProcesses::threadProcedure()
         return;
     }
 
-    _sleep(1000);//50000);
+    usleep(50000);//50000);
 
     //DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
 

@@ -6,7 +6,7 @@
 #define TELEMETRYLIB_DATARESEND_H
 
 #include <QObject>
-//#include <unistd.h>
+#include <unistd.h>
 #include "DTI.h"
 
 /*
