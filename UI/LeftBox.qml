@@ -119,28 +119,42 @@ Item {
 
     Rectangle {
         id: cruiseSpeed
-        x: 0
-        y: 262
-        width: 350
+        x: 700
+        y: 320
+        width: 250
         height: 182
-        color: "#000000"
-        border.color: "#ffffff"
+        color: "#00FFFFFF"
+        border.color: "#00FFFFFF"
 
         Rectangle {
             x: 0
             y: 1
             width: 350
             height: 62
-            color: "#40ffffff"
+            color: "#00FFFFFF"
 
             Text {
-                x: 0
-                y: 0
-                width: 350
-                height: 62
+                x: 120
+                y: 40
+                width: 450
+                height: 150
                 color: "#ffffff"
-                text: qsTr("Cruise Speed")
-                font.pixelSize: 48
+                text: qsTr("Cruise")
+                font.pixelSize: 50
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                font.family: "Work Sans"
+                font.styleName: "Medium"
+            }
+
+            Text {
+                x: 1
+                y: 110
+                width: 275
+                height: 30
+                color: "#ffffff"
+                text: qsTr("MPH")
+                font.pixelSize: 33
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 font.family: "Work Sans"
@@ -149,13 +163,13 @@ Item {
         }
 
         Text {
-            x: 20
-            y: 62
-            width: 256
-            height: 120
+            x: 1
+            y: 40
+            width: 300
+            height: 50
             color: cruiseGreen(backEnd.crz_spd_mode)
             text: backEnd.crz_spd_setpt.toFixed(1)
-            font.pixelSize: 64
+            font.pixelSize: 80
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             font.family: "Work Sans"
@@ -163,13 +177,13 @@ Item {
         }
 
         Text {
-            x: 276
-            y: 62
+            x: 250
+            y: 36
             width: 50
             height: 120
             color: cruiseGreen(backEnd.crz_spd_mode)
-            text: qsTr("MPH")
-            font.pixelSize: 42
+            text: qsTr("")
+            font.pixelSize: 35
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             z: 1
@@ -181,7 +195,7 @@ Item {
     Rectangle {
         id: supplemental
         x: 0
-        y: 444
+        y: 262
         width: 350
         height: 162
         color: "#000000"

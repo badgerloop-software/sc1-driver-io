@@ -53,7 +53,7 @@ Item {
     }
 
     Text {
-        x: 525
+        x: 490
         y: 12
         width: 50
         height: 50

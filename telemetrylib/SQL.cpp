@@ -115,7 +115,7 @@ private:
                 connection = true;
                 emit connectionStatusChanged();
             }
-            usleep(50000);
+            _sleep(50000);
             sock.abort();
         }
     }
