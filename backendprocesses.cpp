@@ -84,21 +84,18 @@ void BackendProcesses::threadProcedure()
     // Update timestamp in byte array
     bytes.remove(tstampOffsets.hr,1);
     bytes.insert(tstampOffsets.hr, hour_time & 0xFF);
-  //  bytes.remove(tstampOffsets.mn,1);
-  //  bytes.insert(tstampOffsets.mn, min_time & 0xFF);
-   // bytes.remove(tstampOffsets.sc,1);
-   // bytes.insert(tstampOffsets.sc, sec_time & 0xFF);
-  //  bytes.remove(tstampOffsets.ms,2);
- //   bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
-  //  bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
-   // qDebug()<< (hour_time&0xFF);
-   // qDebug()<< (curr_msec/10);
+    bytes.remove(tstampOffsets.mn,1);
+    bytes.insert(tstampOffsets.mn, min_time & 0xFF);
+    bytes.remove(tstampOffsets.sc,1);
+    bytes.insert(tstampOffsets.sc, sec_time & 0xFF);
+    bytes.remove(tstampOffsets.ms,2);
+    bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
+    bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
+
     uint64_t time=curr_msec;
     int mask= 56;
     for(int i=0; i<=7; i++) {
-        int print= curr_msec;
-        qDebug()<<"t="<< ((time>>mask) & 0xFF);
-        bytes.insert(tstampOffsets.ms,(time>>mask) & 0xFF);
+        bytes.insert(tstampOffsets.unix,(time>>mask) & 0xFF);
         mask=mask-8;
     }
     // 60 lines of comments were removed here.

@@ -16,6 +16,7 @@ struct timestampOffsets {
     int mn;
     int sc;
     int ms;
+    int unix; 
 };
 
 class BackendProcesses : public QObject
