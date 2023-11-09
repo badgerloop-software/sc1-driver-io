@@ -71,6 +71,8 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
             tstampOff.sc = arrayOffset;
         } else if(name == "tstamp_ms") {
             tstampOff.ms = arrayOffset;
+        } else if(name == "tstamp_unix") {
+            tstampOff.unix = arrayOffset;
         } else if(name.substr(0, 10) == "cell_group") {
             if(cell_group_voltages_begin == -1) {
                 cell_group_voltages_begin = dataCount;

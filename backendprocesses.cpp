@@ -30,6 +30,7 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     this->tstampOffsets.mn = timeDataOffsets.mn;
     this->tstampOffsets.sc = timeDataOffsets.sc;
     this->tstampOffsets.ms = timeDataOffsets.ms;
+    this->tstampOffsets.unix = timeDataOffsets.unix;
 }
 
 void BackendProcesses::comm_status(bool s) {
