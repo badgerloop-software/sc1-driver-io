@@ -9,6 +9,7 @@
 #include <QThread>
 #include <QMutex>
 #include "backendprocesses.h"
+#include "datafetcher.h"
 #include "3rdparty/rapidjson/document.h"
 #include "3rdparty/rapidjson/filereadstream.h"
 
@@ -97,7 +98,6 @@ public slots:
     void unpack();
     void eng_dash_connection(bool state);
 signals:
-    void getData();
     void dataChanged();
     void enableRestart();
 private:

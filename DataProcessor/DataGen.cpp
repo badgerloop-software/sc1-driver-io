@@ -4,7 +4,6 @@
 
 #include "DataGen.h"
 
-
 /**
  * Generates an array of test data
  * @param data The vector array to store the data, put an empty vector.
@@ -87,10 +86,6 @@ void DataGen::getData(QByteArray &data, std::vector<std::string> &names, std::ve
         }
     }
 }
-
-
-
-
 
 DataGen::DataGen(func speedFunc, func solarFunc, func batteryFunc, float efficiency) {
     this->speedFunc=speedFunc;

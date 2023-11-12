@@ -1,7 +1,6 @@
 
 #include "backendprocesses.h"
 
-
 double speedFunc(double t)
 {
     return t*t;
@@ -19,13 +18,15 @@ double batteryFunc(double t)
 
 
 
-BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent) :
+BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, int byteSize, QObject *parent) :
     QObject(parent), bytes(bytes), names(names), types(types), mutex(mutex),
     data(DataGen(&speedFunc,&solarFunc,&batteryFunc,100))
 {
-    //this->bytes = bytes;
-    //this->names = names;
-    //this->types = types;
+    this->bytes = bytes;
+    this->names = names;
+    this->types = types;
+    this->byteSize = byteSize;
+
     this->tstampOffsets.hr = timeDataOffsets.hr;
     this->tstampOffsets.mn = timeDataOffsets.mn;
     this->tstampOffsets.sc = timeDataOffsets.sc;
@@ -86,8 +87,6 @@ void BackendProcesses::threadProcedure()
     uint8_t sec_time = (curr_msec/1000) % 60;
     //uint8_t sec_time = gmtime(&now)->tm_sec;
     uint16_t msec_time = curr_msec % 1000;
-
-    data.getData(bytes, names, types, sec_time%7+msec_time/1000.0);
 
     // Update timestamp in byte array
     bytes.remove(tstampOffsets.hr,1);
