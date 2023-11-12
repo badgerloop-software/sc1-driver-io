@@ -18,7 +18,7 @@ struct timestampOffsets {
     int mn;
     int sc;
     int ms;
-    int unix; 
+    int unix;
 };
 
 class BackendProcesses : public QObject
@@ -26,7 +26,7 @@ class BackendProcesses : public QObject
     Q_OBJECT
 
 public:
-    explicit BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, QObject *parent = nullptr);
+    explicit BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, int byteSize, QObject *parent = nullptr);
     ~BackendProcesses();
     //~BackendProcesses();
 public slots:
@@ -34,8 +34,8 @@ public slots:
     void startThread();
     void comm_status(bool s);
 signals:
-    void dataReady();
     void eng_dash_connection(bool state);
+    void dataReady();
 private:
 
     timestampOffsets tstampOffsets;
@@ -47,6 +47,8 @@ private:
     std::vector<std::string> &types;
 
     QMutex &mutex;
+
+    int byteSize;
 
     DataGen data;
 
