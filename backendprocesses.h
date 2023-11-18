@@ -1,6 +1,7 @@
 #ifndef BACKENDPROCESSES_H
 #define BACKENDPROCESSES_H
 
+#include <QGuiApplication>
 #include <QObject>
 #include <vector>
 #include <QMutex>

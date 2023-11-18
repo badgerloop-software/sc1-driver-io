@@ -2,6 +2,10 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QCursor>
+#include <QFileInfo>
+#include <QProcess>
+// #include <QDir>
+// #include <QRegularExpression>
 #include <DataProcessor/DataUnpacker.h>
 #include <vector>
 
@@ -33,6 +37,27 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
 
     engine.load(url);
+
+    // run the Python file sync uploader if it's been cloned
+    {
+        // we look for file_sync/file_sync_up/main.py in two locations to handle 
+        //  different OSs and build systems
+        QProcess process;
+        process.setProcessChannelMode(QProcess::MergedChannels); // show the python process's stdout interleaved
+        QFileInfo check_file_p1("../sc1-driver-io/file_sync/file_sync_up/main.py");
+        QFileInfo check_file_p2("../solar-car-dashboard/file_sync/file_sync_up/main.py");
+        if (check_file_p1.exists() && check_file_p1.isFile()) {
+            process.startDetached("python3", QStringList() << "../sc1-driver-io/file_sync/file_sync_up/main.py");
+        } else if (check_file_p2.exists() && check_file_p2.isFile()) {
+            process.startDetached("python3", QStringList() << "../solar-car-dashboard/file_sync/file_sync_up/main.py");
+        } else {
+            qDebug()<<"\n";
+            qDebug()<<"WARNING: running without file sync";
+            qDebug()<<"   * Check whether you've cloned all the submodules";
+            qDebug()<<"   * If that didn't work, your build output is probably in a nonstandard directory";
+            qDebug()<<"\n";
+        }
+    }
 
     return app.exec();
 }
