@@ -33,7 +33,6 @@ void DataFetcher::threadProcedure()
 
     // continuously get datastream from server as QByteArray
     while (true) {
-        buffer.clear();
         newData = socket.readAll();
 
         while (newData.isEmpty() || !newData.contains(startTag.toUtf8())) {
@@ -49,12 +48,16 @@ void DataFetcher::threadProcedure()
             newData = socket.readAll();
         }
         newData = buffer.append(newData);
+        buffer.clear();
 
         int endTagIndex = newData.indexOf(endTag.toUtf8());
         newData.remove(endTagIndex, endTag.size());
+        buffer = newData.right(newData.size() - endTagIndex);
+        newData = newData.left(endTagIndex);
 
         // check if newData is a corrupted packet
         if (newData.size() != byteSize) {
+            buffer.clear();
             continue;
 
         } else {
@@ -69,6 +72,7 @@ void DataFetcher::threadProcedure()
             qDebug() << "size" << bytes.size();
 
             emit dataFetched();
+            QGuiApplication::processEvents();
         }
     }
 }

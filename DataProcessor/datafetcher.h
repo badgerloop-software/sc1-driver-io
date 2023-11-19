@@ -5,6 +5,7 @@
 #include <vector>
 #include <QMutex>
 #include <QTcpSocket>
+#include <QGuiApplication>
 
 class DataFetcher : public QObject
 {
