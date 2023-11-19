@@ -71,8 +71,6 @@ void BackendProcesses::threadProcedure()
 
     mutex.lock();
 
-    bytes.clear();
-
     // Get time data is received (then written to byte array right after byte array is updated/data is received)
     auto curr_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
