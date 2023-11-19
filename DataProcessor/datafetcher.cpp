@@ -21,33 +21,54 @@ void DataFetcher::threadProcedure()
         return;
     }
 
-    while (true) {
-        qDebug() << "starting fetcher...";
-        // get datastream from server as QByteArray
-        QTcpSocket socket(this);
-        socket.connectToHost(QString::fromStdString(url), stoi(port));
-        QByteArray extra;
-        QByteArray newData = extra.append(socket.readAll());
+    QTcpSocket socket(this);
+    socket.connectToHost(QString::fromStdString(url), stoi(port));
+    socket.waitForReadyRead(1000);
 
-        while (newData.isEmpty() || newData.size() > byteSize) {
-            qDebug() << "data:";
-            qDebug() << socket.readAll();
-            if (newData.isEmpty()) {
-                sleep(1);
-                newData = extra.append(socket.readAll());
-            }
-            else if (newData.size() > byteSize) {
-                extra = newData.right(newData.size() - byteSize);
-                newData = newData.left(byteSize);
-                break;
-            }
+    QByteArray buffer;
+    QByteArray newData;
+
+    QString startTag = "<bl>";
+    QString endTag = "</bl>";
+
+    // continuously get datastream from server as QByteArray
+    while (true) {
+        buffer.clear();
+        newData = socket.readAll();
+
+        while (newData.isEmpty() || !newData.contains(startTag.toUtf8())) {
+            socket.waitForReadyRead(1000);
+            newData = socket.readAll();
         }
 
-        qDebug() << newData;
+        int startTagIndex = newData.indexOf(startTag.toUtf8());
+        newData.remove(startTagIndex, startTag.size());
 
-        mutex.lock();
-        this->bytes = newData;
-        mutex.unlock();
-        emit dataFetched();
+        while (!newData.contains(endTag.toUtf8())) {
+            buffer.append(newData);
+            newData = socket.readAll();
+        }
+        newData = buffer.append(newData);
+
+        int endTagIndex = newData.indexOf(endTag.toUtf8());
+        newData.remove(endTagIndex, endTag.size());
+
+        // check if newData is a corrupted packet
+        if (newData.size() != byteSize) {
+            continue;
+
+        } else {
+            qDebug() << "data:";
+            qDebug() << newData;
+
+            mutex.lock();
+            this->bytes = newData;
+            mutex.unlock();
+
+            qDebug() << "size" << byteSize;
+            qDebug() << "size" << bytes.size();
+
+            emit dataFetched();
+        }
     }
 }

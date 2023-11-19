@@ -53,8 +53,6 @@ void BackendProcesses::startThread() {
     obj[1]=new TCP(QHostAddress::AnyIPv4, 4003); //this sends data thru TCP sockets
     this->tel = new Telemetry(obj);
     connect(this->tel, &Telemetry::eng_dash_connection, this, &BackendProcesses::comm_status); //for notifing the system connection status
-
-    threadProcedure();
 }
 
 BackendProcesses::~BackendProcesses() {
