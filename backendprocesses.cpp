@@ -107,26 +107,17 @@ void BackendProcesses::threadProcedure()
     all_bytes_in_minute.push_back(bytes);
     all_bytes_in_minute.push_back("</bsr>");
 
-    // determine base path
-    QString basePath;
-    QFileInfo check_file_p1("../sc1-driver-io/file_sync_output/placeholder.txt");
-    QFileInfo check_file_p2("../solar-car-dashboard/file_sync_output/placeholder.txt");
-    if (check_file_p1.exists() && check_file_p1.isFile()) {
-        basePath = "../sc1-driver-io/file_sync_output/";
-    } else if (check_file_p2.exists() && check_file_p2.isFile()) {
-        basePath = "../solar-car-dashboard/file_sync_output/";
-    } else {
-        qDebug()<<"\n";
-        qDebug()<<"FATAL ERROR: unable to find correct file sync output directory";
-        qDebug()<<"   * Your build output is probably in a nonstandard directory";
-        qDebug()<<"\n";
-
-        QGuiApplication::quit();
+    // determine base path (should handle Unix and Win32 correctly)
+    QString basePath = QDir::tempPath() + "/driver-io-file-sync";
+    qDebug() << basePath;
+    if (!QDir(basePath).exists()) {
+        QDir().mkdir(basePath);
     }
 
     if (sec_time % 60 == 0 && min_time != last_minute) {
         std::ofstream(basePath.toStdString() + std::to_string(curr_msec) + "_all_bytes.bin", std::ios::binary)
             .write(all_bytes_in_minute.data(), all_bytes_in_minute.size());
+        qDebug() << "Wrote one minute of data to " + basePath.toStdString() + std::to_string(curr_msec) + "_all_bytes.bin";
         last_minute = min_time;
         all_bytes_in_minute.clear();
     }
