@@ -1,11 +1,7 @@
 #include "datafetcher.h"
 
-DataFetcher::DataFetcher(QByteArray &bytes, std::string url, std::string port, int byteSize, QMutex &mutex, QObject *parent) :
-    QObject(parent), bytes(bytes), byteSize(byteSize), mutex(mutex)
-{
-    this->url = url;
-    this->port = port;
-}
+DataFetcher::DataFetcher(QByteArray &bytes, int byteSize, QMutex &mutex, QObject *parent) :
+    QObject(parent), bytes(bytes), byteSize(byteSize), mutex(mutex) {}
 
 void DataFetcher::startThread() {
     threadProcedure();
@@ -21,23 +17,39 @@ void DataFetcher::threadProcedure()
         return;
     }
 
-    QTcpSocket socket(this);
-    socket.connectToHost(QString::fromStdString(url), stoi(port));
-    socket.waitForReadyRead(1000);
+    // setup server
+    ethServer = new QTcpServer;
+    QHostAddress addr(QHostAddress::AnyIPv4);
+    ethServer->listen(addr, 8000);
+    connect(ethServer, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
+}
 
+void DataFetcher::onNewConnection() {
+    qDebug() << "received new connection signal";
+    while (ethServer->hasPendingConnections()) {
+        qDebug() << "here";
+        clientSocket = ethServer->nextPendingConnection();
+        clientSocket->write("Connection received");
+        connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+        connect(clientSocket, SIGNAL(disconnected()), SLOT(onDisconnected()));
+    }
+}
+
+void DataFetcher::onReadyRead() {
+    qDebug() << "received ready read signal";
     QByteArray buffer;
     QByteArray newData;
 
-    QString startTag = "<bl>";
-    QString endTag = "</bl>";
+    QString startTag = "<bsr>";
+    QString endTag = "</bsr>";
 
-    // continuously get datastream from server as QByteArray
+    // continuously get datastream from client as QByteArray
     while (true) {
-        newData = socket.readAll();
+        newData = clientSocket->readAll();
 
         while (newData.isEmpty() || !newData.contains(startTag.toUtf8())) {
-            socket.waitForReadyRead(1000);
-            newData = socket.readAll();
+            clientSocket->waitForReadyRead(1000);
+            newData = clientSocket->readAll();
         }
 
         int startTagIndex = newData.indexOf(startTag.toUtf8());
@@ -45,7 +57,7 @@ void DataFetcher::threadProcedure()
 
         while (!newData.contains(endTag.toUtf8())) {
             buffer.append(newData);
-            newData = socket.readAll();
+            newData = clientSocket->readAll();
         }
         newData = buffer.append(newData);
         buffer.clear();
@@ -75,4 +87,8 @@ void DataFetcher::threadProcedure()
             QGuiApplication::processEvents();
         }
     }
+}
+
+void DataFetcher::onDisconnected() {
+    clientSocket->deleteLater();
 }
