@@ -88,8 +88,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
 
     BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff, mutex, arrayOffset);
-    //DataFetcher* fetcher = new DataFetcher(bytes, "192.168.0.16", "4005", arrayOffset, mutex);
-    DataFetcher* fetcher = new DataFetcher(bytes, "10.140.201.122", "4003", arrayOffset, mutex);
+    DataFetcher* fetcher = new DataFetcher(bytes, arrayOffset, mutex);
     retriever->moveToThread(&dataHandlingThread);
     fetcher->moveToThread(&dataHandlingThread);
 

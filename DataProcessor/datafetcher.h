@@ -5,6 +5,7 @@
 #include <vector>
 #include <QMutex>
 #include <QTcpSocket>
+#include <QTcpServer>
 #include <QGuiApplication>
 
 class DataFetcher : public QObject
@@ -12,20 +13,24 @@ class DataFetcher : public QObject
     Q_OBJECT
 
 public:
-    explicit DataFetcher(QByteArray &bytes, std::string url, std::string port, int byteSize, QMutex &mutex, QObject *parent = nullptr);
+    explicit DataFetcher(QByteArray &bytes, int byteSize, QMutex &mutex, QObject *parent = nullptr);
     ~DataFetcher();
 public slots:
     void threadProcedure();
     void startThread();
+    void onNewConnection();
+    void onReadyRead();
+    void onDisconnected();
 signals:
     void dataFetched();
 private:
     QByteArray &bytes;
-    std::string url;
-    std::string port;
     int byteSize;
     QMutex &mutex;
     std::atomic<bool> stop = false;
+
+    QTcpServer* ethServer;
+    QTcpSocket* clientSocket;
 };
 
 #endif // DATAFETCHER_H
