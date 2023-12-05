@@ -31,6 +31,13 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     this->tstampOffsets.sc = timeDataOffsets.sc;
     this->tstampOffsets.ms = timeDataOffsets.ms;
     this->tstampOffsets.unix = timeDataOffsets.unix;
+
+    // determine base path (should handle Unix and Win32 correctly)
+    basePath = QDir::tempPath() + "/driver-io-file-sync";
+    qDebug() << basePath;
+    if (!QDir(basePath).exists()) {
+        QDir().mkdir(basePath);
+    }
 }
 
 void BackendProcesses::comm_status(bool s) {
@@ -107,12 +114,7 @@ void BackendProcesses::threadProcedure()
     all_bytes_in_minute.push_back(bytes);
     all_bytes_in_minute.push_back("</bsr>");
 
-    // determine base path (should handle Unix and Win32 correctly)
-    QString basePath = QDir::tempPath() + "/driver-io-file-sync";
     qDebug() << basePath;
-    if (!QDir(basePath).exists()) {
-        QDir().mkdir(basePath);
-    }
 
     if (sec_time % 60 == 0 && min_time != last_minute) {
         std::ofstream(basePath.toStdString() + std::to_string(curr_msec) + "_all_bytes.bin", std::ios::binary)

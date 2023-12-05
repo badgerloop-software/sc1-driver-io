@@ -51,6 +51,9 @@ private:
     DataGen data;
 
     Telemetry* tel;
+
+    // path of output directory used for file sync
+    QString basePath;
 };
 
 #endif // BACKENDPROCESSES_H
