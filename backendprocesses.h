@@ -57,6 +57,9 @@ private:
 
     // timestamp when the last file sync output was written to disk
     uint8_t last_minute = 0;
+
+    // queued data for file sync
+    QByteArray all_bytes_in_minute;
 };
 
 #endif // BACKENDPROCESSES_H

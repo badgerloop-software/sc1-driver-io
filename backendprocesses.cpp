@@ -108,12 +108,12 @@ void BackendProcesses::threadProcedure()
     }
     // write byte array to file for sync, once a minute
     static QByteArray all_bytes_in_minute = QByteArray();
-
     all_bytes_in_minute.push_back("<bsr>");
     all_bytes_in_minute.push_back(bytes);
     all_bytes_in_minute.push_back("</bsr>");
 
-    if (sec_time % 60 == 0 && min_time != last_minute) {
+    // only output the file when our buffer has reached 
+    if (all_bytes_in_minute.size() >= 10000 || min_time != last_minute) {
         std::ofstream(basePath.toStdString() + std::to_string(curr_msec) + "_all_bytes.bin", std::ios::binary)
             .write(all_bytes_in_minute.data(), all_bytes_in_minute.size());
         qDebug() << "Wrote one minute of data to " + basePath.toStdString() + std::to_string(curr_msec) + "_all_bytes.bin";
