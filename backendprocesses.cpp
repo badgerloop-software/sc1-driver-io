@@ -114,8 +114,6 @@ void BackendProcesses::threadProcedure()
     all_bytes_in_minute.push_back(bytes);
     all_bytes_in_minute.push_back("</bsr>");
 
-    qDebug() << basePath;
-
     if (sec_time % 60 == 0 && min_time != last_minute) {
         std::ofstream(basePath.toStdString() + std::to_string(curr_msec) + "_all_bytes.bin", std::ios::binary)
             .write(all_bytes_in_minute.data(), all_bytes_in_minute.size());
