@@ -47,9 +47,9 @@ int main(int argc, char *argv[])
         QFileInfo check_file_p1("../sc1-driver-io/file_sync/file_sync_up/main.py");
         QFileInfo check_file_p2("../solar-car-dashboard/file_sync/file_sync_up/main.py");
         if (check_file_p1.exists() && check_file_p1.isFile()) {
-            process.startDetached("python3", QStringList() << "../sc1-driver-io/file_sync/file_sync_up/main.py");
+            process.start("python3", QStringList() << "../sc1-driver-io/file_sync/file_sync_up/main.py");
         } else if (check_file_p2.exists() && check_file_p2.isFile()) {
-            process.startDetached("python3", QStringList() << "../solar-car-dashboard/file_sync/file_sync_up/main.py");
+            process.start("python3", QStringList() << "../solar-car-dashboard/file_sync/file_sync_up/main.py");
         } else {
             qDebug()<<"\n";
             qDebug()<<"WARNING: running without file sync";
