@@ -54,6 +54,9 @@ private:
 
     // path of output directory used for file sync
     QString basePath;
+
+    // timestamp when the last file sync output was written to disk
+    uint8_t last_minute = 0;
 };
 
 #endif // BACKENDPROCESSES_H

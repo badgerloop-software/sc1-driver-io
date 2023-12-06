@@ -33,7 +33,7 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     this->tstampOffsets.unix = timeDataOffsets.unix;
 
     // determine base path (should handle Unix and Win32 correctly)
-    basePath = QDir::tempPath() + "/driver-io-file-sync";
+    basePath = QDir::tempPath() + "/driver-io-file-sync/";
     qDebug() << basePath;
     if (!QDir(basePath).exists()) {
         QDir().mkdir(basePath);
@@ -107,7 +107,6 @@ void BackendProcesses::threadProcedure()
         mask=mask-8;
     }
     // write byte array to file for sync, once a minute
-    static uint8_t last_minute = 0;
     static QByteArray all_bytes_in_minute = QByteArray();
 
     all_bytes_in_minute.push_back("<bsr>");
