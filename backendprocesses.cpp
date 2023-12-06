@@ -116,7 +116,6 @@ void BackendProcesses::threadProcedure()
     if (all_bytes_in_minute.size() >= 10000 || min_time != last_minute) {
         std::ofstream(basePath.toStdString() + std::to_string(curr_msec) + "_all_bytes.bin", std::ios::binary)
             .write(all_bytes_in_minute.data(), all_bytes_in_minute.size());
-        qDebug() << "Wrote one minute of data to " + basePath.toStdString() + std::to_string(curr_msec) + "_all_bytes.bin";
         last_minute = min_time;
         all_bytes_in_minute.clear();
     }
