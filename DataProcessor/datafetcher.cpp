@@ -25,9 +25,7 @@ void DataFetcher::threadProcedure()
 }
 
 void DataFetcher::onNewConnection() {
-    qDebug() << "received new connection signal";
     while (ethServer->hasPendingConnections()) {
-        qDebug() << "here";
         clientSocket = ethServer->nextPendingConnection();
         clientSocket->write("Connection received");
         connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
@@ -36,7 +34,6 @@ void DataFetcher::onNewConnection() {
 }
 
 void DataFetcher::onReadyRead() {
-    qDebug() << "received ready read signal";
     QByteArray buffer;
     QByteArray newData;
 
