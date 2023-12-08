@@ -21,6 +21,7 @@ public slots:
     void onNewConnection();
     void onReadyRead();
     void onDisconnected();
+    void sendData(QByteArray data);
 signals:
     void dataFetched();
 private:

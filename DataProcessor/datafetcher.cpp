@@ -25,7 +25,7 @@ void DataFetcher::threadProcedure()
 }
 
 void DataFetcher::onNewConnection() {
-    while (ethServer->hasPendingConnections()) {
+    if (ethServer->hasPendingConnections()) {
         clientSocket = ethServer->nextPendingConnection();
         clientSocket->write("Connection received");
         connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
@@ -88,4 +88,11 @@ void DataFetcher::onReadyRead() {
 
 void DataFetcher::onDisconnected() {
     clientSocket->deleteLater();
+}
+
+void DataFetcher::sendData(QByteArray data) {
+    if (ethServer->hasPendingConnections()) {
+        clientSocket = ethServer->nextPendingConnection();
+        clientSocket->write(data);
+    }
 }
