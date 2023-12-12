@@ -75,3 +75,8 @@ Thumbs.db
 # output files for sync
 file_sync_output/*
 
+*.cmake
+CMakeCache.txt
+*.depends
+CMakeFiles
+.qt
