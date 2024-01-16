@@ -27,9 +27,10 @@ void DataFetcher::threadProcedure()
 void DataFetcher::onNewConnection() {
     if (ethServer->hasPendingConnections()) {
         clientSocket = ethServer->nextPendingConnection();
+        connected = true;
         clientSocket->write("Connection received");
         connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
-        connect(clientSocket, SIGNAL(disconnected()), SLOT(onDisconnected()));
+        connect(clientSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
     }
 }
 
@@ -41,10 +42,9 @@ void DataFetcher::onReadyRead() {
     QString endTag = "</bsr>";
 
     // continuously get datastream from client as QByteArray
-    while (true) {
+    while (connected) {
         newData = clientSocket->readAll();
-
-        while (newData.isEmpty() || !newData.contains(startTag.toUtf8())) {
+        while (connected && (newData.isEmpty() || !newData.contains(startTag.toUtf8()))) {
             clientSocket->waitForReadyRead(1000);
             newData = clientSocket->readAll();
         }
@@ -52,7 +52,7 @@ void DataFetcher::onReadyRead() {
         int startTagIndex = newData.indexOf(startTag.toUtf8());
         newData.remove(startTagIndex, startTag.size());
 
-        while (!newData.contains(endTag.toUtf8())) {
+        while (connected && !newData.contains(endTag.toUtf8())) {
             buffer.append(newData);
             newData = clientSocket->readAll();
         }
@@ -87,6 +87,7 @@ void DataFetcher::onReadyRead() {
 }
 
 void DataFetcher::onDisconnected() {
+    connected = false;
     clientSocket->deleteLater();
 }
 
