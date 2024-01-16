@@ -38,7 +38,7 @@ E bytesToGeneralData(QByteArray data, int startPos, int endPos, E typeZero)
 
 DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 {
-    FILE* fp = fopen("/Users/lwehlitz/Workspace/Solar/sc1-driver-io/sc1-driver-io/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+    FILE* fp = fopen("../sc1-driver-io/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     if(fp == 0) {
         fp = fopen("../solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     }
@@ -71,6 +71,8 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
             tstampOff.sc = arrayOffset;
         } else if(name == "tstamp_ms") {
             tstampOff.ms = arrayOffset;
+        } else if(name == "tstamp_unix") {
+            tstampOff.unix = arrayOffset;
         } else if(name.substr(0, 10) == "cell_group") {
             if(cell_group_voltages_begin == -1) {
                 cell_group_voltages_begin = dataCount;
@@ -89,24 +91,28 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
     BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff, mutex, arrayOffset);
     DataFetcher* fetcher = new DataFetcher(bytes, arrayOffset, mutex);
-    retriever->moveToThread(&dataHandlingThread);
-    fetcher->moveToThread(&dataHandlingThread);
+    retriever->moveToThread(&backendThread);
+    fetcher->moveToThread(&dataFetchThread);
 
-    connect(&dataHandlingThread, &QThread::started, fetcher, &DataFetcher::startThread);
+    connect(&dataFetchThread, &QThread::started, fetcher, &DataFetcher::startThread);
+    connect(&backendThread, &QThread::started, retriever, &BackendProcesses::startThread);
     connect(retriever, &BackendProcesses::dataReady, this, &DataUnpacker::unpack);
     connect(retriever, &BackendProcesses::eng_dash_connection, this, &DataUnpacker::eng_dash_connection);
-    connect(&dataHandlingThread, &QThread::finished, retriever, &QObject::deleteLater);
-    connect(&dataHandlingThread, &QThread::finished, &dataHandlingThread, &QThread::deleteLater);
+    connect(&backendThread, &QThread::finished, retriever, &QObject::deleteLater);
+    connect(&backendThread, &QThread::finished, &backendThread, &QThread::deleteLater);
+    connect(&dataFetchThread, &QThread::finished, fetcher, &DataFetcher::deleteLater);
+    connect(&dataFetchThread, &QThread::finished, &dataFetchThread, &QThread::deleteLater);
 
     connect(fetcher, &DataFetcher::dataFetched, retriever, &BackendProcesses::threadProcedure);
 
-    dataHandlingThread.start();
+    backendThread.start();
+    dataFetchThread.start();
 }
 
 DataUnpacker::~DataUnpacker()
 {
-    dataHandlingThread.quit();
-    dataHandlingThread.wait();  //wait until the thread fully stops to avoid error message
+    dataFetchThread.quit();
+    backendThread.wait();  //wait until the thread fully stops to avoid error message
 }
 
 void DataUnpacker::unpack()

@@ -83,7 +83,6 @@ void BackendProcesses::threadProcedure()
     uint8_t sec_time = (curr_msec/1000) % 60;
     //uint8_t sec_time = gmtime(&now)->tm_sec;
     uint16_t msec_time = curr_msec % 1000;
-
     // Update timestamp in byte array
     bytes.remove(tstampOffsets.hr,1);
     bytes.insert(tstampOffsets.hr, hour_time & 0xFF);
@@ -94,7 +93,7 @@ void BackendProcesses::threadProcedure()
     bytes.remove(tstampOffsets.ms,2);
     bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
     bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
-
+    bytes.remove(tstampOffsets.unix,8);
     uint64_t time=curr_msec;
     int mask= 56;
     for(int i=0; i<=7; i++) {

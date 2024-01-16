@@ -1,5 +1,8 @@
 #ifndef BACKENDPROCESSES_H
 #define BACKENDPROCESSES_H
+#ifdef unix
+#undef unix
+#endif
 
 #include <QGuiApplication>
 #include <QObject>
