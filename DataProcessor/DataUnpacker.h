@@ -103,7 +103,7 @@ signals:
 private:
     bool checkRestartEnable();
 
-    QThread dataHandlingThread;
+    QThread dataFetchThread, backendThread;
 
     // TODO Include only the properties that need to be displayed on the driver dashboard
     uint8_t fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
