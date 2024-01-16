@@ -9,7 +9,6 @@
 #include <vector>
 #include <QMutex>
 #include <fstream>
-#include "DataProcessor/DataGen.h"
 
 #include "telemetrylib/Telemetry.h"
 #include "telemetrylib/DTI.h"
@@ -52,8 +51,6 @@ private:
     QMutex &mutex;
 
     int byteSize;
-
-    DataGen data;
 
     Telemetry* tel;
 
