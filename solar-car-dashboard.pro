@@ -13,7 +13,6 @@ SOURCES += \
         DataProcessor/datafetcher.cpp \
         backendprocesses.cpp \
         main.cpp \
-        DataProcessor/DataGen.cpp \
         DataProcessor/DataUnpacker.cpp \
         telemetrylib/TCP.cpp \
         telemetrylib/Telemetry.cpp \
@@ -62,7 +61,6 @@ contains(ANDROID_TARGET_ARCH,arm64-v8a) {
 
 HEADERS += \
     DataProcessor/DataUnpacker.h \
-    DataProcessor/DataGen.h \
     DataProcessor/datafetcher.h \
     backendprocesses.h \
     telemetrylib/Telemetry.h \
