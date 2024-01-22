@@ -13,7 +13,7 @@
 1. Once you have an SSH key, clone the [sc1-data-format repository](https://github.com/badgerloop-software/sc1-data-format) to your computer. Make sure to clone it using SSH (when you go to copy the clone link, there will be an SSH option above the link).
 2. Next, `cd` into the `sc1-driver-io` repository and run `git submodule update --init`.
 
-### Running the Dashboard
+### Running the Dashboard with QMake
 
 0. To run the project on a Raspberry Pi, see "Compiling and Running the Project on a Rapberry Pi" below. Otherwise, to run the project through Qt Creator, follow the steps below.
 1. Ensure that you have [Qt](https://www.qt.io/download-open-source?hsCtaTracking=9f6a2170-a938-42df-a8e2-a9f0b1d6cdce%7C6cb0de4f-9bb5-4778-ab02-bfb62735f3e5) installed on your computer.
@@ -23,6 +23,17 @@
 5. Open up a terminal and `cd` into the ethernet_sim under driver io directory, and run `python3 main.py` this will simulate the main io connection to driver io using randomized data, it will automatically connect to driver io once it's opened.
 6. Open Qt Creater and configure the project using the appropriate kit for your environment.
 7. When the project is open, simply press the green arrow in the bottom-left corner of the window.
+
+### Running with CMake
+
+CMake is a more popular project make system, it allows you to edit the project with your ide of choice and enables features like autocomplete while not bounded to using qtcreator.
+
+0. If you are using windows, install Ubuntu via WSL, you can use any other distribution if you're experienced with linux.
+1. Ensure you have cmake and build-essentials installed you can do so by `sudo apt install build-essential cmake`
+2. Install qt packages with `sudo apt install qt5-doc qtbase5-examples qtbase5-doc-html qtdeclarative5-dev qml-module-qtquick-controls2`
+3. `cd`into your project directory and `mkdir build` to create a new build folder then `cd build`
+4. Run `cmake ..` to generate make file for the project, then run `make` to compile the project.
+5. To execute the program run `./solar-car-dashboard`.
 
 ### Contributing to the Dashboard
 
