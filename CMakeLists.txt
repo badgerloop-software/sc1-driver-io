@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.5)
 project(solar-car-dashboard)
 
 # Find the required Qt packages
-find_package(QT NAMES Qt6 COMPONENTS Core Quick REQUIRED)
+find_package(QT NAMES Qt5 COMPONENTS Core Quick REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick REQUIRED)
 
 message(----------QT-VERSION:${QT_VERSION_MAJOR}-----------)
@@ -38,7 +38,7 @@ set(HEADERS
         )
 
 # Add the resource files
-qt6_add_resources(RESOURCES
+qt5_add_resources(RESOURCES
         qml.qrc
         UI/Images/images.qrc
         UI/fonts/fonts.qrc
