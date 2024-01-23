@@ -44,14 +44,18 @@ void DataFetcher::onReadyRead() {
     // continuously get datastream from client as QByteArray
     while (connected) {
         newData = clientSocket->readAll();
+
+        // if no data then wait and try again
         while (connected && (newData.isEmpty() || !newData.contains(startTag.toUtf8()))) {
             clientSocket->waitForReadyRead(1000);
             newData = clientSocket->readAll();
         }
 
+        // remove starting tag of data packet
         int startTagIndex = newData.indexOf(startTag.toUtf8());
         newData.remove(startTagIndex, startTag.size());
 
+        // keep getting data until the end tag is reached
         while (connected && !newData.contains(endTag.toUtf8())) {
             buffer.append(newData);
             newData = clientSocket->readAll();
@@ -59,8 +63,11 @@ void DataFetcher::onReadyRead() {
         newData = buffer.append(newData);
         buffer.clear();
 
+        // remove the end tag
         int endTagIndex = newData.indexOf(endTag.toUtf8());
         newData.remove(endTagIndex, endTag.size());
+
+        // trim the data at the end tag
         buffer = newData.right(newData.size() - endTagIndex);
         newData = newData.left(endTagIndex);
 
@@ -80,6 +87,7 @@ void DataFetcher::onReadyRead() {
             qDebug() << "size" << byteSize;
             qDebug() << "size" << bytes.size();
 
+            // emit dataFetched signal to backendprocesses thread procedure
             emit dataFetched();
             QGuiApplication::processEvents();
         }
