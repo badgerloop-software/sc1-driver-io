@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.5)
 project(solar-car-dashboard)
 
 # Find the required Qt packages
-find_package(QT NAMES Qt5 COMPONENTS Core Quick REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core Quick)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick REQUIRED)
 
 message(----------QT-VERSION:${QT_VERSION_MAJOR}-----------)
@@ -19,7 +19,7 @@ set(SOURCES
         backendprocesses.cpp
         main.cpp
         DataProcessor/DataUnpacker.cpp
-        DataProcessor/DataGen.cpp
+        DataProcessor/datafetcher.cpp
         telemetrylib/TCP.cpp
         telemetrylib/Telemetry.cpp
         telemetrylib/SQL.cpp
@@ -30,7 +30,7 @@ set(SOURCES
 set(HEADERS
         ${HEADERS}
         DataProcessor/DataUnpacker.h
-        DataProcessor/DataGen.h
+        DataProcessor/datafetcher.h
         backendprocesses.h
         telemetrylib/Telemetry.h
         telemetrylib/DTI.h
@@ -38,7 +38,7 @@ set(HEADERS
         )
 
 # Add the resource files
-qt5_add_resources(RESOURCES
+qt_add_resources(RESOURCES
         qml.qrc
         UI/Images/images.qrc
         UI/fonts/fonts.qrc
