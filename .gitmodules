@@ -5,6 +5,3 @@
 [submodule "file_sync"]
 	path = file_sync
 	url = git@github.com:badgerloop-software/file_sync.git
-[submodule "ethernet_sim"]
-	path = ethernet_sim
-	url = git@github.com:badgerloop-software/ethernet_sim.git
