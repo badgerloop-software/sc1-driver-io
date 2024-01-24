@@ -77,9 +77,6 @@ void DataFetcher::onReadyRead() {
             continue;
 
         } else {
-            qDebug() << "data:";
-            qDebug() << newData;
-
             mutex.lock();
             this->bytes = newData;
             mutex.unlock();
