@@ -103,7 +103,7 @@ signals:
 private:
     bool checkRestartEnable();
 
-    QThread dataFetchThread, backendThread;
+    QThread dataFetchThread, backendThread, gpsThread;
 
     // TODO Include only the properties that need to be displayed on the driver dashboard
     uint8_t fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
@@ -114,6 +114,7 @@ private:
     float pack_voltage, pack_current, supplemental_voltage;
     float pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, motor_controller_temp;
     float string1_temp, string2_temp, string3_temp;
+    float lat, lon, elev;
     bool headlights, left_turn, right_turn, hazards, mainIO_heartbeat, crz_pwr_mode, crz_spd_mode, eco, main_telem, parking_brake;
     bool eng_dash_commfail=1;
     QString state;
@@ -132,7 +133,6 @@ private:
     QVector<float> cell_group_voltages;
     bool restart_enable=true;
     int mc_status=0;
-
 
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format
 

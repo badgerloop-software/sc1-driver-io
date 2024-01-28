@@ -17,7 +17,8 @@ SOURCES += \
         telemetrylib/TCP.cpp \
         telemetrylib/Telemetry.cpp \
         telemetrylib/SQL.cpp \
-        telemetrylib/DataResend.cpp
+        telemetrylib/DataResend.cpp \
+        gps/gps.cpp
 
 RESOURCES += qml.qrc \
     UI/Images/images.qrc \
@@ -65,4 +66,5 @@ HEADERS += \
     backendprocesses.h \
     telemetrylib/Telemetry.h \
     telemetrylib/DTI.h \
-    telemetrylib/DataResend.h
+    telemetrylib/DataResend.h \
+    gps/gps.h \

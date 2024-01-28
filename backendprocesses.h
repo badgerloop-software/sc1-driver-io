@@ -14,6 +14,7 @@
 #include "telemetrylib/DTI.h"
 #include "telemetrylib/TCP.cpp"
 #include "telemetrylib/SQL.cpp"
+#include "gps/gps.h"
 
 struct timestampOffsets {
     int hr;
@@ -28,7 +29,7 @@ class BackendProcesses : public QObject
     Q_OBJECT
 
 public:
-    explicit BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, int byteSize, QObject *parent = nullptr);
+    explicit BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, int byteSize, GPSData gpsOff, QObject *parent = nullptr);
     ~BackendProcesses();
     //~BackendProcesses();
 public slots:
@@ -39,9 +40,14 @@ signals:
     void eng_dash_connection(bool state);
     void dataReady();
 private:
-
+#ifdef linux
+    bool gps_enabled = true;
+#else
+    bool gps_enabled = false;
+#endif
     timestampOffsets tstampOffsets;
-
+    GPSData gpsoffset;
+    GPS *gps;
     QByteArray &bytes;
 
     std::atomic<bool> stop = false;
@@ -62,6 +68,8 @@ private:
 
     // queued data for file sync
     QByteArray all_bytes_in_minute;
+
+    QThread gpsThread;
 };
 
 #endif // BACKENDPROCESSES_H

@@ -1,4 +1,3 @@
-
 #include "backendprocesses.h"
 
 double speedFunc(double t)
@@ -18,7 +17,7 @@ double batteryFunc(double t)
 
 
 
-BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, int byteSize, QObject *parent) :
+BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, int byteSize, GPSData gpsOff, QObject *parent) :
     QObject(parent), bytes(bytes), names(names), types(types), mutex(mutex)
 {
     this->bytes = bytes;
@@ -31,6 +30,16 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     this->tstampOffsets.sc = timeDataOffsets.sc;
     this->tstampOffsets.ms = timeDataOffsets.ms;
     this->tstampOffsets.unix = timeDataOffsets.unix;
+
+    this->gpsoffset = gpsOff;
+
+    if(gps_enabled) {
+        gps = new GPS();
+        gps->moveToThread(&gpsThread);
+        connect(&gpsThread, &QThread::started, gps, &GPS::autoInit);
+        connect(&gpsThread, &QThread::finished, gps, &QObject::deleteLater);
+    }
+    gpsThread.start();
 
     // determine base path (should handle Unix and Win32 correctly)
     basePath = QDir::tempPath() + "/driver-io-file-sync/";
@@ -72,7 +81,8 @@ void BackendProcesses::threadProcedure()
 
     // Get time data is received (then written to byte array right after byte array is updated/data is received)
     auto curr_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-
+    if(gps_enabled)
+        GPSData gpsd = gps->getLoc();
     //time_t now = time(NULL);
 
     uint8_t hour_time = (curr_msec/3600000 + 18) % 24;

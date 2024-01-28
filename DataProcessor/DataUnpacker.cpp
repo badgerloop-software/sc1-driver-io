@@ -40,7 +40,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 {
     FILE* fp = fopen("../sc1-driver-io/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     if(fp == 0) {
-        fp = fopen("../solar-car-dashboard/sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
+        fp = fopen("../sc1-data-format/format.json", "r"); // NOTE: Windows: "rb"; non-Windows: "r"
     }
 
     char readBuffer[65536];
@@ -51,6 +51,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
     int arrayOffset = 0;
     timestampOffsets tstampOff;
+    GPSData gpsOff;
     int dataCount = 0;
     cell_group_voltages_begin = -1;
     cell_group_voltages_end = -1;
@@ -80,7 +81,12 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
                 cell_group_voltages_end = dataCount;
             }
             cell_group_voltages.push_back(0);
-        }
+        } else if(name == "lat") {
+            gpsOff.lat = arrayOffset;
+        } else if(name == "lon") {
+            gpsOff.lon = arrayOffset;
+        } else if(name == "elev")
+            gpsOff.alt == arrayOffset;
         qDebug() << cell_group_voltages_begin;
         arrayOffset += arr[0].GetInt();
         dataCount++;
@@ -89,7 +95,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     fclose(fp);
 
 
-    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff, mutex, arrayOffset);
+    BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff, mutex, arrayOffset, gpsOff);
     DataFetcher* fetcher = new DataFetcher(bytes, arrayOffset, mutex);
     retriever->moveToThread(&backendThread);
     fetcher->moveToThread(&dataFetchThread);
@@ -102,9 +108,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     connect(&backendThread, &QThread::finished, &backendThread, &QThread::deleteLater);
     connect(&dataFetchThread, &QThread::finished, fetcher, &DataFetcher::deleteLater);
     connect(&dataFetchThread, &QThread::finished, &dataFetchThread, &QThread::deleteLater);
-
     connect(fetcher, &DataFetcher::dataFetched, retriever, &BackendProcesses::threadProcedure);
-
     backendThread.start();
     dataFetchThread.start();
 }
@@ -156,7 +160,7 @@ void DataUnpacker::unpack()
 
         currByte += byteNums[i];
     }
-
+    
     mutex.unlock();
 
     this->restart_enable = checkRestartEnable();
