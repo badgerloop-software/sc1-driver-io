@@ -92,8 +92,6 @@ void DataFetcher::onDisconnected() {
 }
 
 void DataFetcher::sendData(QByteArray data) {
-    if (ethServer->hasPendingConnections()) {
-        clientSocket = ethServer->nextPendingConnection();
+    if(connected)
         clientSocket->write(data);
-    }
 }
