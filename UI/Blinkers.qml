@@ -21,7 +21,7 @@ Item {
 
     Image {
         id: rightBlinker
-        x: 725
+        x: 1149
         y: 0
         width: 150
         height: 104

@@ -27,8 +27,10 @@ Item {
 
     Blinkers {
         id: blinkers
-        x: 539
-        y: 224
+        x: 311
+        y: 211
+        width: 1299
+        height: 104
     }
 
     Clock {
@@ -78,9 +80,11 @@ Item {
     }
 
     Batteries {
-        id: supplementalBat
-        x: 20
-        y: 985
+        id: batteries
+        x: 22
+        y: 898
+        width: 558
+        height: 159
     }
 
     Image {
@@ -103,8 +107,10 @@ Item {
 
     Image {
         id: eco
-        x: 55
-        y: 63
+        x: 909
+        y: 379
+        width: 103
+        height: 51
         source: "UI/Images/ECO.png"
         fillMode: Image.PreserveAspectFit
         visible: backEnd.eco

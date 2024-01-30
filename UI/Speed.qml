@@ -102,7 +102,7 @@ Item {
 
         Rectangle {
             x: 130
-            y: 341
+            y: 362
             width: 540
             height: 2
             color: "#ffffff"
