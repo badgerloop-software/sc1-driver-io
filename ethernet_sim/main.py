@@ -1,8 +1,10 @@
 import json
 import random
+import select
 import socket
 import string
 import struct
+import sys
 import time
 import traceback
 
@@ -22,7 +24,7 @@ for k in data_format.keys():
 gps_data = json.load(open(gps_data, 'r'))['data']
 gps_data_index = 0
 
-def gen_data():
+def gen_data(mcu_hv_en: bool, shutdown: bool):
     global gps_data_index
     data = []
     for key in data_format.keys():
@@ -30,7 +32,12 @@ def gen_data():
         t = time.gmtime()
         match d[1]:
             case 'bool':
-                data.append(random.getrandbits(1))
+                if key == 'mcu_hv_en':
+                    data.append(mcu_hv_en)
+                elif d[5].find("Shutdown") != -1 and not shutdown:
+                    data.append(False)
+                else:
+                    data.append(random.getrandbits(1))
             case 'float':
                 if key == 'accelerator':
                     data.append(random.random())
@@ -62,19 +69,44 @@ def gen_data():
 
 if __name__ == '__main__':
     while True:
-        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            client.connect((DRIVER_IO_IP, DRIVER_IO_PORT))
-            print('connected')
-        except ConnectionRefusedError:
-            continue
+        connected = False
+        while not connected:
+            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            try:
+                client.connect((DRIVER_IO_IP, DRIVER_IO_PORT))
+                client.setblocking(False)
+                print('Connected')
+                connected = True
+            except ConnectionRefusedError:
+                time.sleep(1)
+
+        mcu_hv_en = True
+        shutdown = False
+        show_message = True
         try:
             while True:
-                d = gen_data()
+                if show_message:
+                    print(f'Shutdown faults are turned {"off" if not shutdown else "on"} enter S to turn {"off" if shutdown else "on"}')
+                    show_message = False
+                console_in, _, _ = select.select([sys.stdin], [], [], 0)
+                if console_in:
+                    key = sys.stdin.readline()
+                    if key.find('s') != -1 or key.find('S') != -1:
+                        shutdown = not shutdown
+                        show_message = True
+                d = gen_data(mcu_hv_en, shutdown)
                 d = b'<bsr>' + d + b'</bsr>'
                 client.send(d)
-                time.sleep(0.1)
+                readable, _, _ = select.select([client], [], [], 0.1)
+                if readable:
+                    data = client.recv(1024)  # Adjust the buffer size accordingly
+                    print(data)
+                    if data == b'mcu_hv_en':
+                        print("Received mcu_hv_en signal")
+                        mcu_hv_en = True
+
         except Exception as e:
             traceback.print_exc()
-            print("disconnected")
-            continue
+            print("Disconnected")
+        finally:
+            client.close()
