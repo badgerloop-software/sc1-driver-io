@@ -5,6 +5,7 @@ Item {
     id: dashboard
     width: 1920
     height: 1080
+    property alias rectangle: rectangle
 
     Rectangle {
         id: rectangle
@@ -19,15 +20,15 @@ Item {
 
     Speed {
         id: speedometer
-        x: 404
-        y: 195
+        x: 560
+        y: 205
         scale: 1
     }
 
     Blinkers {
         id: blinkers
-        x: 404
-        y: 195
+        x: 539
+        y: 224
     }
 
     Clock {
@@ -35,19 +36,6 @@ Item {
         x: dashboard.width - width * (scale + 1) / 2
         y: height * (scale - 1) / 2
         scale: 1
-    }
-
-    Battery {
-        id: battery
-        x: 1301
-        y: 211
-        scale: 1
-    }
-
-    BatterySolarBox {
-        id: batterySolar
-        x: 1619
-        y: 211
     }
 
     Image {
@@ -89,13 +77,7 @@ Item {
         sourceSize.width: 90
     }
 
-    LeftBox {
-        id: leftBox
-        x: 0
-        y: 362
-    }
-
-    SupplementalBat {
+    Batteries {
         id: supplementalBat
         x: 20
         y: 985
@@ -139,6 +121,7 @@ Item {
         font.pixelSize: 48
         font.weight: Font.Bold
         font.family: "Work Sans"
-        visible: (backEnd.crz_pwr_mode || backEnd.crz_spd_mode) && backEnd.state === "C"
+        visible: (backEnd.crz_pwr_mode || backEnd.crz_spd_mode)
+                 && backEnd.state === "C"
     }
 }
