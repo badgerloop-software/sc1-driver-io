@@ -97,9 +97,10 @@ public:
 public slots:
     void unpack();
     void eng_dash_connection(bool state);
+    void enableRestart();
 signals:
     void dataChanged();
-    void enableRestart();
+    void sendSignal(QByteArray data);
 private:
     bool checkRestartEnable();
 
@@ -142,6 +143,7 @@ private:
     std::vector<int> byteNums;
     std::vector<std::string> types;
     QMutex mutex;
+    DataFetcher * fetcher;
 };
 
 

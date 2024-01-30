@@ -90,11 +90,12 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
 
     BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff, mutex, arrayOffset);
-    DataFetcher* fetcher = new DataFetcher(bytes, arrayOffset, mutex);
+    fetcher = new DataFetcher(bytes, arrayOffset, mutex);
     retriever->moveToThread(&backendThread);
     fetcher->moveToThread(&dataFetchThread);
 
     connect(&dataFetchThread, &QThread::started, fetcher, &DataFetcher::startThread);
+    connect(this, &DataUnpacker::sendSignal, fetcher, &DataFetcher::sendData);
     connect(&backendThread, &QThread::started, retriever, &BackendProcesses::startThread);
     connect(retriever, &BackendProcesses::dataReady, this, &DataUnpacker::unpack);
     connect(retriever, &BackendProcesses::eng_dash_connection, this, &DataUnpacker::eng_dash_connection);
@@ -170,6 +171,10 @@ void DataUnpacker::eng_dash_connection(bool state) {
 }
 
 bool DataUnpacker::checkRestartEnable() {
-    return false; //(!restart_enable ? !mcu_hv_en : false) || driver_eStop || external_eStop || imd_status || door || crash || mcu_check || discharge_enable || restart_enable;
+    return (!restart_enable ? !mcu_hv_en : false) || driver_eStop || external_eStop || imd_status || door || crash || mcu_check || discharge_enable || restart_enable;
+}
+
+void DataUnpacker::enableRestart() {
+    emit sendSignal("mcu_hv_en");
 }
 
