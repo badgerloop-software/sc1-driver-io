@@ -27,8 +27,8 @@ Item {
 
         Text {
             id: speed
-            x: 440
-            y: 105
+            x: 420
+            y: 106
             width: 337
             height: 168
             color: "#ffffff"
@@ -42,8 +42,8 @@ Item {
 
         Text {
             id: mph
-            x: 527
-            y: 280
+            x: 514
+            y: 281
             width: 150
             height: 55
             color: "#ffffff"
@@ -57,13 +57,13 @@ Item {
 
         Text {
             id: stateText
-            x: 355
-            y: 288
+            x: 317
+            y: 267
             width: 166
-            height: 166
+            height: 82
             color: "#ffffff"
             text: backEnd.state === "C" ? "D" : qsTr(backEnd.state)
-            font.pixelSize: 112
+            font.pixelSize: 76
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             font.styleName: "Medium"
@@ -72,8 +72,8 @@ Item {
 
         Text {
             id: power
-            x: 100
-            y: 105
+            x: 46
+            y: 106
             width: 337
             height: 168
             color: "#ffffff"
@@ -87,8 +87,8 @@ Item {
 
         Text {
             id: kw
-            x: 195
-            y: 280
+            x: 140
+            y: 281
             width: 150
             height: 55
             color: "#ffffff"
@@ -101,8 +101,8 @@ Item {
         }
 
         Rectangle {
-            x: 173
-            y: 340
+            x: 130
+            y: 341
             width: 540
             height: 2
             color: "#ffffff"
@@ -110,13 +110,13 @@ Item {
 
         Accelerator {
             id: accelerator
-            x: 257
-            y: 760
+            x: 219
+            y: 757
         }
 
         Text {
-            x: 303
-            y: 715
+            x: 265
+            y: 712
             width: 270
             height: 40
             color: "#ffffff"
@@ -126,6 +126,36 @@ Item {
             verticalAlignment: Text.AlignVCenter
             font.family: "Work Sans"
             font.styleName: "Regular"
+        }
+
+        Text {
+            id: kw1
+            x: 168
+            y: 433
+            width: 150
+            height: 55
+            color: "#ffffff"
+            text: "KW"
+            font.pixelSize: 45
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.styleName: "Light"
+            font.family: "Work Sans"
+        }
+
+        Text {
+            id: mph1
+            x: 497
+            y: 433
+            width: 150
+            height: 55
+            color: "#ffffff"
+            text: "MPH"
+            font.pixelSize: 45
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.styleName: "Light"
+            font.family: "Work Sans"
         }
     }
 

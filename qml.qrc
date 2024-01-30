@@ -3,15 +3,13 @@
         <file>main.qml</file>
         <file>DashboardUI.ui.qml</file>
         <file>Dashboard.qml</file>
-        <file>UI/Battery.qml</file>
         <file>UI/Blinkers.qml</file>
         <file>UI/Speed.qml</file>
         <file>UI/Temperature.qml</file>
         <file>UI/Clock.qml</file>
         <file>RestartWindow.qml</file>
         <file>UI/Accelerator.qml</file>
-        <file>UI/BatterySolarBox.qml</file>
-        <file>UI/LeftBox.qml</file>
-        <file>UI/SupplementalBat.qml</file>
+        <file>UI/Batteries.qml</file>
+        <file>UI/BatteryInfo.qml</file>
     </qresource>
 </RCC>
