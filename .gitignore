@@ -71,6 +71,7 @@ Thumbs.db
 # --------
 *.dll
 *.exe
+solar-car-dashboard
 
 # output files for sync
 file_sync_output/*
