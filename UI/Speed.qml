@@ -130,8 +130,8 @@ Item {
 
         Text {
             id: kw1
-            x: 168
-            y: 433
+            x: 165
+            y: 448
             width: 150
             height: 55
             color: "#ffffff"
@@ -145,8 +145,8 @@ Item {
 
         Text {
             id: mph1
-            x: 497
-            y: 433
+            x: 501
+            y: 448
             width: 150
             height: 55
             color: "#ffffff"

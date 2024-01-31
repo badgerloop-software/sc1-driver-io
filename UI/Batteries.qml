@@ -22,8 +22,8 @@ Item {
         width: 280*backEnd.soc/100
         height: 60
         color: getColor(backEnd.soc)
-        anchors.right: mainBattery.right
-        anchors.rightMargin: 14
+        anchors.left: mainBattery.left
+        anchors.leftMargin: 10
         transformOrigin: Item.Center
     }
 
@@ -34,35 +34,22 @@ Item {
         width: 304
         height: 67
         source: "Images/Supplemental SoC.svg"
+        rotation: 180
     }
 
     Text {
         id: mainVoltage
-        x: 374
+        x: 412
         y: 2
         width: 184
         height: 75
         color: "#ffffff"
-        text: backEnd.pack_voltage.toFixed(1)
+        text: backEnd.pack_voltage.toFixed(1) + " V"
         font.pixelSize: 52
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         font.styleName: "Regular"
         font.family: "Work Sans"
-    }
-
-    Text {
-        x: 525
-        y: 12
-        width: 50
-        height: 50
-        color: "#ffffff"
-        text: "V"
-        font.pixelSize: 48
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        font.family: "Work Sans"
-        font.styleName: "Regular"
     }
 
 	Rectangle {
@@ -72,8 +59,8 @@ Item {
         width: 280*backEnd.est_supplemental_soc/100
 	    height: 60
         color: getColor(backEnd.est_supplemental_soc)
-        anchors.right: suppBattery.right
-	    anchors.rightMargin: 14
+        anchors.left: suppBattery.left
+        anchors.leftMargin: 10
 	    transformOrigin: Item.Center
 	}
 
@@ -84,35 +71,22 @@ Item {
 	    width: 304
 	    height: 67
 	    source: "Images/Supplemental SoC.svg"
+        rotation: 180
     }
 
     Text {
         id: suppVoltage
-        x: 374
+        x: 412
         y: 77
 	    width: 184
 	    height: 75
 	    color: "#ffffff"
-        text: backEnd.supplemental_voltage.toFixed(1)
+        text: backEnd.supplemental_voltage.toFixed(1) + " V"
         font.pixelSize: 52
 	    horizontalAlignment: Text.AlignHCenter
 	    verticalAlignment: Text.AlignVCenter
         font.styleName: "Regular"
         font.family: "Work Sans"
-    }
-
-    Text {
-        x: 525
-        y: 87
-        width: 50
-        height: 50
-        color: "#ffffff"
-        text: "V"
-        font.pixelSize: 48
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        font.family: "Work Sans"
-        font.styleName: "Regular"
     }
 
     Text {
