@@ -2,8 +2,8 @@ import QtQuick 2.4
 
 Item {
     id: pack_temp_fan_speed
-    width: 275
-    height: 350
+    width: 223
+    height: 303
 
 
     function getColor(temp){
@@ -21,7 +21,7 @@ Item {
         y: 0
         width: 225
         height: 150
-        color: getColor(backEnd.pack_temp)
+        color: "#000000"
         border.width: 0
 
         Text {
@@ -71,6 +71,7 @@ Item {
         y: 150
         width: 225
         height: 150
+        color: "#000000"
         border.width: 0
 
         Text {
@@ -89,8 +90,8 @@ Item {
 
         Text {
             id: fanSpeed
-            x: 10
-            y: 50
+            x: 38
+            y: 56
             width: 150
             height: 75
             color: "#ffffff"
