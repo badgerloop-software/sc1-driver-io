@@ -2,27 +2,14 @@ import QtQuick 2.15
 
 Item {
     id: speedBox
-    width: 800
+    width: 919
     height: 950
-
-    property real displaySpeed: 0
-    property real crzDisplaySpeed: 0
-    property int refreshTime: 500
-    property int crzRefreshTime: 100
-
-    function updateSpeed() {
-        displaySpeed = backEnd.speed;
-    }
-
-    function updateCrzSpeed() {
-        crzDisplaySpeed = backEnd.crz_spd_setpt;
-    }
 
     Item {
         id: speedometer
-        x: 0
+        x: -60
         y: 0
-        width: 800
+        width: 919
         height: 950
 
         Text {
@@ -32,7 +19,7 @@ Item {
             width: 337
             height: 168
             color: "#ffffff"
-            text: displaySpeed.toFixed(1)
+            text: backEnd.speed.toFixed(1)
             font.pixelSize: 156
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -134,7 +121,7 @@ Item {
             y: 448
             width: 150
             height: 55
-            color: "#ffffff"
+            color: (backEnd.crz_pwr_mode) ? "#00ff00" : "#ffffff"
             text: "KW"
             font.pixelSize: 45
             horizontalAlignment: Text.AlignHCenter
@@ -149,7 +136,7 @@ Item {
             y: 448
             width: 150
             height: 55
-            color: "#ffffff"
+            color: (backEnd.crz_spd_mode) ? "#00ff00" : "#ffffff"
             text: "MPH"
             font.pixelSize: 45
             horizontalAlignment: Text.AlignHCenter
@@ -157,16 +144,50 @@ Item {
             font.styleName: "Light"
             font.family: "Work Sans"
         }
-    }
 
-    Timer {
-        interval: refreshTime; running: true; repeat: true
-        onTriggered: updateSpeed();
-    }
+        Text {
+            id: crz_power
+            x: 72
+            y: 323
+            width: 337
+            height: 168
+            color: (backEnd.crz_pwr_mode) ? "#00ff00" : "#ffffff"
+            text: backEnd.crz_pwr_setpt.toFixed(1)
+            font.pixelSize: 80
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.styleName: "Light"
+            font.family: "Work Sans"
+        }
 
-    Timer {
-        interval: crzRefreshTime; running: true; repeat: true
-        onTriggered: updateCrzSpeed();
-    }
+        Text {
+            id: crz_speed
+            x: 408
+            y: 323
+            width: 337
+            height: 168
+            color: (backEnd.crz_spd_mode) ? "#00ff00" : "#ffffff"
+            text: backEnd.crz_spd_setpt.toFixed(1)
+            font.pixelSize: 80
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.styleName: "Light"
+            font.family: "Work Sans"
+        }
 
+        Text {
+            id: crz_enable
+            x: 325
+            y: 448
+            width: 150
+            height: 55
+            color: (backEnd.crz_pwr_mode || backEnd.crz_spd_mode) ? "#00ff00" : "#000000"
+            text: "Cruise"
+            font.pixelSize: 45
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.styleName: "Regular"
+            font.family: "Work Sans"
+        }
+    }
 }
