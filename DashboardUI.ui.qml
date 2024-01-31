@@ -107,10 +107,10 @@ Item {
 
     Image {
         id: eco
-        x: 909
-        y: 379
-        width: 103
-        height: 51
+        x: 855
+        y: 851
+        width: 94
+        height: 50
         source: "UI/Images/ECO.png"
         fillMode: Image.PreserveAspectFit
         visible: backEnd.eco
