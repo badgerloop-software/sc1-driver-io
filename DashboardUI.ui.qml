@@ -112,4 +112,10 @@ Item {
         width: 223
         height: 303
     }
+
+    BatteryInfo {
+        id: batteryInfo
+        x: 1419
+        y: 353
+    }
 }
