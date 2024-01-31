@@ -90,7 +90,7 @@ Item {
         Rectangle {
             x: 130
             y: 362
-            width: 540
+            width: 553
             height: 2
             color: "#ffffff"
         }
