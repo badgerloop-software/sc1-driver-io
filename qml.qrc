@@ -5,7 +5,7 @@
         <file>Dashboard.qml</file>
         <file>UI/Blinkers.qml</file>
         <file>UI/Speed.qml</file>
-        <file>UI/Temperature.qml</file>
+        <file>UI/PackTempFanSpeed.qml</file>
         <file>UI/Clock.qml</file>
         <file>RestartWindow.qml</file>
         <file>UI/Accelerator.qml</file>

@@ -104,4 +104,12 @@ Item {
         fillMode: Image.PreserveAspectFit
         visible: backEnd.eco
     }
+
+    PackTempFanSpeed {
+        id: packTempFanSpeed
+        x: 1668
+        y: 754
+        width: 223
+        height: 303
+    }
 }
