@@ -20,8 +20,10 @@ Item {
 
     Speed {
         id: speedometer
-        x: 560
-        y: 205
+        x: 611
+        y: 198
+        width: 698
+        height: 950
         scale: 1
     }
 
@@ -42,8 +44,8 @@ Item {
 
     Image {
         id: headlights
-        x: 624
-        y: 87
+        x: 885
+        y: 214
         width: 150
         height: 105
         visible: backEnd.headlights
@@ -54,22 +56,9 @@ Item {
     }
 
     Image {
-        id: cruise
-        x: 916
-        y: 79
-        width: 120
-        height: 120
-        visible: backEnd.crz_pwr_mode || backEnd.crz_spd_mode
-        source: backEnd.crz_spd_mode ? "UI/Images/Cruise Speed.png" : "UI/Images/Cruise Power.png"
-        sourceSize.height: 120
-        sourceSize.width: 120
-        fillMode: Image.PreserveAspectFit
-    }
-
-    Image {
         id: engDashComm
-        x: 1390
-        y: 50
+        x: 1229
+        y: 56
         width: 125
         height: 114
         source: "UI/Images/comm.png"
@@ -89,8 +78,8 @@ Item {
 
     Image {
         id: main_telem
-        x: 155
-        y: 194
+        x: 560
+        y: 38
         source: "UI/Images/main_telem.png"
         fillMode: Image.PreserveAspectFit
         visible: backEnd.main_telem
@@ -98,8 +87,8 @@ Item {
 
     Image {
         id: parkingBrake
-        x: 265
-        y: 40
+        x: 898
+        y: 50
         source: "UI/Images/Parking Brake.png"
         fillMode: Image.PreserveAspectFit
         visible: backEnd.parking_brake
@@ -107,27 +96,12 @@ Item {
 
     Image {
         id: eco
-        x: 855
-        y: 851
+        x: 913
+        y: 849
         width: 94
         height: 50
         source: "UI/Images/ECO.png"
         fillMode: Image.PreserveAspectFit
         visible: backEnd.eco
-    }
-
-    Text {
-        id: text1
-        x: 1036
-        y: 72
-        width: 92
-        height: 56
-        color: "#40c321"
-        text: qsTr("SET")
-        font.pixelSize: 48
-        font.weight: Font.Bold
-        font.family: "Work Sans"
-        visible: (backEnd.crz_pwr_mode || backEnd.crz_spd_mode)
-                 && backEnd.state === "C"
     }
 }
