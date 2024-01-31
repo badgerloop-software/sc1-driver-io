@@ -11,5 +11,6 @@
         <file>UI/Accelerator.qml</file>
         <file>UI/Batteries.qml</file>
         <file>UI/BatteryInfo.qml</file>
+        <file>UI/SolarInfo.qml</file>
     </qresource>
 </RCC>

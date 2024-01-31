@@ -107,8 +107,8 @@ Item {
 
     PackTempFanSpeed {
         id: packTempFanSpeed
-        x: 1668
-        y: 754
+        x: 1664
+        y: 787
         width: 223
         height: 303
     }
@@ -117,5 +117,11 @@ Item {
         id: batteryInfo
         x: 1419
         y: 353
+    }
+
+    SolarInfo {
+        id: solarInfo
+        x: 126
+        y: 358
     }
 }
