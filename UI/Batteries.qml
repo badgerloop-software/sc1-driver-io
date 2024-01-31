@@ -19,9 +19,9 @@ Item {
         id: mainBatteryLevel
         x: 0
         y: 5
-        width: 280*backEnd.est_supplemental_soc/100
+        width: 280*backEnd.soc/100
         height: 60
-        color: getColor(backEnd.est_supplemental_soc)
+        color: getColor(backEnd.soc)
         anchors.right: mainBattery.right
         anchors.rightMargin: 14
         transformOrigin: Item.Center
@@ -37,14 +37,14 @@ Item {
     }
 
     Text {
-        id: mainCharge
+        id: mainVoltage
         x: 374
         y: 2
         width: 184
         height: 75
         color: "#ffffff"
-        text: backEnd.est_supplemental_soc.toFixed(1)
-        font.pixelSize: 72
+        text: backEnd.pack_voltage.toFixed(1)
+        font.pixelSize: 52
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         font.styleName: "Regular"
@@ -57,8 +57,8 @@ Item {
         width: 50
         height: 50
         color: "#ffffff"
-        text: qsTr("%")
-        font.pixelSize: 60
+        text: "V"
+        font.pixelSize: 48
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         font.family: "Work Sans"
@@ -69,9 +69,9 @@ Item {
         id: suppBatteryLevel
 	    x: 0
         y: 80
-	    width: 280*backEnd.est_supplemental_soc/100
+        width: 280*backEnd.est_supplemental_soc/100
 	    height: 60
-	    color: getColor(backEnd.est_supplemental_soc)
+        color: getColor(backEnd.est_supplemental_soc)
         anchors.right: suppBattery.right
 	    anchors.rightMargin: 14
 	    transformOrigin: Item.Center
@@ -86,15 +86,15 @@ Item {
 	    source: "Images/Supplemental SoC.svg"
     }
 
-	Text {
-        id: suppCharge
+    Text {
+        id: suppVoltage
         x: 374
         y: 77
 	    width: 184
 	    height: 75
 	    color: "#ffffff"
-	    text: backEnd.est_supplemental_soc.toFixed(1)
-	    font.pixelSize: 72
+        text: backEnd.supplemental_voltage.toFixed(1)
+        font.pixelSize: 52
 	    horizontalAlignment: Text.AlignHCenter
 	    verticalAlignment: Text.AlignVCenter
         font.styleName: "Regular"
@@ -107,8 +107,8 @@ Item {
         width: 50
         height: 50
         color: "#ffffff"
-        text: qsTr("%")
-        font.pixelSize: 60
+        text: "V"
+        font.pixelSize: 48
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         font.family: "Work Sans"
@@ -116,7 +116,7 @@ Item {
     }
 
     Text {
-        id: mainCharge1
+        id: mainLabel
         x: -38
         y: 2
         width: 184
@@ -131,7 +131,7 @@ Item {
     }
 
     Text {
-        id: mainCharge2
+        id: suppLabel
         x: -38
         y: 73
         width: 184
@@ -142,6 +142,38 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         font.styleName: "Light"
+        font.family: "Work Sans"
+    }
+
+    Text {
+        id: mainCharge
+        x: 187
+        y: 2
+        width: 184
+        height: 75
+        color: "#ffffff"
+        text: backEnd.soc.toFixed(1) + " %"
+        font.pixelSize: 32
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        style: Text.Outline
+        font.styleName: "Regularh"
+        font.family: "Work Sans"
+    }
+
+    Text {
+        id: suppCharge
+        x: 187
+        y: 73
+        width: 184
+        height: 75
+        color: "#ffffff"
+        text: backEnd.est_supplemental_soc.toFixed(1) + " %"
+        font.pixelSize: 32
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        style: Text.Outline
+        font.styleName: "Regular"
         font.family: "Work Sans"
     }
 
