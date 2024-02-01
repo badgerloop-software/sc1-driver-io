@@ -19,17 +19,12 @@ Telemetry::Telemetry(std::vector<DTI *> commChannels) {
     qDebug() << "comm channels initialized: " << comm.size();
 }
 
-// Send data through the current communication channel
+// Broadcarst data to all communication channels 
 void Telemetry::sendData(QByteArray bytes, long long timestamp) {
-    qDebug() << "send data current comm channel: " << commChannel;
-    // Check if there is a current communication channel and if the resend queue is not busy
-    if (commChannel != -1 && !resendQueue.isBusy()) {
-        // Send data through the current communication channel
-        comm[commChannel]->sendData(bytes, timestamp);
-    } else {
-        qDebug() << "adding to queue from telemetry: " << timestamp;
-        // Add data to the resend queue if there is no current communication channel or the resend queue is busy
-        resendQueue.addToQueue(bytes, timestamp);
+    // Loop through all communication channels
+    for (int i = 0; i < comm.size(); i++) {
+        // Send data to the current communication channel
+        comm[i]->sendData(bytes, timestamp);
     }
 }
 
