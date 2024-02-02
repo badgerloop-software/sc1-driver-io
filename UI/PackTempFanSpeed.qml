@@ -70,7 +70,7 @@ Item {
         x: 0
         y: 150
         width: 225
-        height: 150
+        height: 100
         color: "#000000"
         border.width: 0
 
