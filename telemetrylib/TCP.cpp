@@ -26,7 +26,7 @@ public:
     }
     */
 
-    bool getConnectionStatus() override {
+    bool getConnectionStatus() {
         return connection;
     }
 

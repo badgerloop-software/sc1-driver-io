@@ -11,9 +11,23 @@ public:
         this->tableToCreate = tableToCreate;
 
         restclient = new QNetworkAccessManager();
+        // Send request to create a new table when connection to server is first established
+        if(tableName.isNull() && connection) {
+            qDebug() << "Requested a new table: " << tableToCreate;
 
-        t = new std::thread(&SQL::checkConnection, this);
-        t->detach();
+            QUrl myurl;
+            myurl.setScheme("http");
+            myurl.setHost("150.136.104.125"); 
+            myurl.setPort(3000);
+            myurl.setPath("/add-table/" + tableToCreate);
+
+            request.setUrl(myurl);
+            reply = restclient->get(request);
+
+            connect(reply, &QNetworkReply::readyRead, this, &SQL::readReply);
+            request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));
+            request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
+        }
     }
 
     ~SQL() {
@@ -55,29 +69,6 @@ public:
     }
     */
 
-    bool getConnectionStatus() override{
-        // Send request to create a new table when connection to server is first established
-        if(tableName.isNull() && connection) {
-            qDebug() << "Requested a new table: " << tableToCreate;
-
-            QUrl myurl;
-            myurl.setScheme("http");
-            myurl.setHost("150.136.104.125"); 
-            myurl.setPort(3000);
-            myurl.setPath("/add-table/" + tableToCreate);
-
-            request.setUrl(myurl);
-            reply = restclient->get(request);
-
-            connect(reply, &QNetworkReply::readyRead, this, &SQL::readReply);
-            request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));
-            request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
-        }
-
-        return connection;
-    }
-
-
 public slots:
     /**
      * Read response from the server. Specifically, reads the response to the request to
@@ -98,28 +89,6 @@ public slots:
         }
     }
 private:
-    /**
-     * creates a thread that ping a website to check connection
-     */
-    void checkConnection() {
-        QTcpSocket sock;
-        while(!finish) {
-            sock.connectToHost("www.google.com", 80);   //create a socket to connect google
-            bool connected = sock.waitForConnected(500);    //if connected in 500ms then we say it's connected
-            if (!connected && connection) {
-                sock.abort();
-                connection = false;
-                emit connectionStatusChanged();
-            } else if(connected && !connection) {
-                sock.close();
-                connection = true;
-                emit connectionStatusChanged();
-            }
-            usleep(50000);
-            sock.abort();
-        }
-    }
-
     std::atomic<bool> connection = false; //connection status to the internet
     QNetworkRequest request;
     QNetworkAccessManager *restclient = NULL;

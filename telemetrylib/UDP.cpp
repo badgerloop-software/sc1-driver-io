@@ -21,14 +21,10 @@ public:
     void sendData(QByteArray bytes, long long timestamp) override {
         qDebug() << "sending via UDP";
         bytes.prepend("<bsr>");
-        bytes.append("</bst>");
+        bytes.append("</bsr>");
         qDebug() << _udpSocket->writeDatagram(bytes, serverAddresses, udpPort);
     }
-
-    bool getConnectionStatus() override {
-        return connection;
-    }
-
+    
 public slots:
     void onReadyRead() {
         while (_udpSocket->hasPendingDatagrams()) {

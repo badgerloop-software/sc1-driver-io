@@ -17,11 +17,6 @@ public:
      * @return bytes received
      */
     //virtual std::string receiveData() = 0;
-    /**
-     * @return connection status
-     */
-    virtual bool getConnectionStatus() = 0;
-
 signals:
     /**
      * for notifying telemetry class to redo polling.
