@@ -5,6 +5,19 @@ Item {
     width: 919
     height: 950
 
+    function isPowerInKilowatts(watts) {
+        return (watts > 1000) ? true : false;
+    }
+
+    function dividePower(watts) {
+        const value = isPowerInKilowatts(watts) ? watts / 1000 : watts;
+        return isPowerInKilowatts(watts) ? value.toFixed(1) : value.toFixed(0);
+    }
+
+    function getPowerUnit(watts) {
+        return isPowerInKilowatts(watts) ? "KW" : "W";
+    }
+
     Item {
         id: speedometer
         x: -60
@@ -64,7 +77,7 @@ Item {
             width: 337
             height: 168
             color: "#ffffff"
-            text: ((backEnd.pack_voltage * backEnd.pack_current) / 1000).toFixed(1)
+            text: dividePower(backEnd.pack_voltage * backEnd.pack_current)
             font.pixelSize: 156
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -79,7 +92,7 @@ Item {
             width: 150
             height: 55
             color: "#ffffff"
-            text: "KW"
+            text: getPowerUnit(backEnd.pack_voltage * backEnd.pack_current)
             font.pixelSize: 45
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
