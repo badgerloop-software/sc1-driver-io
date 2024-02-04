@@ -5,6 +5,19 @@ Item {
     width: 350
     height: 400
 
+    function isPowerInKilowatts(watts) {
+        return (watts > 1000) ? true : false;
+    }
+
+    function dividePower(watts) {
+        const value = isPowerInKilowatts(watts) ? watts / 1000 : watts;
+        return isPowerInKilowatts(watts) ? value.toFixed(1) : value.toFixed(0);
+    }
+
+    function getPowerUnit(watts) {
+        return isPowerInKilowatts(watts) ? "KW" : "W";
+    }
+
     Text {
         id: name
         x: 125
@@ -27,7 +40,7 @@ Item {
         width: 100
         height: 100
         color: "#ffffff"
-        text: (backEnd.mppt_current_out * backEnd.pack_voltage).toFixed(0)
+        text: dividePower(backEnd.mppt_current_out * backEnd.pack_voltage)
         font.pixelSize: 96
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
@@ -42,7 +55,7 @@ Item {
         width: 100
         height: 100
         color: "#ffffff"
-        text: "W"
+        text: getPowerUnit(backEnd.mppt_current_out * backEnd.pack_voltage)
         font.pixelSize: 36
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
