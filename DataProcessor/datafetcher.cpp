@@ -13,10 +13,6 @@ DataFetcher::~DataFetcher() {
 
 void DataFetcher::threadProcedure()
 {
-    if(stop) {
-        return;
-    }
-
     // setup server
     ethServer = new QTcpServer;
     QHostAddress addr(QHostAddress::AnyIPv4);
@@ -35,7 +31,6 @@ void DataFetcher::onNewConnection() {
 }
 
 void DataFetcher::onReadyRead() {
-    qDebug() << "ready read";
     QByteArray buffer;
     QByteArray newData;
 
@@ -63,7 +58,6 @@ void DataFetcher::onReadyRead() {
         while (connected && !newData.contains(endTag.toUtf8())) {
             buffer.append(newData);
             if(!clientSocket->waitForReadyRead(3000)) {
-                qDebug() << "no data";
                 onDisconnected();
                 break;    
             }
@@ -89,9 +83,6 @@ void DataFetcher::onReadyRead() {
             mutex.lock();
             this->bytes = newData;
             mutex.unlock();
-
-            qDebug() << "size" << byteSize;
-            qDebug() << "size" << bytes.size();
 
             // emit dataFetched signal to backendprocesses thread procedure
             emit dataFetched();
