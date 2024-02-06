@@ -35,6 +35,7 @@ void DataFetcher::onNewConnection() {
 }
 
 void DataFetcher::onReadyRead() {
+    qDebug() << "ready read";
     QByteArray buffer;
     QByteArray newData;
 
@@ -47,7 +48,10 @@ void DataFetcher::onReadyRead() {
 
         // if no data then wait and try again
         while (connected && (newData.isEmpty() || !newData.contains(startTag.toUtf8()))) {
-            clientSocket->waitForReadyRead(1000);
+            if(!clientSocket->waitForReadyRead(3000)) {
+                onDisconnected();
+                break;    
+            }
             newData = clientSocket->readAll();
         }
 
@@ -58,6 +62,11 @@ void DataFetcher::onReadyRead() {
         // keep getting data until the end tag is reached
         while (connected && !newData.contains(endTag.toUtf8())) {
             buffer.append(newData);
+            if(!clientSocket->waitForReadyRead(3000)) {
+                qDebug() << "no data";
+                onDisconnected();
+                break;    
+            }
             newData = clientSocket->readAll();
         }
         newData = buffer.append(newData);
