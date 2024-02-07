@@ -8,7 +8,6 @@ void DataFetcher::startThread() {
 }
 
 DataFetcher::~DataFetcher() {
-    stop=true; //tells the thread to stop
 }
 
 void DataFetcher::threadProcedure()
@@ -45,49 +44,45 @@ void DataFetcher::onReadyRead() {
         while (connected && (newData.isEmpty() || !newData.contains(startTag.toUtf8()))) {
             if(!clientSocket->waitForReadyRead(3000)) {
                 onDisconnected();
-                break;    
+                return;  // Exit the function if disconnected
             }
             newData = clientSocket->readAll();
         }
 
         // remove starting tag of data packet
         int startTagIndex = newData.indexOf(startTag.toUtf8());
-        newData.remove(startTagIndex, startTag.size());
+        newData.remove(0, startTagIndex + startTag.size());
 
         // keep getting data until the end tag is reached
         while (connected && !newData.contains(endTag.toUtf8())) {
             buffer.append(newData);
             if(!clientSocket->waitForReadyRead(3000)) {
                 onDisconnected();
-                break;    
+                return;  // Exit the function if disconnected
             }
             newData = clientSocket->readAll();
         }
-        newData = buffer.append(newData);
-        buffer.clear();
 
         // remove the end tag
         int endTagIndex = newData.indexOf(endTag.toUtf8());
         newData.remove(endTagIndex, endTag.size());
 
-        // trim the data at the end tag
-        buffer = newData.right(newData.size() - endTagIndex);
-        newData = newData.left(endTagIndex);
+        // append the remaining data from buffer
+        newData.prepend(buffer);
+        buffer.clear();
 
         // check if newData is a corrupted packet
         if (newData.size() != byteSize) {
-            buffer.clear();
             continue;
-
-        } else {
-            mutex.lock();
-            this->bytes = newData;
-            mutex.unlock();
-
-            // emit dataFetched signal to backendprocesses thread procedure
-            emit dataFetched();
-            QGuiApplication::processEvents();
         }
+
+        mutex.lock();
+        this->bytes = newData;
+        mutex.unlock();
+
+        // emit dataFetched signal to backend processes thread procedure
+        emit dataFetched();
+        QCoreApplication::processEvents();
     }
 }
 

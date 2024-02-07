@@ -28,7 +28,7 @@ private:
     QByteArray &bytes;
     int byteSize;
     QMutex &mutex;
-    std::atomic<bool> stop = false, connected = false;
+    std::atomic<bool> connected = false;
 
     QTcpServer* ethServer;
     QTcpSocket* clientSocket;
