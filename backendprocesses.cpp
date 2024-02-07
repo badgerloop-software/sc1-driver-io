@@ -64,8 +64,6 @@ void BackendProcesses::threadProcedure()
         return;
     }
 
-    usleep(100000);//50000);
-
     //DataGen data(&speedFunc,&solarFunc,&batteryFunc,100);
 
     mutex.lock();
