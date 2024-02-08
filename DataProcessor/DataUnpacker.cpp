@@ -161,8 +161,8 @@ void DataUnpacker::unpack()
 
     this->restart_enable = checkRestartEnable();
 
-    // Signal data update for front end
-    emit dataChanged();
+    // Refresh frontend
+    QGuiApplication::processEvents();
 }
 
 void DataUnpacker::eng_dash_connection(bool state) {
