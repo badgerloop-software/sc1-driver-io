@@ -40,7 +40,6 @@ def gen_data():
                     data.append(gps_data[gps_data_index]['longitude'])
                 elif key == 'elev':
                     data.append(gps_data[gps_data_index]['elevation'])
-                    print(gps_data[gps_data_index]['elevation'])
                 else:
                     data.append(random.random() * 100)
             case 'uint8':
