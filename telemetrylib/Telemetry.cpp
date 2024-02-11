@@ -14,7 +14,7 @@ Telemetry::Telemetry(std::vector<DTI *> commChannels) {
     qDebug() << "comm channels initialized: " << comm.size();
 }
 
-// Broadcarst data to all communication channels 
+// Broadcast data to all communication channels 
 void Telemetry::sendData(QByteArray bytes, long long timestamp) {
     // Loop through all communication channels
     for (int i = 0; i < comm.size(); i++) {
