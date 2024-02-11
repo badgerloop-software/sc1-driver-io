@@ -22,7 +22,7 @@ public:
         qDebug() << "sending via UDP";
         bytes.prepend("<bsr>");
         bytes.append("</bsr>");
-        qDebug() << _udpSocket->writeDatagram(bytes, serverAddresses, udpPort);
+        _udpSocket->writeDatagram(bytes, serverAddresses, udpPort);
     }
     
 public slots:
