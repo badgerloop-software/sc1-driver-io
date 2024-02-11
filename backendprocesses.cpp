@@ -88,8 +88,8 @@ void BackendProcesses::threadProcedure()
     bytes.remove(tstampOffsets.sc,1);
     bytes.insert(tstampOffsets.sc, sec_time & 0xFF);
     bytes.remove(tstampOffsets.ms,2);
-    bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
     bytes.insert(tstampOffsets.ms, (msec_time >> 8) & 0xFF);
+    bytes.insert(tstampOffsets.ms, msec_time & 0xFF);
     bytes.remove(tstampOffsets.unix,8);
     uint64_t time=curr_msec;
     int mask= 56;

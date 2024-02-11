@@ -26,7 +26,7 @@ E bytesToGeneralData(QByteArray data, int startPos, int endPos, E typeZero)
     int byteNum=endPos-startPos;
     auto var = typeZero;
 
-    for(int i = startPos ; i<=endPos ; i++) {
+    for(int i = endPos ; i>=startPos ; i--) {
         var = var + (((uint8_t) data[i]) << (byteNum * 8));
         byteNum--;
     }
