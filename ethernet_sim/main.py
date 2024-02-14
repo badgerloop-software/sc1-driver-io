@@ -9,7 +9,7 @@ import time
 import traceback
 
 DRIVER_IO_IP = '127.0.0.1'
-DRIVER_IO_PORT = 8000
+DRIVER_IO_PORT = 4005
 file_format = '../sc1-data-format/format.json'
 gps_data = 'gps_dataset/dataset1.json'
 

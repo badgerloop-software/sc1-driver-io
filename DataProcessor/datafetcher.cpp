@@ -15,7 +15,7 @@ void DataFetcher::threadProcedure()
     // setup server
     ethServer = new QTcpServer;
     QHostAddress addr(QHostAddress::AnyIPv4);
-    ethServer->listen(addr, 8000);
+    ethServer->listen(addr, 4005);
     connect(ethServer, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
 }
 
