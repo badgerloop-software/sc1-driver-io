@@ -4,11 +4,12 @@ DataFetcher::DataFetcher(QByteArray &bytes, int byteSize, QMutex &mutex, GPSData
     QObject(parent), bytes(bytes), byteSize(byteSize), mutex(mutex) {
         // initialize GPS
         gps = new GPS();
-        gps->moveToThread(&gpsThread);
-        connect(&gpsThread, &QThread::finished, gps, &QObject::deleteLater);
-        connect(this, &DataFetcher::startThread, gps, &GPS::autoInit);
-        gpsThread.start();
-
+        #ifdef  __linux__
+            gps->moveToThread(&gpsThread);
+            connect(&gpsThread, &QThread::finished, gps, &QObject::deleteLater);
+            connect(this, &DataFetcher::startThread, gps, &GPS::autoInit);
+            gpsThread.start();
+        #endif
         this->gpsOffset = gpsOffset;
     }
 
