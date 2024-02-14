@@ -80,6 +80,13 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
                 cell_group_voltages_end = dataCount;
             }
             cell_group_voltages.push_back(0);
+        } else if (name == "lat") {
+            qDebug() << "aaaasadasdasdsa";
+            gpsOffset.lat = arrayOffset;
+        } else if (name == "lon") {
+            gpsOffset.lon = arrayOffset;
+        } else if (name == "elev") {
+            gpsOffset.alt = arrayOffset;
         }
         qDebug() << cell_group_voltages_begin;
         arrayOffset += arr[0].GetInt();
@@ -90,7 +97,7 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
 
 
     BackendProcesses* retriever = new BackendProcesses(bytes, names, types, tstampOff, mutex, arrayOffset);
-    fetcher = new DataFetcher(bytes, arrayOffset, mutex);
+    fetcher = new DataFetcher(bytes, arrayOffset, mutex, gpsOffset);
     retriever->moveToThread(&backendThread);
     fetcher->moveToThread(&dataFetchThread);
 

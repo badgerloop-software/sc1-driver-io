@@ -1,7 +1,16 @@
 #include "datafetcher.h"
 
-DataFetcher::DataFetcher(QByteArray &bytes, int byteSize, QMutex &mutex, QObject *parent) :
-    QObject(parent), bytes(bytes), byteSize(byteSize), mutex(mutex) {}
+DataFetcher::DataFetcher(QByteArray &bytes, int byteSize, QMutex &mutex, GPSData gpsOffset, QObject *parent) :
+    QObject(parent), bytes(bytes), byteSize(byteSize), mutex(mutex) {
+        // initialize GPS
+        gps = new GPS();
+        gps->moveToThread(&gpsThread);
+        connect(&gpsThread, &QThread::finished, gps, &QObject::deleteLater);
+        connect(this, &DataFetcher::startThread, gps, &GPS::autoInit);
+        gpsThread.start();
+
+        this->gpsOffset = gpsOffset;
+    }
 
 void DataFetcher::startThread() {
     threadProcedure();
@@ -27,6 +36,12 @@ void DataFetcher::onNewConnection() {
         connect(clientSocket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
         connect(clientSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
     }
+}
+
+void insertFloat(QByteArray &data, float value, int offset) {
+    QByteArray floatData;
+    floatData.append(reinterpret_cast<const char*>(&value), sizeof(float));
+    data.replace(offset, sizeof(float), floatData);
 }
 
 void DataFetcher::onReadyRead() {
@@ -76,6 +91,15 @@ void DataFetcher::onReadyRead() {
             continue;
         }
 
+        // fill gps data with the offset
+        GPSData gpsData = gps->getLoc();
+        // insert into byte array
+        // if no gps device, pass through the generated data
+        if (gps->initialized()) {
+            insertFloat(newData, gpsData.lat, (int)gpsOffset.lat);
+            insertFloat(newData, gpsData.lon, (int)gpsOffset.lon);
+            insertFloat(newData, gpsData.alt, (int)gpsOffset.alt);
+        }
         mutex.lock();
         this->bytes = newData;
         mutex.unlock();

@@ -23,6 +23,9 @@ set(SOURCES
         telemetrylib/TCP.cpp
         telemetrylib/Telemetry.cpp
         telemetrylib/SQL.cpp
+        telemetrylib/DataResend.cpp
+        gps/gps.cpp
+        3rdparty/serial/serialib.cpp
         )
 
 # Add the header files
@@ -33,6 +36,9 @@ set(HEADERS
         backendprocesses.h
         telemetrylib/Telemetry.h
         telemetrylib/DTI.h
+        telemetrylib/DataResend.h
+        gps/gps.h
+        3rdparty/serial/serialib.h
         )
 
 # Add the resource files
