@@ -88,6 +88,9 @@ class DataUnpacker : public QObject
     Q_PROPERTY(float est_supplemental_soc MEMBER est_supplemental_soc NOTIFY dataChanged);
     // NOTE: char data is displayed as its ASCII decimal value, not the character, so QString is used instead
     Q_PROPERTY(QString state MEMBER state NOTIFY dataChanged);
+    Q_PROPERTY(float lat MEMBER lat NOTIFY dataChanged);
+    Q_PROPERTY(float lon MEMBER lon NOTIFY dataChanged);
+    Q_PROPERTY(float elev MEMBER elev NOTIFY dataChanged);
 
     Q_PROPERTY(QVector<float> cell_group_voltages MEMBER cell_group_voltages NOTIFY dataChanged);
 
@@ -115,6 +118,7 @@ private:
     float pack_voltage, pack_current, supplemental_voltage;
     float pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, motor_controller_temp;
     float string1_temp, string2_temp, string3_temp;
+    float lat, lon, elev;
     bool headlights, left_turn, right_turn, hazards, mainIO_heartbeat, crz_pwr_mode, crz_spd_mode, eco, main_telem, parking_brake;
     bool eng_dash_commfail=1;
     QString state;
@@ -138,7 +142,7 @@ private:
     int cell_group_voltages_begin, cell_group_voltages_end; // First and last indices of the cell group voltages in data format
 
     QByteArray bytes;
-
+    GPSData gpsOffset;
     std::vector<std::string> names;
     std::vector<int> byteNums;
     std::vector<std::string> types;

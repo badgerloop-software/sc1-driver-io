@@ -7,13 +7,14 @@
 #include <QTcpSocket>
 #include <QTcpServer>
 #include <QGuiApplication>
-
+#include <QThread>
+#include "gps/gps.h"
 class DataFetcher : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit DataFetcher(QByteArray &bytes, int byteSize, QMutex &mutex, QObject *parent = nullptr);
+    explicit DataFetcher(QByteArray &bytes, int byteSize, QMutex &mutex, GPSData gpsOffset, QObject *parent = nullptr);
     ~DataFetcher();
 public slots:
     void threadProcedure();
@@ -29,7 +30,11 @@ private:
     int byteSize;
     QMutex &mutex;
     std::atomic<bool> connected = false;
+    QThread* thread;
 
+    GPS* gps;
+    GPSData gpsOffset;
+    QThread gpsThread;
     QTcpServer* ethServer;
     QTcpSocket* clientSocket;
 };
