@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <sstream>
 #include <iostream>
+#include <qdebug.h>
 
 using namespace std;
 
@@ -32,7 +33,6 @@ GPS::~GPS() {
 }
 
 bool GPS::init(string device) {
-    cout << "attempting to open "<<device<<"\n";
     int errorOpen = serial.openDevice(device.c_str(), 115200);
     if(serial.isDeviceOpen()) {
         string resp;
@@ -43,7 +43,6 @@ bool GPS::init(string device) {
         //send initital AT
         serial.writeString("AT\r\n");
         serial.readString(resp, '*', 10, 1000);
-        cout<<"AT rsp:"<<resp<<"\n";
         if(resp.find("OK") == string::npos) {
             // if does not return ok initialize failed
             return false;
@@ -52,7 +51,6 @@ bool GPS::init(string device) {
         // config gps mode
         serial.writeString("AT+QGPSCFG=\"outport\",\"usbnmea\"\r\n");
         serial.readString(resp, '*', 10, 1000);
-        cout<<"QGPSCFG rsp:"<<resp<<"\n";
         if(resp.find("OK") == string::npos) {
             // if does not return ok initialize failed
             return false;
@@ -61,7 +59,6 @@ bool GPS::init(string device) {
         // turn on gps
         serial.writeString("AT+QGPS=1\r\n");
         serial.readString(resp, '*', 20, 1000);
-        cout<<"QGPS rsp:"<<resp<<"\n";
         if(resp.find("OK") == string::npos && resp.find("504") == string::npos) {
             // if not ok or 504 (session ongoing) then init failed
             return false;
@@ -78,7 +75,6 @@ string ddm2dd(string ddm) {
     double value = stod(ddm);
     double deg = int(value) / 100;
     double min = value - deg * 100;
-    //cout << "raw ddm: " << ddm << " deg: " << deg << " min: " << min << '\n';
     double val = deg + min/60;
     return to_string(val);
 }
@@ -93,8 +89,6 @@ GPSData parseNMEA(vector<string> nmeaGGA) {
 } 
 
 void GPS::start_loop(string nmeaDevice) {
-    cout << fixed;
-    cout << setprecision(6);
     // listen on /dev/ttyUSB1 for NMEA sentence
     int errorOpen = serial.openDevice(nmeaDevice.c_str(), 115200);
     if(serial.isDeviceOpen()) {
@@ -103,7 +97,6 @@ void GPS::start_loop(string nmeaDevice) {
         while(true){
             string resp;
             int readCode = serial.readString(resp, '$', 300, 1000);
-            cout << "readcode: " << readCode << '\n';
             if(readCode == 0) {
                 retry_cout ++;
             } else {
@@ -111,7 +104,6 @@ void GPS::start_loop(string nmeaDevice) {
             }
 
             if(retry_cout > 5) {
-                cout << "break break break" << '\n';
                 break;
             }
             // read data from string stream
@@ -123,23 +115,22 @@ void GPS::start_loop(string nmeaDevice) {
                 fields.push_back(field);
             }
             if (fields[0] == "GPGGA") {
-                cout << resp;
                 if(fields[6] == "0") {
-                    cout << "not fixed\n";
-                    lat = -1000;
-                    lon = -1000;
-                    alt = -1000;
+                    lat = -1001;
+                    lon = -1001;
+                    alt = -1001;
                 } else {
                     GPSData gpsd = parseNMEA(fields);
                     lat = gpsd.lat;
                     lon = gpsd.lon;
                     alt = gpsd.alt;
-                    cout <<"POS: "<< lat << ", " << lon << '\n'; 
                 }
             }
         }
     }
-    cout << "Error opening /dev/ttyUSB1..";
+    lat = -1000;
+    lon = -1000;
+    alt = -1000;
     return;
 }
 
@@ -172,7 +163,6 @@ void GPS::autoInit() {
         // trial and error to find which device to open since device number is not fixed
         while(true) {
             initSuccess = init(deviceList[deviceIndex]);
-            cout << "init result: " << initSuccess;
             if (initSuccess) {
                 string nmeaDevice = usbnmeaprobe(deviceList);
                 start_loop(nmeaDevice);

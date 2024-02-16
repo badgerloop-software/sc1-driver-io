@@ -7,7 +7,7 @@ DataFetcher::DataFetcher(QByteArray &bytes, int byteSize, QMutex &mutex, GPSData
         #ifdef  __linux__
             gps->moveToThread(&gpsThread);
             connect(&gpsThread, &QThread::finished, gps, &QObject::deleteLater);
-            connect(this, &DataFetcher::startThread, gps, &GPS::autoInit);
+            connect(&gpsThread, &QThread::started, gps, &GPS::autoInit);
             gpsThread.start();
         #endif
         this->gpsOffset = gpsOffset;
