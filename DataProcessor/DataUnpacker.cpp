@@ -81,7 +81,6 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
             }
             cell_group_voltages.push_back(0);
         } else if (name == "lat") {
-            qDebug() << "aaaasadasdasdsa";
             gpsOffset.lat = arrayOffset;
         } else if (name == "lon") {
             gpsOffset.lon = arrayOffset;
