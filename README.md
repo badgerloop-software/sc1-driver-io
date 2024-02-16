@@ -42,13 +42,14 @@ CMake is a more popular project make system, it allows you to edit the project w
 
 0. If running the project on the driver IO board, skip this step, as the necessary dependencies have already been installed on it. Otherwise, if you have not already, install the dependencies on the Raspberry Pi:
    ```
-   sudo apt-get install build-essential
-   sudo apt-get install qt5-doc qtbase5-examples qtbase5-doc-html qtdeclarative5-dev qml-module-qtquick-controls2
+   sudo apt install build-essential cmake
+   sudo apt install qt5-doc qtbase5-examples qtbase5-doc-html qtdeclarative5-dev qml-module-qtquick-controls2
    ```
 1. Copy the project to the Raspberry Pi.
-2. Make and run the project on the Raspberry Pi by running the following commands:
+2. make a build directory with in the project, make sure you are in the directory
+3. Make and run the project on the Raspberry Pi by running the following commands:
    ```
-   qmake solar-car-dashboard.pro
+   cmake ..
    make
    ./solar-car-dashboard
    ```
