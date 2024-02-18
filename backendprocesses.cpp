@@ -49,7 +49,7 @@ void BackendProcesses::startThread() {
     long long first_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
     obj[0]=new SQL(QString::fromStdString(std::to_string(first_msec))); //This sends data to the cloud server
-    obj[1]=new UDP(QHostAddress("127.0.0.1"), 4003); //This sends data to the chase car
+    obj[1]=new UDP(QHostAddress("192.168.1.18"), 4003); //This sends data to the chase car
     this->tel = new Telemetry(obj);
     connect(this->tel, &Telemetry::eng_dash_connection, this, &BackendProcesses::comm_status); //for notifing the system connection status
 }
