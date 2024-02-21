@@ -59,7 +59,8 @@ Item {
             x: (rectangle.width-width)/2
             y: (rectangle.height/2+height)/2
             color: (delay < 2000) ? "#ffffff" : "red"
-            text: ((delay > 0) ? "-" : "") + formatTime(Math.floor(delay/3600000)%24) + ":" + formatTime(Math.floor(delay/60000)%60) + ":" + formatTime(Math.round(delay/1000)%60)
+            text: ((delay > 0) ? "-" : "") + formatTime(Math.floor(delay/3600000)%24) + ":" + formatTime(Math.floor(delay/60000)%60) + ":" + formatTime(Math.floor(delay/1000)%60)
+
             //text: formatTime(backEnd.tstamp_hr) + ":" + formatTime(backEnd.tstamp_mn) + ":" + formatTime(backEnd.tstamp_sc) + ":" + backEnd.tstamp_ms
             font.pixelSize: 60
             font.styleName: "Regular"
