@@ -23,7 +23,6 @@ set(SOURCES
         telemetrylib/TCP.cpp
         telemetrylib/Telemetry.cpp
         telemetrylib/SQL.cpp
-        telemetrylib/DataResend.cpp
         gps/gps.cpp
         3rdparty/serial/serialib.cpp
         )
@@ -36,7 +35,6 @@ set(HEADERS
         backendprocesses.h
         telemetrylib/Telemetry.h
         telemetrylib/DTI.h
-        telemetrylib/DataResend.h
         gps/gps.h
         3rdparty/serial/serialib.h
         )
