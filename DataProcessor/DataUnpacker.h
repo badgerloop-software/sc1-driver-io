@@ -61,6 +61,7 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool mcu_stat_fdbk MEMBER mcu_stat_fdbk NOTIFY dataChanged);
     Q_PROPERTY(bool parking_brake MEMBER parking_brake NOTIFY dataChanged);
     Q_PROPERTY(bool eco MEMBER eco NOTIFY dataChanged);
+    Q_PROPERTY(bool isolation MEMBER eco isolation dataChanged);
     Q_PROPERTY(bool main_telem MEMBER main_telem NOTIFY dataChanged);
     Q_PROPERTY(int mc_status MEMBER mc_status NOTIFY dataChanged);
     // Not in the data format, but shared with controls
@@ -131,6 +132,7 @@ private:
     bool mcu_check=false;
     bool imd_status=false;
     bool bps_fault=false;
+    bool isolation=false;
     bool discharge_enable=false, charge_enable=false, bms_can_heartbeat=false;
     bool mcu_hv_en=false, mcu_stat_fdbk=false, dcdc_valid=false, supplemental_valid=false, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
     bool voltage_failsafe=false, current_failsafe=false, relay_failsafe=false, cell_balancing_active=true, charge_interlock_failsafe=false, thermistor_b_value_table_invalid=false, input_power_supply_failsafe=false;
