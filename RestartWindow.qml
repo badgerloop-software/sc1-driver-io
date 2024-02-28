@@ -200,7 +200,7 @@ Popup {
 
                 Text {
                     id: imd_status_text
-                    property bool imd_status_fault: backEnd.imd_status && backEnd.restart_enable
+                    property bool imd_status_fault: backEnd.isolation
                     onImd_status_faultChanged: {
                         if(imd_status_fault) {
                             this.opacity = 1;
