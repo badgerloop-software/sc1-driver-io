@@ -172,7 +172,7 @@ void DataUnpacker::unpack()
 }
 
 bool DataUnpacker::checkRestartEnable() {
-    return (!restart_enable ? !mcu_hv_en : false) || driver_eStop || external_eStop || isolation || door || crash || mcu_check || discharge_enable || restart_enable || charge_enable;
+    return (!restart_enable ? !mcu_hv_en : false) || driver_eStop || external_eStop || isolation || door || crash || mcu_check || discharge_enable || restart_enable || charge_enabled;
 }
 
 void DataUnpacker::enableRestart() {

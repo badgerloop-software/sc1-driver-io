@@ -51,7 +51,7 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool cell_balancing_active MEMBER cell_balancing_active NOTIFY dataChanged);
     Q_PROPERTY(bool charge_interlock_failsafe MEMBER charge_interlock_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool thermistor_b_value_table_invalid MEMBER thermistor_b_value_table_invalid NOTIFY dataChanged);
-    Q_PROPERTY(bool charge_enable MEMBER charge_enable NOTIFY dataChanged);
+    Q_PROPERTY(bool charge_enabled MEMBER charge_enabled NOTIFY dataChanged);
     Q_PROPERTY(bool bps_fault MEMBER bps_fault NOTIFY dataChanged);
     Q_PROPERTY(bool dcdc_valid MEMBER dcdc_valid NOTIFY dataChanged);
     Q_PROPERTY(bool supplemental_valid MEMBER supplemental_valid NOTIFY dataChanged);
@@ -129,7 +129,7 @@ private:
     bool mcu_check=false;
     bool bps_fault=false;
     bool isolation=false;
-    bool discharge_enable=false, charge_enable=false, bms_can_heartbeat=false;
+    bool discharge_enable=false, charge_enabled=false, bms_can_heartbeat=false;
     bool mcu_hv_en=false, mcu_stat_fdbk=false, dcdc_valid=false, supplemental_valid=false, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
     bool voltage_failsafe=false, current_failsafe=false, relay_failsafe=false, cell_balancing_active=true, charge_interlock_failsafe=false, thermistor_b_value_table_invalid=false, input_power_supply_failsafe=false;
     QVector<float> cell_group_voltages;

@@ -21,7 +21,7 @@ Popup {
     property string grid_item_border_color: "#20ffffff"
     property int grid_item_border_width: 2
     property bool can_close: !discharge_enable_text.discharge_enable_fault && !driver_eStop_text.driver_eStop_fault && !external_eStop_text.external_eStop_fault
-                             && !imd_status_text.imd_status_fault && !door_text.door_fault && !crash_text.crash_fault && !mcu_check_text.mcu_check_fault
+                             && !isolation_text.isolation_fault && !charge_enabled_text.charge_enabled_fault && !crash_text.crash_fault && !mcu_check_text.mcu_check_fault
 
     Overlay.onPressed: {
         if(can_close) {
@@ -29,7 +29,7 @@ Popup {
             backEnd.enableRestart(); // Signal user has enabled restart
 
             // Reset opacities of fault texts to hidden_opacity so that they aren't shown as being triggered when restartPopup opens again
-            var ids = { driver_eStop_text, external_eStop_text, imd_status_text, door_text, crash_text, bps_fault_text, mcu_check_text,
+            var ids = { driver_eStop_text, external_eStop_text, isolation_text, charge_enabled_text, crash_text, bps_fault_text, mcu_check_text,
                         cell_balancing_active_text, mcu_hv_en_text, low_contactor_text, mainIO_heartbeat_text, thermistor_b_value_table_invalid_text, under_voltage_text,
                         over_current_text, bms_input_voltage_high_text, dcdc_valid_text, mcu_stat_fdbk_text, bms_can_heartbeat_text,
                         voltage_failsafe_text, current_failsafe_text, input_power_supply_failsafe_text, mc_status_text, relay_failsafe_text, cell_group_voltages_text, discharge_enable_text,
@@ -199,17 +199,17 @@ Popup {
                 Layout.preferredHeight: shutdown_input_pref_height
 
                 Text {
-                    id: imd_status_text
-                    property bool imd_status_fault: backEnd.isolation
-                    onImd_status_faultChanged: {
-                        if(imd_status_fault) {
+                    id: isolation_text
+                    property bool isolation_fault: backEnd.isolation && backEnd.restart_enable
+                    onIsolation_faultChanged: {
+                        if(isolation_fault) {
                             this.opacity = 1;
                         }
                     }
 
                     anchors.centerIn: parent
                     text: qsTr("Isolation")
-                    color: imd_status_fault ? "red" : "white"
+                    color: isolation_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size
                     opacity: hidden_opacity
                 }
@@ -227,17 +227,17 @@ Popup {
                 Layout.preferredHeight: shutdown_input_pref_height
 
                 Text {
-                    id: door_text
-                    property bool door_fault: backEnd.door && backEnd.restart_enable
-                    onDoor_faultChanged: {
-                        if(door_fault) {
+                    id: charge_enabled_text
+                    property bool charge_enabled_fault: backEnd.charge_enabled && backEnd.restart_enable
+                    onCharge_enabled_faultChanged: {
+                        if(charge_enabled_fault) {
                             this.opacity = 1;
                         }
                     }
 
                     anchors.centerIn: parent
-                    text: qsTr("Driver Door")
-                    color: door_fault ? "red" : "white"
+                    text: qsTr("Charge Enabled")
+                    color: charge_enabled_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size
                     opacity: hidden_opacity
                 }
