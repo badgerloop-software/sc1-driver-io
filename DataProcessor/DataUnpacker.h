@@ -98,7 +98,6 @@ public:
     ~DataUnpacker();
 public slots:
     void unpack();
-    void eng_dash_connection(bool state);
     void enableRestart();
 signals:
     void dataChanged();

@@ -35,9 +35,7 @@ public:
 public slots:
     void threadProcedure();
     void startThread();
-    void comm_status(bool s);
 signals:
-    void eng_dash_connection(bool state);
     void dataReady();
 private:
 

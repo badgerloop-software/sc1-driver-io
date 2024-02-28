@@ -104,7 +104,6 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     connect(this, &DataUnpacker::sendSignal, fetcher, &DataFetcher::sendData);
     connect(&backendThread, &QThread::started, retriever, &BackendProcesses::startThread);
     connect(retriever, &BackendProcesses::dataReady, this, &DataUnpacker::unpack);
-    connect(retriever, &BackendProcesses::eng_dash_connection, this, &DataUnpacker::eng_dash_connection);
     connect(&backendThread, &QThread::finished, retriever, &QObject::deleteLater);
     connect(&backendThread, &QThread::finished, &backendThread, &QThread::deleteLater);
     connect(&dataFetchThread, &QThread::finished, fetcher, &DataFetcher::deleteLater);
@@ -170,10 +169,6 @@ void DataUnpacker::unpack()
 
     // Refresh frontend
     QGuiApplication::processEvents();
-}
-
-void DataUnpacker::eng_dash_connection(bool state) {
-    eng_dash_commfail = !state;
 }
 
 bool DataUnpacker::checkRestartEnable() {
