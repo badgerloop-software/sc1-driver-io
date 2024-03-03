@@ -104,7 +104,6 @@ DataUnpacker::DataUnpacker(QObject *parent) : QObject(parent)
     connect(this, &DataUnpacker::sendSignal, fetcher, &DataFetcher::sendData);
     connect(&backendThread, &QThread::started, retriever, &BackendProcesses::startThread);
     connect(retriever, &BackendProcesses::dataReady, this, &DataUnpacker::unpack);
-    connect(retriever, &BackendProcesses::eng_dash_connection, this, &DataUnpacker::eng_dash_connection);
     connect(&backendThread, &QThread::finished, retriever, &QObject::deleteLater);
     connect(&backendThread, &QThread::finished, &backendThread, &QThread::deleteLater);
     connect(&dataFetchThread, &QThread::finished, fetcher, &DataFetcher::deleteLater);
@@ -172,12 +171,8 @@ void DataUnpacker::unpack()
     QGuiApplication::processEvents();
 }
 
-void DataUnpacker::eng_dash_connection(bool state) {
-    eng_dash_commfail = !state;
-}
-
 bool DataUnpacker::checkRestartEnable() {
-    return (!restart_enable ? !mcu_hv_en : false) || driver_eStop || external_eStop || imd_status || door || crash || mcu_check || discharge_enable || restart_enable;
+    return (!restart_enable ? !mcu_hv_en : false) || driver_eStop || external_eStop || isolation || door || crash || mcu_check || discharge_enable || restart_enable || charge_enabled;
 }
 
 void DataUnpacker::enableRestart() {

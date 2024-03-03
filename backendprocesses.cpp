@@ -1,23 +1,6 @@
 
 #include "backendprocesses.h"
 
-double speedFunc(double t)
-{
-    return t*t;
-}
-
-double solarFunc(double t)
-{
-    return t*t*t;
-}
-
-double batteryFunc(double t)
-{
-    return pow(2.71828,-t)*100;
-}
-
-
-
 BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &names, std::vector<std::string> &types, timestampOffsets timeDataOffsets, QMutex &mutex, int byteSize, QObject *parent) :
     QObject(parent), bytes(bytes), names(names), types(types), mutex(mutex)
 {
@@ -40,10 +23,6 @@ BackendProcesses::BackendProcesses(QByteArray &bytes, std::vector<std::string> &
     }
 }
 
-void BackendProcesses::comm_status(bool s) {
-    emit eng_dash_connection(s);
-}
-
 void BackendProcesses::startThread() {
     std::vector<DTI*> obj(2); //create a bunch of DTI instances and add them into this array in order of priority to be sent to telemetrylib
     long long first_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -51,7 +30,6 @@ void BackendProcesses::startThread() {
     obj[0]=new SQL(QString::fromStdString(std::to_string(first_msec))); //This sends data to the cloud server
     obj[1]=new UDP(QHostAddress("192.168.1.18"), 4003); //This sends data to the chase car
     this->tel = new Telemetry(obj);
-    connect(this->tel, &Telemetry::eng_dash_connection, this, &BackendProcesses::comm_status); //for notifing the system connection status
 }
 
 BackendProcesses::~BackendProcesses() {

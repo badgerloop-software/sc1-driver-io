@@ -55,19 +55,6 @@ Item {
         fillMode: Image.PreserveAspectFit
     }
 
-    Image {
-        id: engDashComm
-        x: 1229
-        y: 56
-        width: 125
-        height: 114
-        source: "UI/Images/comm.png"
-        visible: backEnd.eng_dash_commfail
-        sourceSize.height: 169
-        fillMode: Image.PreserveAspectFit
-        sourceSize.width: 90
-    }
-
     Batteries {
         id: batteries
         x: 22

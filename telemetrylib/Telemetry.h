@@ -34,8 +34,6 @@ public:
     /*
     std::string receiveData();
     */
-signals:
-    void eng_dash_connection(bool state);
 private:
     int originalSize = 0;
     int compressedSize = 0;

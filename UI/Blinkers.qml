@@ -33,12 +33,12 @@ Item {
 
     Timer {
         interval: 500
-        running: backEnd.left_turn || backEnd.right_turn || backEnd.hazards || blinkersOn
+        running: backEnd.l_turn_led_en || backEnd.r_turn_led_en || backEnd.hazards || blinkersOn
         repeat: true
         onTriggered: {
             blinkersOn = !blinkersOn;
-            leftBlinker.visible = (backEnd.left_turn || backEnd.hazards) && blinkersOn;
-            rightBlinker.visible = (backEnd.right_turn || backEnd.hazards) && blinkersOn;
+            leftBlinker.visible = (backEnd.l_turn_led_en || backEnd.hazards) && blinkersOn;
+            rightBlinker.visible = (backEnd.r_turn_led_en || backEnd.hazards) && blinkersOn;
         }
     }
 }

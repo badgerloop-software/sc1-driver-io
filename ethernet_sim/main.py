@@ -39,7 +39,7 @@ def gen_data(mcu_hv_en: bool, shutdown: bool):
                 else:
                     data.append(random.getrandbits(1))
             case 'float':
-                if key == 'accelerator':
+                if key == 'accelerator_pedal':
                     data.append(random.random())
                 elif key == 'lat':
                     data.append(gps_data[gps_data_index]['latitude'])
