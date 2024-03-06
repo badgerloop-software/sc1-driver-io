@@ -12,7 +12,7 @@ public:
 
         restclient = new QNetworkAccessManager();
         // Send request to create a new table when connection to server is first established
-        if(tableName.isNull() && connection) {
+        if(tableName.isNull()) {
             qDebug() << "Requested a new table: " << tableToCreate;
 
             QUrl myurl;
@@ -89,7 +89,6 @@ public slots:
         }
     }
 private:
-    std::atomic<bool> connection = false; //connection status to the internet
     QNetworkRequest request;
     QNetworkAccessManager *restclient = NULL;
     QNetworkReply *reply;
