@@ -27,6 +27,7 @@ public:
             connect(reply, &QNetworkReply::readyRead, this, &SQL::readReply);
             request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));
             request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
+            lastRetry = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
         }
     }
 
@@ -37,20 +38,38 @@ public:
 
     void sendData(QByteArray bytes, long long timestamp) override {
         qDebug()<<"sending Via SQL: "<<timestamp;
+        long long now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        if(tableName.isNull() && now - lastRetry > 3000) {
+            qDebug() << "Retrying to add a new table: " << tableToCreate;
 
-        QUrl myurl;
-        myurl.setScheme("http");
-        myurl.setHost("150.136.104.125");
-        myurl.setPort(3000);
-        myurl.setPath("/add-data");
-        myurl.setQuery("table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(timestamp)));
-        //QNetworkRequest request;
-        request.setUrl(myurl);
-        request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));
-        request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
-        bytes.push_front("<bsr>");
-        bytes.push_back("</bsr>");
-        this->restclient->post(request, bytes);
+            QUrl myurl;
+            myurl.setScheme("http");
+            myurl.setHost("150.136.104.125"); 
+            myurl.setPort(3000);
+            myurl.setPath("/add-table/" + tableToCreate);
+
+            request.setUrl(myurl);
+            reply = restclient->get(request);
+
+            connect(reply, &QNetworkReply::readyRead, this, &SQL::readReply);
+            request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));
+            request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
+            lastRetry = now;
+        } else {
+            QUrl myurl;
+            myurl.setScheme("http");
+            myurl.setHost("150.136.104.125");
+            myurl.setPort(3000);
+            myurl.setPath("/add-data");
+            myurl.setQuery("table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(timestamp)));
+            //QNetworkRequest request;
+            request.setUrl(myurl);
+            request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));
+            request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
+            bytes.push_front("<bsr>");
+            bytes.push_back("</bsr>");
+            this->restclient->post(request, bytes);
+        }
     }
 
     /*
@@ -89,6 +108,7 @@ public slots:
         }
     }
 private:
+    long long lastRetry = 0;
     QNetworkRequest request;
     QNetworkAccessManager *restclient = NULL;
     QNetworkReply *reply;
