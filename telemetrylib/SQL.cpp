@@ -17,8 +17,7 @@ public:
 
             QUrl myurl;
             myurl.setScheme("http");
-            myurl.setHost("150.136.104.125"); 
-            myurl.setPort(3000);
+            myurl.setHost(serverUrl); 
             myurl.setPath("/add-table/" + tableToCreate);
 
             request.setUrl(myurl);
@@ -44,8 +43,7 @@ public:
 
             QUrl myurl;
             myurl.setScheme("http");
-            myurl.setHost("150.136.104.125"); 
-            myurl.setPort(3000);
+            myurl.setHost(serverUrl); 
             myurl.setPath("/add-table/" + tableToCreate);
 
             request.setUrl(myurl);
@@ -58,8 +56,7 @@ public:
         } else {
             QUrl myurl;
             myurl.setScheme("http");
-            myurl.setHost("150.136.104.125");
-            myurl.setPort(3000);
+            myurl.setHost(serverUrl);
             myurl.setPath("/add-data");
             myurl.setQuery("table-name=" + tableName + "&dataset-time=" + QString::fromStdString(std::to_string(timestamp)));
             //QNetworkRequest request;
@@ -108,6 +105,7 @@ public slots:
         }
     }
 private:
+    QString serverUrl = "live.bsr-dev.org";
     long long lastRetry = 0;
     QNetworkRequest request;
     QNetworkAccessManager *restclient = NULL;
