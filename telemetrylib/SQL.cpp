@@ -21,6 +21,7 @@ public:
             myurl.setPath("/add-table/" + tableToCreate);
 
             request.setUrl(myurl);
+            request.setTransferTimeout(1000);
             reply = restclient->get(request);
 
             connect(reply, &QNetworkReply::readyRead, this, &SQL::readReply);
@@ -47,6 +48,7 @@ public:
             myurl.setPath("/add-table/" + tableToCreate);
 
             request.setUrl(myurl);
+            request.setTransferTimeout(1000);
             reply = restclient->get(request);
 
             connect(reply, &QNetworkReply::readyRead, this, &SQL::readReply);
@@ -63,6 +65,7 @@ public:
             request.setUrl(myurl);
             request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));
             request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
+            request.setTransferTimeout(1000);
             bytes.push_front("<bsr>");
             bytes.push_back("</bsr>");
             this->restclient->post(request, bytes);
