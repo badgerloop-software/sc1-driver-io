@@ -150,7 +150,8 @@ string GPS::usbnmeaprobe(vector<string> devices) {
             }
         }
     }
-    return NULL;
+    cout << "No NMEA device found\n";
+    return "";
 }
 void GPS::autoInit() {
     while(true) {
@@ -165,7 +166,8 @@ void GPS::autoInit() {
             initSuccess = init(deviceList[deviceIndex]);
             if (initSuccess) {
                 string nmeaDevice = usbnmeaprobe(deviceList);
-                start_loop(nmeaDevice);
+                if(nmeaDevice != "")
+                    start_loop(nmeaDevice);
             } else {
                 deviceIndex ++;
             }
