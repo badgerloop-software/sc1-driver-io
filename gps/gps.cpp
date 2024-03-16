@@ -114,7 +114,7 @@ void GPS::start_loop(string nmeaDevice) {
                 getline(ss, field, ',');
                 fields.push_back(field);
             }
-            if (fields[0] == "GPGGA") {
+            if (fields[0] == "GPGGA" && fields.size() > 9){
                 if(fields[6] == "0") {
                     lat = -1001;
                     lon = -1001;
