@@ -106,7 +106,7 @@ Item {
         id: acceleratorBlue
         x: 5
         y: 3
-        width: 352*bluebar(backEnd.accelerator)/5
+        width: 352*bluebar(backEnd.accelerator_pedal)/5
         height: 41
         color: "#00ffff"
     }
@@ -116,7 +116,7 @@ Item {
         x:5
         y:3
         z: -1
-        width: 352*redbar(backEnd.accelerator)/5
+        width: 352*redbar(backEnd.accelerator_pedal)/5
         height: 40
         color: "#ff0000"
     }
@@ -137,7 +137,7 @@ Item {
             y: rectangle.height/2
             width: 50
             color: "#00ffff"
-            text: hsv2rgb(f((5-backEnd.accelerator)*24),100,100)
+            text: hsv2rgb(f((5-backEnd.accelerator_pedal)*24),100,100)
             font.pixelSize: 42
             font.styleName: "Regular"
             font.family: "Work Sans"
