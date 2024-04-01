@@ -21,7 +21,7 @@ Popup {
     property string grid_item_border_color: "#20ffffff"
     property int grid_item_border_width: 2
     property bool can_close: !discharge_enable_text.discharge_enable_fault && !driver_eStop_text.driver_eStop_fault && !external_eStop_text.external_eStop_fault
-                             && !imd_status_text.imd_status_fault && !door_text.door_fault && !crash_text.crash_fault && !mcu_check_text.mcu_check_fault
+                             && !isolation_text.isolation_fault && !charge_enable_text.charge_enable_fault && !crash_text.crash_fault && !mcu_check_text.mcu_check_fault
 
     Overlay.onPressed: {
         if(can_close) {
@@ -29,9 +29,9 @@ Popup {
             backEnd.enableRestart(); // Signal user has enabled restart
 
             // Reset opacities of fault texts to hidden_opacity so that they aren't shown as being triggered when restartPopup opens again
-            var ids = { driver_eStop_text, external_eStop_text, imd_status_text, door_text, crash_text, bps_fault_text, mcu_check_text,
+            var ids = { driver_eStop_text, external_eStop_text, isolation_text, charge_enable_text, crash_text, bps_fault_text, mcu_check_text,
                         cell_balancing_active_text, mcu_hv_en_text, low_contactor_text, mainIO_heartbeat_text, thermistor_b_value_table_invalid_text, under_voltage_text,
-                        over_current_text, bms_input_voltage_high_text, dcdc_valid_text, mcu_stat_fdbk_text, bms_can_heartbeat_text,
+                        over_current_text, bms_input_voltage_high_text, use_dcdc_text, mcu_stat_fdbk_text, bms_can_heartbeat_text,
                         voltage_failsafe_text, current_failsafe_text, input_power_supply_failsafe_text, mc_status_text, relay_failsafe_text, cell_group_voltages_text, discharge_enable_text,
                         over_voltage_text, under_current_text, bms_input_voltage_low_text, charge_interlock_failsafe_text};
 
@@ -199,17 +199,17 @@ Popup {
                 Layout.preferredHeight: shutdown_input_pref_height
 
                 Text {
-                    id: imd_status_text
-                    property bool imd_status_fault: backEnd.imd_status && backEnd.restart_enable
-                    onImd_status_faultChanged: {
-                        if(imd_status_fault) {
+                    id: isolation_text
+                    property bool isolation_fault: backEnd.isolation && backEnd.restart_enable
+                    onIsolation_faultChanged: {
+                        if(isolation_fault) {
                             this.opacity = 1;
                         }
                     }
 
                     anchors.centerIn: parent
                     text: qsTr("Isolation")
-                    color: imd_status_fault ? "red" : "white"
+                    color: isolation_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size
                     opacity: hidden_opacity
                 }
@@ -227,17 +227,17 @@ Popup {
                 Layout.preferredHeight: shutdown_input_pref_height
 
                 Text {
-                    id: door_text
-                    property bool door_fault: backEnd.door && backEnd.restart_enable
-                    onDoor_faultChanged: {
-                        if(door_fault) {
+                    id: charge_enable_text
+                    property bool charge_enable_fault: backEnd.charge_enable && backEnd.restart_enable
+                    onCharge_enable_faultChanged: {
+                        if(charge_enable_fault) {
                             this.opacity = 1;
                         }
                     }
 
                     anchors.centerIn: parent
-                    text: qsTr("Driver Door")
-                    color: door_fault ? "red" : "white"
+                    text: qsTr("Charge enable")
+                    color: charge_enable_fault ? "red" : "white"
                     font.pointSize: shutdown_input_text_size
                     opacity: hidden_opacity
                 }
@@ -433,7 +433,7 @@ Popup {
                         Text {
                             id: over_voltage_text
 
-                            property bool over_voltage_fault: (backEnd.pack_voltage > 108) && backEnd.restart_enable
+                            property bool over_voltage_fault: (backEnd.pack_voltage > 113.15) && backEnd.restart_enable
                             onOver_voltage_faultChanged: {
                                 if(over_voltage_fault) {
                                     this.opacity = 1;
@@ -451,7 +451,7 @@ Popup {
                         Text {
                             id: under_voltage_text
 
-                            property bool under_voltage_fault: (backEnd.pack_voltage < 69) && backEnd.restart_enable
+                            property bool under_voltage_fault: (backEnd.pack_voltage < 77.5) && backEnd.restart_enable
                             onUnder_voltage_faultChanged: {
                                 if(under_voltage_fault) {
                                     this.opacity = 1;
@@ -482,7 +482,7 @@ Popup {
                         Text {
                             id: over_current_text
 
-                            property bool over_current_fault: (backEnd.pack_current > 100) && backEnd.restart_enable // TODO
+                            property bool over_current_fault: (backEnd.pack_current > 48.8) && backEnd.restart_enable // TODO
                             onOver_current_faultChanged: {
                                 if(over_current_fault) {
                                     this.opacity = 1;
@@ -500,7 +500,7 @@ Popup {
                         Text {
                             id: under_current_text
 
-                            property bool under_current_fault: (backEnd.pack_current < 0) && backEnd.restart_enable // TODO
+                            property bool under_current_fault: (backEnd.pack_current < -24.4) && backEnd.restart_enable // TODO
                             onUnder_current_faultChanged: {
                                 if(under_current_fault) {
                                     this.opacity = 1;
@@ -578,19 +578,19 @@ Popup {
                         Layout.preferredHeight: mcu_check_pref_height * 1.6
 
                         Text {
-                            id: dcdc_valid_text
+                            id: use_dcdc_text
 
-                            property bool dcdc_valid_fault: backEnd.dcdc_valid && backEnd.restart_enable
-                            onDcdc_valid_faultChanged: {
-                                if(dcdc_valid_fault) {
+                            property bool use_dcdc_fault: backEnd.use_dcdc && backEnd.restart_enable
+                            onUse_dcdc_faultChanged: {
+                                if(use_dcdc_fault) {
                                     this.opacity = 1;
                                 }
                             }
 
                             anchors.top: parent.top
                             anchors.horizontalCenter: parent.horizontalCenter
-                            text: "dcdc valid"
-                            color: dcdc_valid_fault ? "red" : "white"
+                            text: "use dcdc"
+                            color: use_dcdc_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
                         }
@@ -854,35 +854,6 @@ Popup {
                         border.width: grid_item_border_width
                         Layout.row: 4
                         Layout.column: 0
-                        Layout.fillWidth: true
-                        Layout.minimumWidth: (mcu_check.width / 4) - 1
-                        Layout.preferredWidth: mcu_check.width / 4
-                        Layout.preferredHeight: mcu_check_pref_height
-
-                        Text {
-                            id: charge_enable_text
-
-                            property bool charge_enable_fault: backEnd.charge_enable && backEnd.restart_enable
-                            onCharge_enable_faultChanged: {
-                                if(charge_enable_fault) {
-                                    this.opacity = 1;
-                                }
-                            }
-
-                            anchors.centerIn: parent
-                            text: "Charge enable"
-                            color: charge_enable_fault ? "red" : "white"
-                            font.pointSize: mcu_check_point_size
-                            opacity: hidden_opacity
-                        }
-                    }
-
-                    Rectangle {
-                        color: 'black'
-                        border.color: grid_item_border_color
-                        border.width: grid_item_border_width
-                        Layout.row: 4
-                        Layout.column: 1
                         Layout.fillWidth: true
                         Layout.minimumWidth: (mcu_check.width / 4) - 1
                         Layout.preferredWidth: mcu_check.width / 4

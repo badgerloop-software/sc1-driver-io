@@ -27,8 +27,8 @@ class DataUnpacker : public QObject
     Q_PROPERTY(int tstamp_sc MEMBER tstamp_sc NOTIFY dataChanged);
     Q_PROPERTY(int tstamp_ms MEMBER tstamp_ms NOTIFY dataChanged);
 
-    Q_PROPERTY(bool left_turn MEMBER left_turn NOTIFY dataChanged);
-    Q_PROPERTY(bool right_turn MEMBER right_turn NOTIFY dataChanged);
+    Q_PROPERTY(bool l_turn_led_en MEMBER l_turn_led_en NOTIFY dataChanged);
+    Q_PROPERTY(bool r_turn_led_en MEMBER r_turn_led_en NOTIFY dataChanged);
     Q_PROPERTY(bool hazards MEMBER hazards NOTIFY dataChanged);
     Q_PROPERTY(bool headlights MEMBER headlights NOTIFY dataChanged);
     Q_PROPERTY(bool mainIO_heartbeat MEMBER mainIO_heartbeat NOTIFY dataChanged);
@@ -42,7 +42,7 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool crash MEMBER crash NOTIFY dataChanged);
     Q_PROPERTY(bool door MEMBER door NOTIFY dataChanged);
     Q_PROPERTY(bool mcu_check MEMBER mcu_check NOTIFY dataChanged);
-    Q_PROPERTY(bool imd_status MEMBER imd_status NOTIFY dataChanged);
+    Q_PROPERTY(bool isolation MEMBER isolation NOTIFY dataChanged);
     Q_PROPERTY(bool discharge_enable MEMBER discharge_enable NOTIFY dataChanged);
     Q_PROPERTY(bool low_contactor MEMBER low_contactor NOTIFY dataChanged);
     Q_PROPERTY(bool bms_can_heartbeat MEMBER bms_can_heartbeat NOTIFY dataChanged);
@@ -55,7 +55,7 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool thermistor_b_value_table_invalid MEMBER thermistor_b_value_table_invalid NOTIFY dataChanged);
     Q_PROPERTY(bool charge_enable MEMBER charge_enable NOTIFY dataChanged);
     Q_PROPERTY(bool bps_fault MEMBER bps_fault NOTIFY dataChanged);
-    Q_PROPERTY(bool dcdc_valid MEMBER dcdc_valid NOTIFY dataChanged);
+    Q_PROPERTY(bool use_dcdc MEMBER use_dcdc NOTIFY dataChanged);
     Q_PROPERTY(bool supplemental_valid MEMBER supplemental_valid NOTIFY dataChanged);
     Q_PROPERTY(bool mcu_hv_en MEMBER mcu_hv_en NOTIFY dataChanged);
     Q_PROPERTY(bool mcu_stat_fdbk MEMBER mcu_stat_fdbk NOTIFY dataChanged);
@@ -67,7 +67,7 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool restart_enable MEMBER restart_enable NOTIFY dataChanged);
 
     Q_PROPERTY(float speed MEMBER speed NOTIFY dataChanged);
-    Q_PROPERTY(float accelerator MEMBER accelerator NOTIFY dataChanged);
+    Q_PROPERTY(float accelerator_pedal MEMBER accelerator_pedal NOTIFY dataChanged);
     Q_PROPERTY(float soc MEMBER soc NOTIFY dataChanged);
     Q_PROPERTY(float mppt_current_out MEMBER mppt_current_out NOTIFY dataChanged);
     Q_PROPERTY(float pack_voltage MEMBER pack_voltage NOTIFY dataChanged);
@@ -75,6 +75,7 @@ class DataUnpacker : public QObject
     Q_PROPERTY(float pack_temp MEMBER pack_temp NOTIFY dataChanged);
     Q_PROPERTY(float bms_input_voltage MEMBER bms_input_voltage NOTIFY dataChanged);
     Q_PROPERTY(float motor_temp MEMBER motor_temp NOTIFY dataChanged);
+    Q_PROPERTY(float motor_power MEMBER motor_power NOTIFY dataChanged);
     Q_PROPERTY(float driverIO_temp MEMBER driverIO_temp NOTIFY dataChanged);
     Q_PROPERTY(float mainIO_temp MEMBER mainIO_temp NOTIFY dataChanged);
     Q_PROPERTY(float motor_controller_temp MEMBER motor_controller_temp NOTIFY dataChanged);
@@ -112,14 +113,14 @@ private:
     // TODO Include only the properties that need to be displayed on the driver dashboard
     uint8_t fan_speed, tstamp_hr, tstamp_mn, tstamp_sc;
     uint16_t tstamp_ms;
-    float speed, accelerator, crz_spd_setpt, crz_pwr_setpt;
+    float speed, accelerator_pedal, crz_spd_setpt, crz_pwr_setpt;
     float soc, est_supplemental_soc;
     float mppt_current_out;
-    float pack_voltage, pack_current, supplemental_voltage;
+    float pack_voltage, pack_current, supplemental_voltage, motor_power;
     float pack_temp, motor_temp, driverIO_temp, mainIO_temp, cabin_temp, motor_controller_temp;
     float string1_temp, string2_temp, string3_temp;
     float lat, lon, elev;
-    bool headlights, left_turn, right_turn, hazards, mainIO_heartbeat, crz_pwr_mode, crz_spd_mode, eco, main_telem, parking_brake;
+    bool headlights, l_turn_led_en, r_turn_led_en, hazards, mainIO_heartbeat, crz_pwr_mode, crz_spd_mode, eco, main_telem, parking_brake;
     bool eng_dash_commfail=1;
     QString state;
     // Data for shutdown circuit
@@ -129,10 +130,10 @@ private:
     bool crash=false;
     bool door= false;
     bool mcu_check=false;
-    bool imd_status=false;
+    bool isolation=false;
     bool bps_fault=false;
     bool discharge_enable=false, charge_enable=false, bms_can_heartbeat=false;
-    bool mcu_hv_en=false, mcu_stat_fdbk=false, dcdc_valid=false, supplemental_valid=false, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
+    bool mcu_hv_en=false, mcu_stat_fdbk=false, use_dcdc=false, supplemental_valid=false, mppt_contactor=false, low_contactor=false, motor_controller_contactor=false;
     bool voltage_failsafe=false, current_failsafe=false, relay_failsafe=false, cell_balancing_active=true, charge_interlock_failsafe=false, thermistor_b_value_table_invalid=false, input_power_supply_failsafe=false;
     QVector<float> cell_group_voltages;
     bool restart_enable=true;

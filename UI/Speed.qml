@@ -77,7 +77,7 @@ Item {
             width: 337
             height: 168
             color: "#ffffff"
-            text: dividePower(backEnd.pack_voltage * backEnd.pack_current)
+            text: dividePower(backEnd.motor_power)
             font.pixelSize: 156
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
@@ -92,7 +92,7 @@ Item {
             width: 150
             height: 55
             color: "#ffffff"
-            text: getPowerUnit(backEnd.pack_voltage * backEnd.pack_current)
+            text: getPowerUnit(backEnd.motor_power)
             font.pixelSize: 45
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
