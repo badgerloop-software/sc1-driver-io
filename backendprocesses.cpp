@@ -104,7 +104,7 @@ void BackendProcesses::threadProcedure()
     all_bytes_in_minute.push_back("</bsr>");
 
     // only output the file when our buffer has reached 
-    if (all_bytes_in_minute.size() >= 10000 || min_time != last_minute) {
+    if (all_bytes_in_minute.size() >= 100000 || min_time != last_minute) {
         std::ofstream(basePath.toStdString() + std::to_string(curr_msec) + "_all_bytes.bin", std::ios::binary)
             .write(all_bytes_in_minute.data(), all_bytes_in_minute.size());
         last_minute = min_time;
