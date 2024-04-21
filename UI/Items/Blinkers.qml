@@ -12,7 +12,7 @@ Item {
         y: 0
         width: 150
         height: 104
-        source: "Images/Blinker.png"
+        source: "/UI/Images/Blinker.png"
         rotation: 180
         fillMode: Image.PreserveAspectFit
         sourceSize.width: 150
@@ -25,7 +25,7 @@ Item {
         y: 0
         width: 150
         height: 104
-        source: "Images/Blinker.png"
+        source: "/UI/Images/Blinker.png"
         sourceSize.height: 104
         sourceSize.width: 150
         fillMode: Image.PreserveAspectFit

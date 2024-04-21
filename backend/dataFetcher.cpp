@@ -1,4 +1,4 @@
-#include "datafetcher.h"
+#include "dataFetcher.h"
 
 DataFetcher::DataFetcher(QByteArray &bytes, int byteSize, QMutex &mutex, GPSData gpsOffset, QObject *parent) :
     QObject(parent), bytes(bytes), byteSize(byteSize), mutex(mutex) {

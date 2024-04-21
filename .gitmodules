@@ -3,5 +3,5 @@
 	url = git@github.com:badgerloop-software/sc1-data-format.git
 	branch = main
 [submodule "file_sync"]
-	path = file_sync
+	path = backend/file_sync
 	url = git@github.com:badgerloop-software/file_sync.git

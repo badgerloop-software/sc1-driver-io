@@ -10,11 +10,11 @@
 #include <QMutex>
 #include <fstream>
 
-#include "telemetrylib/Telemetry.h"
-#include "telemetrylib/DTI.h"
-#include "telemetrylib/TCP.cpp"
-#include "telemetrylib/SQL.cpp"
-#include "telemetrylib/UDP.cpp"
+#include "backend/telemetrylib/telemetry.h"
+#include "backend/telemetrylib/DTI.h"
+#include "backend/telemetrylib/tcp.cpp"
+#include "backend/telemetrylib/sql.cpp"
+#include "backend/telemetrylib/udp.cpp"
 
 struct timestampOffsets {
     int hr;

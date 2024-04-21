@@ -8,8 +8,8 @@
 #include <QObject>
 #include <QThread>
 #include <QMutex>
-#include "backendprocesses.h"
-#include "datafetcher.h"
+#include "backend/backendProcesses.h"
+#include "backend/dataFetcher.h"
 #include "3rdparty/rapidjson/document.h"
 #include "3rdparty/rapidjson/filereadstream.h"
 

@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>DashboardUI.ui.qml</file>
+        <file>Dashboard.qml</file>
+        <file>Blinkers.qml</file>
+        <file>Speed.qml</file>
+        <file>PackTempFanSpeed.qml</file>
+        <file>Clock.qml</file>
+        <file>RestartWindow.qml</file>
+        <file>Accelerator.qml</file>
+        <file>Batteries.qml</file>
+        <file>BatteryInfo.qml</file>
+        <file>SolarInfo.qml</file>
+    </qresource>
+</RCC>

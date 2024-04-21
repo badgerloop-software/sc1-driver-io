@@ -16,13 +16,13 @@ set(CMAKE_CXX_STANDARD 20)
 # Add shared sources to build
 set(SOURCES
         ${SOURCES}
-        backendprocesses.cpp
+        backend/backendProcesses.cpp
         main.cpp
-        DataProcessor/DataUnpacker.cpp
-        DataProcessor/datafetcher.cpp
-        telemetrylib/TCP.cpp
-        telemetrylib/Telemetry.cpp
-        telemetrylib/SQL.cpp
+        DataProcessor/dataUnpacker.cpp
+        backend/dataFetcher.cpp
+        backend/telemetrylib/tcp.cpp
+        backend/telemetrylib/telemetry.cpp
+        backend/telemetrylib/sql.cpp
         gps/gps.cpp
         3rdparty/serial/serialib.cpp
         )
@@ -30,18 +30,18 @@ set(SOURCES
 # Add the header files
 set(HEADERS
         ${HEADERS}
-        DataProcessor/DataUnpacker.h
-        DataProcessor/datafetcher.h
-        backendprocesses.h
-        telemetrylib/Telemetry.h
-        telemetrylib/DTI.h
+        DataProcessor/dataUnpacker.h
+        backend/dataFetcher.h
+        backend/backendProcesses.h
+        backend/telemetrylib/telemetry.h
+        backend/telemetrylib/DTI.h
         gps/gps.h
         3rdparty/serial/serialib.h
         )
 
 # Add the resource files
 qt_add_resources(RESOURCES
-        qml.qrc
+        UI/Items/qml.qrc
         UI/Images/images.qrc
         UI/fonts/fonts.qrc
         )

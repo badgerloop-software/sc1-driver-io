@@ -2,7 +2,7 @@
 // Created by Mingcan Li on 2/3/23.
 // Commented by ChatGPT
 //
-#include "Telemetry.h"
+#include "telemetry.h"
 
 // Default constructor
 Telemetry::Telemetry() {}

@@ -33,7 +33,7 @@ Item {
         y: 2
         width: 304
         height: 67
-        source: "Images/Supplemental SoC.svg"
+        source: "UI/Images/Supplemental SoC.svg"
         rotation: 180
     }
 
@@ -70,7 +70,7 @@ Item {
         y: 77
 	    width: 304
 	    height: 67
-	    source: "Images/Supplemental SoC.svg"
+	    source: "UI/Images/Supplemental SoC.svg"
         rotation: 180
     }
 
