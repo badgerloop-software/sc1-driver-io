@@ -45,11 +45,13 @@ void BackendProcesses::comm_status(bool s) {
 }
 
 void BackendProcesses::startThread() {
-    std::vector<DTI*> obj(2); //create a bunch of DTI instances and add them into this array in order of priority to be sent to telemetrylib
+    std::vector<DTI*> obj(3); //create a bunch of DTI instances and add them into this array in order of priority to be sent to telemetrylib
     long long first_msec = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
     obj[0]=new SQL(QString::fromStdString(std::to_string(first_msec))); //This sends data to the cloud server
     obj[1]=new UDP(QHostAddress("192.168.1.18"), 4003); //This sends data to the chase car
+    obj[2] = new Serial("/dev/ttyS0");
+    
     this->tel = new Telemetry(obj);
     connect(this->tel, &Telemetry::eng_dash_connection, this, &BackendProcesses::comm_status); //for notifing the system connection status
 }
@@ -104,7 +106,7 @@ void BackendProcesses::threadProcedure()
     all_bytes_in_minute.push_back("</bsr>");
 
     // only output the file when our buffer has reached 
-    if (all_bytes_in_minute.size() >= 10000 || min_time != last_minute) {
+    if (all_bytes_in_minute.size() >= 100000 || min_time != last_minute) {
         std::ofstream(basePath.toStdString() + std::to_string(curr_msec) + "_all_bytes.bin", std::ios::binary)
             .write(all_bytes_in_minute.data(), all_bytes_in_minute.size());
         last_minute = min_time;

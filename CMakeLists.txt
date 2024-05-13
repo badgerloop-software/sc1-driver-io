@@ -7,7 +7,7 @@ project(solar-car-dashboard)
 
 # Find the required Qt packages
 find_package(QT NAMES Qt5 Qt6 COMPONENTS Core Quick)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick SerialPort REQUIRED)
 
 message(----------QT-VERSION:${QT_VERSION_MAJOR}-----------)
 # Set C++ standard to C++20
@@ -23,6 +23,7 @@ set(SOURCES
         telemetrylib/TCP.cpp
         telemetrylib/Telemetry.cpp
         telemetrylib/SQL.cpp
+        telemetrylib/Serial.cpp
         gps/gps.cpp
         3rdparty/serial/serialib.cpp
         )
@@ -50,5 +51,5 @@ qt_add_resources(RESOURCES
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${RESOURCES})
 
 # Link against the required Qt modules
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::SerialPort)
 target_include_directories(${PROJECT_NAME} PRIVATE ./)
