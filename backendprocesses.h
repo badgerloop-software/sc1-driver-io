@@ -15,6 +15,7 @@
 #include "telemetrylib/TCP.cpp"
 #include "telemetrylib/SQL.cpp"
 #include "telemetrylib/UDP.cpp"
+#include "telemetrylib/Serial.cpp"
 
 struct timestampOffsets {
     int hr;
