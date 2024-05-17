@@ -812,7 +812,7 @@ Popup {
                             }
 
                             anchors.centerIn: parent
-                            text: "Thermister B value"
+                            text: "Thermistor B value"
                             color: thermistor_b_value_table_invalid_fault ? "red" : "white"
                             font.pointSize: mcu_check_point_size
                             opacity: hidden_opacity
