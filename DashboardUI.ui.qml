@@ -17,7 +17,7 @@ Item {
         border.width: 0
         z: -1
     }
-
+    
     Speed {
         id: speedometer
         x: 611

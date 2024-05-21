@@ -45,6 +45,8 @@ class DataUnpacker : public QObject
     Q_PROPERTY(bool isolation MEMBER isolation NOTIFY dataChanged);
     Q_PROPERTY(bool discharge_enable MEMBER discharge_enable NOTIFY dataChanged);
     Q_PROPERTY(bool low_contactor MEMBER low_contactor NOTIFY dataChanged);
+    Q_PROPERTY(bool motor_controller_contactor MEMBER motor_controller_contactor NOTIFY dataChanged);
+    Q_PROPERTY(bool mppt_contactor MEMBER mppt_contactor NOTIFY dataChanged);
     Q_PROPERTY(bool bms_can_heartbeat MEMBER bms_can_heartbeat NOTIFY dataChanged);
     Q_PROPERTY(bool voltage_failsafe MEMBER voltage_failsafe NOTIFY dataChanged);
     Q_PROPERTY(bool current_failsafe MEMBER current_failsafe NOTIFY dataChanged);
