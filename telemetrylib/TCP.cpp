@@ -3,6 +3,7 @@
 // Commented by ChatGPT
 //
 #include "DTI.h"
+#include "Config.h"
 
 
 class TCP : public DTI {
@@ -87,7 +88,10 @@ private:
     void checkConnection() {
         QTcpSocket sock;
         while (!finish) {
-            sock.connectToHost("192.168.1.16", 4005);
+            //sock.connectToHost("192.168.1.16", 4005);
+            sock.connectToHost(Config::getInstance().getConfig()["tcp_server_ip"].toString(), 
+                               Config::getInstance().getConfig()["tcp_port"].toInt());
+
             bool connected = sock.waitForConnected(4000);
             if (connected) {
                 sock.close();
