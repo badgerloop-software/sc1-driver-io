@@ -117,7 +117,6 @@ public slots:
         }
     }
 private:
-    //QString serverUrl = "live.bsr-dev.org";
     QString serverUrl = Config::getInstance().getConfig()["sql_server_url"].toString();
 
     long long lastRetry = 0;

@@ -88,7 +88,6 @@ private:
     void checkConnection() {
         QTcpSocket sock;
         while (!finish) {
-            //sock.connectToHost("192.168.1.16", 4005);
             sock.connectToHost(Config::getInstance().getConfig()["tcp_server_ip"].toString(), 
                                Config::getInstance().getConfig()["tcp_port"].toInt());
 
