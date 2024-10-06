@@ -6,9 +6,20 @@ Item {
     property int seconds
     property int delay
 
+    function convertUTCDateToLocalDate(date) {
+    var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+
+    var offset = date.getTimezoneOffset() / 60;
+    var hours = date.getHours();
+
+    newDate.setHours(hours - offset);
+
+    return newDate;   
+    }
+    
     function updateTime(){
-        var date = new Date
-        hours = (date.getUTCHours()+18)%24
+        var date = convertUTCDateToLocalDate(new Date)
+        hours = date.getUTCHours()
         minutes = date.getMinutes()
         seconds = date.getUTCSeconds()
     }
