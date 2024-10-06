@@ -7,14 +7,14 @@ Item {
     property int delay
 
     function convertUTCDateToLocalDate(date) {
-    var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
+        var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
 
-    var offset = date.getTimezoneOffset() / 60;
-    var hours = date.getHours();
+        var offset = date.getTimezoneOffset() / 60;
+        var hours_local = date.getHours();
 
-    newDate.setHours(hours - offset);
+        newDate.setHours(hours_local - offset);
 
-    return newDate;   
+        return newDate;   
     }
     
     function updateTime(){
