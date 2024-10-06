@@ -47,7 +47,7 @@ Item {
             width: 150
             height: 55
             color: "#ffffff"
-            text: "MPH"
+            text: "MLPp"
             font.pixelSize: 45
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
