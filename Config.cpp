@@ -10,7 +10,7 @@ Config& Config::getInstance() {
 }
 
 Config::Config() {
-    configObject = readConfigFile("config.json");  
+    configObject = readConfigFile("../config.json");  
 }
 
 // Method to read the configuration file and return the parsed JSON object

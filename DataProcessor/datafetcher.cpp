@@ -26,7 +26,11 @@ void DataFetcher::threadProcedure()
     // setup server
     ethServer = new QTcpServer;
     QHostAddress addr(QHostAddress::AnyIPv4);
-    int ipPort = Config::getInstance().getConfig()["ethernet_port"].toInt();
+    // print ip and port
+    int ipPort = Config::getInstance().getConfig()["EthernetPort"].toInt();
+    
+    qDebug() << "Server IP: " << addr.toString() << " Port: " << ipPort;
+    
     ethServer->listen(addr, ipPort);
 
 
