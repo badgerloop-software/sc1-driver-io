@@ -29,10 +29,7 @@ void DataFetcher::threadProcedure()
     // print ip and port
     int ipPort = Config::getInstance().getConfig()["EthernetPort"].toInt();
     
-    qDebug() << "Server IP: " << addr.toString() << " Port: " << ipPort;
-    
     ethServer->listen(addr, ipPort);
-
 
     connect(ethServer, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
 }
