@@ -44,12 +44,12 @@ int main(int argc, char *argv[])
         //  different OSs and build systems
         QProcess *process = new QProcess();
         process->setProcessChannelMode(QProcess::MergedChannels); // show the python process's stdout interleaved
-        QFileInfo check_file_p1("../file_sync/file_sync_up/main.py");
-        QFileInfo check_file_p2("./file_sync/file_sync_up/main.py");
+        QFileInfo check_file_p1("../backend/file_sync/file_sync_up/main.py");
+        QFileInfo check_file_p2("./backend/file_sync/file_sync_up/main.py");
         if (check_file_p1.exists() && check_file_p1.isFile()) {
-            process->start("python3", QStringList() << "../file_sync/file_sync_up/main.py");
+            process->start("python3", QStringList() << "../backend/file_sync/file_sync_up/main.py");
         } else if (check_file_p2.exists() && check_file_p2.isFile()) {
-            process->start("python3", QStringList() << "./file_sync/file_sync_up/main.py");
+            process->start("python3", QStringList() << "./backend/file_sync/file_sync_up/main.py");
         } else {
             qDebug()<<"\n";
             qDebug()<<"WARNING: running without file sync";
