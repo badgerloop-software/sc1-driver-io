@@ -1,4 +1,5 @@
 #include "dataFetcher.h"
+#include "Config.h"
 
 DataFetcher::DataFetcher(QByteArray &bytes, int byteSize, QMutex &mutex, GPSData gpsOffset, QObject *parent) :
     QObject(parent), bytes(bytes), byteSize(byteSize), mutex(mutex) {
@@ -25,7 +26,11 @@ void DataFetcher::threadProcedure()
     // setup server
     ethServer = new QTcpServer;
     QHostAddress addr(QHostAddress::AnyIPv4);
-    ethServer->listen(addr, 4005);
+    // print ip and port
+    int ipPort = Config::getInstance().getConfig()["EthernetPort"].toInt();
+    
+    ethServer->listen(addr, ipPort);
+
     connect(ethServer, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
 }
 

@@ -1,0 +1,10 @@
+{
+    "sql_server_url": "live.bsr-dev.org",
+    "sql_transfer_timeout": 1000,
+    "sql_retry_interval": 3000,
+    "tcp_server_ip": "192.168.1.16",
+    "tcp_port": 4005,
+    "udp_chasecar_ip": "192.168.1.18",
+    "udp_chasecar_port": 4003,
+    "EthernetPort": 4005
+}

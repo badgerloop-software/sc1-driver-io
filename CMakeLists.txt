@@ -25,6 +25,7 @@ set(SOURCES
         backend/telemetrylib/sql.cpp
         gps/gps.cpp
         3rdparty/serial/serialib.cpp
+        Config.cpp
         )
 
 # Add the header files
@@ -37,6 +38,7 @@ set(HEADERS
         backend/telemetrylib/DTI.h
         gps/gps.h
         3rdparty/serial/serialib.h
+        Config.h
         )
 
 # Add the resource files

@@ -4,9 +4,11 @@
 
 #include "DTI.h"
 #include <thread>
+#include "Config.h"
 
 class SQL : public DTI {
 public:
+    
     SQL(QString tableToCreate) {
         this->tableToCreate = tableToCreate;
 
@@ -21,7 +23,12 @@ public:
             myurl.setPath("/add-table/" + tableToCreate);
 
             request.setUrl(myurl);
-            request.setTransferTimeout(1000);
+            
+            int transferTimeout = Config::getInstance().getConfig()["sql_transfer_timeout"].toInt();
+            request.setTransferTimeout(transferTimeout);
+
+            
+            
             reply = restclient->get(request);
 
             connect(reply, &QNetworkReply::readyRead, this, &SQL::readReply);
@@ -37,9 +44,11 @@ public:
     }
 
     void sendData(QByteArray bytes, long long timestamp) override {
+        int transferTimeout = Config::getInstance().getConfig()["sql_transfer_timeout"].toInt();
+        int retryInterval = Config::getInstance().getConfig()["sql_retry_interval"].toInt();
         qDebug()<<"sending Via SQL: "<<timestamp;
         long long now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-        if(tableName.isNull() && now - lastRetry > 3000) {
+        if(tableName.isNull() && now - lastRetry > retryInterval) {
             qDebug() << "Retrying to add a new table: " << tableToCreate;
 
             QUrl myurl;
@@ -48,7 +57,7 @@ public:
             myurl.setPath("/add-table/" + tableToCreate);
 
             request.setUrl(myurl);
-            request.setTransferTimeout(1000);
+            request.setTransferTimeout(transferTimeout);
             reply = restclient->get(request);
 
             connect(reply, &QNetworkReply::readyRead, this, &SQL::readReply);
@@ -65,7 +74,7 @@ public:
             request.setUrl(myurl);
             request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("arraybuffer"));
             request.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
-            request.setTransferTimeout(1000);
+            request.setTransferTimeout(transferTimeout);
             bytes.push_front("<bsr>");
             bytes.push_back("</bsr>");
             this->restclient->post(request, bytes);
@@ -108,7 +117,8 @@ public slots:
         }
     }
 private:
-    QString serverUrl = "live.bsr-dev.org";
+    QString serverUrl = Config::getInstance().getConfig()["sql_server_url"].toString();
+
     long long lastRetry = 0;
     QNetworkRequest request;
     QNetworkAccessManager *restclient = NULL;
